@@ -6,9 +6,9 @@ import type {
 import { generateAccessible } from '@vben/access';
 import { preferences } from '@vben/preferences';
 
-import { ElMessage } from 'element-plus';
+import { ElLoading } from 'element-plus';
 
-import { getAllMenusApi } from '#/api';
+import { getAllMenusApi } from '#/api/system/menu';
 import { BasicLayout, IFrameView } from '#/layouts';
 import { $t } from '#/locales';
 
@@ -25,11 +25,18 @@ async function generateAccess(options: GenerateMenuAndRoutesOptions) {
   return await generateAccessible(preferences.app.accessMode, {
     ...options,
     fetchMenuListAsync: async () => {
-      ElMessage({
-        duration: 1500,
-        message: `${$t('common.loadingMenu')}...`,
+      const loadingInstance = ElLoading.service({
+        fullscreen: true,
+        text: `${$t('common.loadingMenu')}...`,
       });
-      return await getAllMenusApi();
+      try {
+        const result = await getAllMenusApi({ type: 'menu' });
+        loadingInstance.close();
+        return result;
+      } catch (error) {
+        loadingInstance.close();
+        throw error;
+      }
     },
     // 可以指定没有权限跳转403页面
     forbiddenComponent,
