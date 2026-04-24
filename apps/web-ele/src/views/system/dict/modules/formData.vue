@@ -10,7 +10,7 @@ import { ref } from 'vue';
 import { useVbenDrawer, useVbenModal } from '@vben/common-ui';
 import { Plus } from '@vben/icons';
 
-import { Button, message } from 'ant-design-vue';
+import { ElButton, ElMessage } from 'element-plus';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteDictData, getDictDataPage } from '#/api/system/dict';
@@ -43,21 +43,19 @@ function onDataEdit(row: SystemDictApi.SystemData) {
 }
 // 删除字典数据
 function onDataDelete(row: SystemDictApi.SystemData) {
-  const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deleting', [row.name]),
+  const hideLoading = ElMessage.info({
+    message: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
-    key: 'action_process_msg',
   });
   deleteDictData(row.id)
     .then(() => {
-      message.success({
-        content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-        key: 'action_process_msg',
+      ElMessage.success({
+        message: $t('ui.actionMessage.deleteSuccess', [row.name]),
       });
       onRefresh();
     })
     .catch(() => {
-      hideLoading();
+      hideLoading?.close();
     });
 }
 
@@ -120,10 +118,10 @@ function onCreate() {
     <FormModal @success="onRefresh" />
     <Grid table-title="">
       <template #toolbar-tools>
-        <Button type="primary" @click="onCreate">
+        <ElButton type="primary" @click="onCreate">
           <Plus class="size-5" />
           新增
-        </Button>
+        </ElButton>
       </template>
     </Grid>
   </Drawer>

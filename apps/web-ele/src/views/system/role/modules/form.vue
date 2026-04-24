@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import type { DataNode } from 'ant-design-vue/es/tree';
 import type { VbenFormSchema } from '#/adapter/form';
 import type { Recordable } from '@vben/types';
 
@@ -10,7 +9,7 @@ import { computed, ref } from 'vue';
 import { Tree, useVbenDrawer } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
-import { Spin } from 'ant-design-vue';
+import { ElLoading } from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
 import { getAllMenusApi } from '#/api/system/menu';
@@ -18,6 +17,14 @@ import { createRole, updateRole } from '#/api/system/role';
 import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
+
+// 定义树节点类型（替代 ant-design-vue 的 DataNode）
+interface TreeNode {
+  key?: string | number;
+  title?: string;
+  children?: TreeNode[];
+  [key: string]: any;
+}
 
 const emits = defineEmits(['success']);
 
@@ -30,7 +37,7 @@ const [Form, formApi] = useVbenForm({
   showDefaultActions: false,
 });
 
-const menuIdList = ref<DataNode[]>([]);
+const menuIdList = ref<TreeNode[]>([]);
 const loadingPermissions = ref(false);
 
 const id = ref();
@@ -81,7 +88,7 @@ async function loadPermissions() {
   loadingPermissions.value = true;
   try {
     const res = await getAllMenusApi({ type: 'all' });
-    menuIdList.value = res as unknown as DataNode[];
+    menuIdList.value = res as unknown as TreeNode[];
   } finally {
     loadingPermissions.value = false;
   }
@@ -110,7 +117,7 @@ function getNodeClass(node: Recordable<any>) {
   <Drawer :title="getDrawerTitle">
     <Form>
       <template #menuIdList="slotProps">
-        <Spin :spinning="loadingPermissions" wrapper-class-name="w-full">
+        <div v-loading="loadingPermissions" class="w-full">
           <!-- 不能勾选复选框，去掉 :default-expanded-level="2" -->
           <Tree
             :tree-data="menuIdList"
@@ -128,7 +135,7 @@ function getNodeClass(node: Recordable<any>) {
               {{ $t(value.meta.title) }}
             </template>
           </Tree>
-        </Spin>
+        </div>
       </template>
     </Form>
   </Drawer>

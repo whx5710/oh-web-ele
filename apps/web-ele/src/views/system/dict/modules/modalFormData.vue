@@ -5,7 +5,7 @@ import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { Button, message } from 'ant-design-vue';
+import { ElButton, ElMessage } from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
 import { createDictData, updateDictData } from '#/api/system/dict';
@@ -53,7 +53,7 @@ const [Modal, modalApi] = useVbenModal({
           : createDictData(data));
         modalApi.close();
         emit('success');
-        message.success('操作成功');
+        ElMessage.success('操作成功');
       } finally {
         modalApi.lock(false);
       }
@@ -77,9 +77,9 @@ const [Modal, modalApi] = useVbenModal({
     <Form class="mx-4" />
     <template #prepend-footer>
       <div class="flex-auto">
-        <Button type="primary" danger @click="resetForm">
+        <ElButton type="danger" @click="resetForm">
           {{ $t('common.reset') }}
-        </Button>
+        </ElButton>
       </div>
     </template>
   </Modal>

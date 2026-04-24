@@ -6,7 +6,7 @@ import { ref } from 'vue';
 
 import { useVbenDrawer } from '@vben/common-ui';
 
-import { message, Switch } from 'ant-design-vue';
+import { ElMessage, ElSwitch } from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
@@ -75,7 +75,7 @@ function authorize(data: SystemAppApi.Func) {
     params.dbStatus = 1;
   }
   authority(params).then(() => {
-    message.success('操作成功');
+    ElMessage.success('操作成功');
   });
 }
 </script>
@@ -86,7 +86,7 @@ function authorize(data: SystemAppApi.Func) {
       <template #funcList="slotProps">
         <Grid class="h-full max-h-[450px]" v-bind="slotProps">
           <template #checkedFunc="{ row }">
-            <Switch v-model:checked="row.checkedFunc" @click="authorize(row)" />
+            <ElSwitch v-model="row.checkedFunc" @click="authorize(row)" />
           </template>
         </Grid>
       </template>

@@ -11,7 +11,7 @@ import { ref, watch } from 'vue';
 import { useVbenDrawer, useVbenModal } from '@vben/common-ui';
 // import { Plus } from '@vben/icons';
 
-import { Button, Divider, Input, message } from 'ant-design-vue';
+import { ElButton, ElDivider, ElInput, ElMessage } from 'element-plus';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getUserPage, unBindTenantUser } from '#/api/system/user';
@@ -36,21 +36,19 @@ const [Drawer, drawerApi] = useVbenDrawer({
 });
 // 删除数据
 function onDataDelete(row: SystemUserApi.SystemUser) {
-  const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deleting', [row.realName]),
+  const hideLoading = ElMessage.info({
+    message: $t('ui.actionMessage.deleting', [row.realName]),
     duration: 0,
-    key: 'action_process_msg',
   });
   unBindTenantUser(row.tenantId, [row.id])
     .then(() => {
-      message.success({
-        content: `用户${row.realName}解绑成功`,
-        key: 'action_process_msg',
+      ElMessage.success({
+        message: `用户${row.realName}解绑成功`,
       });
       onRefresh();
     })
     .catch(() => {
-      hideLoading();
+      hideLoading?.close();
     });
 }
 
@@ -132,11 +130,11 @@ function onAdd() {
     <FormModal @success="onRefresh" />
     <Grid>
       <template #toolbar-tools>
-        <Button type="primary" @click="onAdd">
+        <ElButton type="primary" @click="onAdd">
           添加
-        </Button>
-        <Divider type="vertical" />
-        <Input style="width: 200px;" v-model:value="keyWord" placeholder="关键字搜索" allowClear/>
+        </ElButton>
+        <ElDivider direction="vertical" />
+        <ElInput style="width: 200px;" v-model="keyWord" placeholder="关键字搜索" clearable/>
       </template>
     </Grid>
   </Drawer>

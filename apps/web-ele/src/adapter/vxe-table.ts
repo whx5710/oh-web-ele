@@ -140,7 +140,7 @@ setupVbenVxeTable({
      */
     vxeUI.renderer.add('CellOperation', {
       renderTableDefault({ attrs, options, props }, { column, row }) {
-        const defaultProps = { size: 'small', type: 'link', ...props };
+        const defaultProps = { size: 'small', link: true, ...props };
         let align = 'end';
         switch (column.align) {
           case 'center': {
@@ -191,11 +191,13 @@ setupVbenVxeTable({
           .filter((opt) => opt.show !== false);
 
         function renderBtn(opt: Recordable<any>, listen = true) {
+          // 从 props 中排除 text 属性，因为 Element Plus 的 ElButton 的 text 是布尔类型
+          const { text: _text, ...btnProps } = opt;
           return h(
             ElButton,
             {
               ...props,
-              ...opt,
+              ...btnProps,
               icon: undefined,
               onClick: listen
                 ? () =>
@@ -236,7 +238,7 @@ setupVbenVxeTable({
                 viewportWrapper = el.closest('.vxe-table--viewport-wrapper');
                 return document.body;
               },
-              placement: 'topLeft',
+              placement: 'top-start',
               title: $t('ui.actionTitle.delete', [attrs?.nameTitle || '']),
               ...props,
               ...opt,

@@ -10,7 +10,7 @@ import { ref, watch } from 'vue';
 
 import { useVbenDrawer } from '@vben/common-ui';
 
-import { Input } from 'ant-design-vue';
+import { ElInput } from 'element-plus';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { pageByRole } from '#/api/system/user';
@@ -82,7 +82,7 @@ const onSearch = () => {
   <Drawer class="w-full max-w-[1000px]" :title="title" >
     <Grid>
       <template #toolbar-tools>
-        <Input style="width: 200px;" v-model:value="keyWord" placeholder="关键字搜索" allowClear/>
+        <ElInput style="width: 200px;" v-model="keyWord" placeholder="关键字搜索" clearable/>
       </template>
     </Grid>
   </Drawer>

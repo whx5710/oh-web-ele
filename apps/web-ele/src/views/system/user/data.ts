@@ -1,7 +1,5 @@
-import type { VxeTableGridOptions } from '@vben/plugins/vxe-table';
-
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn } from '#/adapter/vxe-table';
+import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemUserApi } from '#/api/system/user';
 
 import { h, ref } from 'vue';
@@ -9,147 +7,14 @@ import { h, ref } from 'vue';
 import { useUserStore } from '@vben/stores';
 
 import { useDebounceFn } from '@vueuse/core';
-import { Spin } from 'ant-design-vue';
+import { ElLoading } from 'element-plus';
 
-import { z } from '#/adapter/form';
-import { getDeptTreeList } from '#/api/system/dept';
-import { getPostList } from '#/api/system/post';
-import { getRoleList } from '#/api/system/role';
 import { getTenantPage } from '#/api/system/tenant';
-import { $t } from '#/locales';
+
+const keyWord = ref('');
 
 const fetching = ref(false);
 const userStore = useUserStore();
-const keyWord = ref('');
-
-/**
- * 获取编辑表单的字段配置。如果没有使用多语言，可以直接export一个数组常量
- */
-export function useSchema(): VbenFormSchema[] {
-  return [
-    {
-      component: 'Input',
-      fieldName: 'username',
-      label: '用户名',
-      rules: z
-        .string()
-        .min(2, $t('ui.formRules.minLength', ['用户名', 2]))
-        .max(50, $t('ui.formRules.maxLength', ['用户名', 50])),
-    },
-    {
-      component: 'Input',
-      fieldName: 'realName',
-      label: '姓名',
-      rules: z
-        .string()
-        .min(2, $t('ui.formRules.minLength', ['姓名', 2]))
-        .max(50, $t('ui.formRules.maxLength', ['姓名', 50])),
-    },
-    {
-      component: 'ApiTreeSelect',
-      componentProps: {
-        allowClear: true,
-        api: getDeptTreeList,
-        class: 'w-full',
-        labelField: 'name',
-        valueField: 'id',
-        childrenField: 'children',
-      },
-      fieldName: 'deptId',
-      label: '所属部门',
-    },
-    {
-      component: 'RadioGroup',
-      componentProps: {
-        buttonStyle: 'solid',
-        options: [
-          { label: '男', value: 0 },
-          { label: '女', value: 1 },
-          { label: '未知', value: 2 },
-        ],
-        // optionType: 'button',
-      },
-      defaultValue: 0,
-      fieldName: 'gender',
-      label: '性别',
-    },
-    {
-      component: 'Input',
-      fieldName: 'mobile',
-      label: '手机号',
-      rules: z.string().min(11, $t('ui.formRules.minLength', ['手机号', 11])),
-    },
-    {
-      component: 'Input',
-      fieldName: 'email',
-      label: '邮箱',
-      rules: z.string().min(4, $t('ui.formRules.minLength', ['邮箱', 4])),
-    },
-    {
-      component: 'InputPassword',
-      fieldName: 'password',
-      label: '密码',
-    },
-    {
-      component: 'RadioGroup',
-      componentProps: {
-        buttonStyle: 'solid',
-        options: [
-          { label: $t('common.enabled'), value: 1 },
-          { label: $t('common.disabled'), value: 0 },
-        ],
-        optionType: 'button',
-      },
-      defaultValue: 1,
-      fieldName: 'status',
-      label: '状态',
-    },
-    {
-      component: 'ApiTreeSelect',
-      componentProps: {
-        allowClear: true,
-        multiple: true,
-        api: getPostList,
-        class: 'w-full',
-        labelField: 'postName',
-        valueField: 'id',
-      },
-      fieldName: 'postIdList',
-      label: '所属岗位',
-    },
-    {
-      component: 'ApiTreeSelect',
-      componentProps: {
-        allowClear: true,
-        multiple: true,
-        api: getRoleList,
-        class: 'w-full',
-        labelField: 'name',
-        valueField: 'id',
-      },
-      fieldName: 'roleIdList',
-      label: '角色',
-    },
-    {
-      component: 'Input',
-      fieldName: 'userKey',
-      label: '密钥',
-      help: () => '用于第三方登录，不校验验证码', // ['用于第三方登录，不校验验证码', '第二行'].map((v) => h('p', v)),
-    },
-    {
-      component: 'Input',
-      componentProps: {
-        maxLength: 100,
-      },
-      fieldName: 'note',
-      label: '备注',
-      rules: z
-        .string()
-        .max(100, $t('ui.formRules.maxLength', ['备注', 100]))
-        .optional(),
-    },
-  ];
-}
 
 // 远程获取数据
 function fetchRemoteOptions(keyWord: Record<string, any>) {
@@ -169,7 +34,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
       fieldName: 'keyWord',
       label: '关键字',
       componentProps: {
-        allowClear: true,
+        clearable: true,
+        placeholder: '请输入关键字搜索',
       },
     },
     {
@@ -187,21 +53,19 @@ export function useGridFormSchema(): VbenFormSchema[] {
             }));
           },
           api: fetchRemoteOptions,
-          allowClear: true,
+          clearable: true,
           disabled: userStore.userInfo?.superAdmin !== 1,
           // 禁止本地过滤
-          filterOption: false,
-          // 如果正在获取数据，使用插槽显示一个loading
-          notFoundContent: fetching.value ? undefined : null,
+          filterable: true,
+          remote: true,
           // 搜索词变化时记录下来， 使用useDebounceFn防抖。
-          onSearch: useDebounceFn((value: string) => {
+          remoteMethod: useDebounceFn((value: string) => {
             keyWord.value = value;
           }, 300),
           // 远程搜索参数。当搜索词变化时，params也会更新
           params: {
             keyWord: keyWord.value || undefined,
           },
-          showSearch: true,
         };
       },
       // 字段名
@@ -210,7 +74,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '租户',
       renderComponentContent: () => {
         return {
-          notFoundContent: fetching.value ? h(Spin) : undefined,
+          loading: fetching.value,
         };
       },
       // rules: 'selectRequired',
@@ -218,76 +82,117 @@ export function useGridFormSchema(): VbenFormSchema[] {
   ];
 }
 
-/**
- * 获取表格列配置
- * @description 使用函数的形式返回列数据而不是直接export一个Array常量，是为了响应语言切换时重新翻译表头
- * @param onActionClick 表格操作按钮点击事件
- */
-export function useColumns(
-  onActionClick?: OnActionClickFn<SystemUserApi.SystemUser>,
-): VxeTableGridOptions<SystemUserApi.SystemUser>['columns'] {
+// 在线用户搜索表单
+export function useMonitorGridFormSchema(): VbenFormSchema[] {
+  return [
+    {
+      component: 'Input',
+      fieldName: 'keyWord',
+      label: '关键字',
+      componentProps: {
+        clearable: true,
+        placeholder: '请输入关键字搜索',
+      },
+    },
+    {
+      component: 'ApiSelect',
+      // 对应组件的参数
+      componentProps: () => {
+        return {
+          // 接口转options格式 { tenantId: string; tenantName: string }[]
+          afterFetch: (res: any) => {
+            fetching.value = false;
+            const data: { name: string; path: string }[] = res.list;
+            return data.map((item: any) => ({
+              label: item.tenantName,
+              value: item.tenantId,
+            }));
+          },
+          api: fetchRemoteOptions,
+          clearable: true,
+          disabled: userStore.userInfo?.superAdmin !== 1,
+          // 禁止本地过滤
+          filterable: true,
+          remote: true,
+          // 搜索词变化时记录下来， 使用useDebounceFn防抖。
+          remoteMethod: useDebounceFn((value: string) => {
+            keyWord.value = value;
+          }, 300),
+          // 远程搜索参数。当搜索词变化时，params也会更新
+          params: {
+            keyWord: keyWord.value || undefined,
+          },
+        };
+      },
+      // 字段名
+      fieldName: 'tenantId',
+      // 界面显示的label
+      label: '租户',
+      renderComponentContent: () => {
+        return {
+          loading: fetching.value,
+        };
+      },
+      // rules: 'selectRequired',
+    },
+  ];
+}
+
+export function useColumns<T = SystemUserApi.SystemUser>(
+  onActionClick: OnActionClickFn<T>,
+): VxeTableGridOptions['columns'] {
   return [
     { title: '序号', type: 'seq', width: 50 },
     {
-      align: 'left',
+      field: 'id',
+      title: 'ID',
+      width: 100,
+      visible: false,
+    },
+    {
       field: 'username',
       title: '用户名',
-      width: 150,
+      width: 120,
     },
     {
-      align: 'left',
       field: 'realName',
-      title: '姓名',
-      width: 150,
+      title: '真实姓名',
+      width: 120,
     },
     {
-      align: 'left',
       field: 'mobile',
       title: '手机号',
       width: 120,
     },
     {
-      align: 'left',
-      field: 'gender',
-      title: '性别',
-      width: 60,
-      cellRender: {
-        name: 'CellTag',
-        options: [
-          { color: 'warning', label: '男', value: 0 },
-          { color: 'success', label: '女', value: 1 },
-          { color: 'error', label: '未知', value: 2 },
-        ],
-      },
-    },
-    {
-      align: 'left',
-      field: 'tenantName',
-      title: '租户',
-      width: 150,
-    },
-    {
-      align: 'left',
       field: 'email',
       title: '邮箱',
       width: 150,
     },
     {
-      align: 'left',
       field: 'deptName',
-      title: '所属机构',
-      width: 150,
+      title: '部门',
+      width: 120,
     },
     {
-      align: 'left',
+      field: 'postName',
+      title: '岗位',
+      width: 120,
+    },
+    {
+      field: 'tenantName',
+      title: '租户',
+      width: 120,
+    },
+    {
       field: 'status',
       title: '状态',
-      width: 50,
+      width: 80,
       cellRender: {
         name: 'CellTag',
         options: [
-          { color: 'warning', label: '停用', value: 0 },
-          { color: 'success', label: '正常', value: 1 },
+          { color: 'warning', label: '禁用', value: 0 },
+          { color: 'success', label: '启用', value: 1 },
         ],
       },
     },
@@ -297,7 +202,7 @@ export function useColumns(
       width: 160,
     },
     {
-      align: 'right',
+      align: 'center',
       cellRender: {
         attrs: {
           nameField: 'realName',
@@ -309,77 +214,69 @@ export function useColumns(
           'edit', // 默认的编辑按钮
           {
             code: 'delete', // 默认的删除按钮
-            disabled: false,
+            disabled: (row: SystemUserApi.SystemUser) => {
+              return !!(row.isSystem === 1);
+            },
           },
         ],
       },
       field: 'operation',
       fixed: 'right',
-      headerAlign: 'center',
-      showOverflow: false,
       title: '操作',
-      width: 100,
+      width: 130,
     },
   ];
 }
+
 // 在线用户
-export function useMonitorColumns(
-  onActionClick?: OnActionClickFn<SystemUserApi.SystemUser>,
-): VxeTableGridOptions<SystemUserApi.SystemUser>['columns'] {
+export function useMonitorColumns<T = SystemUserApi.SystemUser>(
+  onActionClick: OnActionClickFn<T>,
+): VxeTableGridOptions['columns'] {
   return [
     { title: '序号', type: 'seq', width: 50 },
     {
-      align: 'left',
+      field: 'id',
+      title: 'ID',
+      width: 100,
+      visible: false,
+    },
+    {
       field: 'username',
       title: '用户名',
-      width: 150,
-    },
-    {
-      align: 'left',
-      field: 'realName',
-      title: '姓名',
-      minWidth: 150,
-    },
-    {
-      align: 'left',
-      field: 'mobile',
-      title: '手机号',
       width: 120,
     },
     {
-      align: 'left',
-      field: 'gender',
-      title: '性别',
-      width: 60,
-      cellRender: {
-        name: 'CellTag',
-        options: [
-          { color: 'warning', label: '男', value: 0 },
-          { color: 'success', label: '女', value: 1 },
-          { color: 'error', label: '未知', value: 2 },
-        ],
-      },
+      field: 'realName',
+      title: '真实姓名',
+      width: 120,
     },
     {
-      align: 'left',
       field: 'tenantName',
       title: '租户',
-      minWidth: 150,
+      width: 120,
     },
     {
-      align: 'left',
-      field: 'email',
-      title: '邮箱',
-      minWidth: 150,
+      field: 'ip',
+      title: 'IP',
+      width: 120,
     },
     {
-      align: 'left',
-      field: 'deptName',
-      title: '所属机构',
+      field: 'address',
+      title: '登录地址',
       width: 150,
     },
     {
-      align: 'right',
+      field: 'userAgent',
+      title: 'User Agent',
+      width: 200,
+    },
+    {
+      field: 'loginTime',
+      title: '登录时间',
+      width: 160,
+    },
+    {
+      align: 'center',
       cellRender: {
         attrs: {
           nameField: 'realName',
@@ -389,94 +286,128 @@ export function useMonitorColumns(
         name: 'CellOperation',
         options: [
           {
-            code: 'show', // 默认的删除按钮
-            // disabled: false,
-            text: '详情',
+            code: 'show',
+            text: '查看',
           },
           {
-            code: 'exit', // 默认的删除按钮
-            // disabled: false,
+            code: 'exit',
             text: '下线',
           },
         ],
       },
       field: 'operation',
       fixed: 'right',
-      headerAlign: 'center',
-      showOverflow: false,
       title: '操作',
-      width: 100,
+      width: 130,
     },
   ];
 }
 
-// 搜索表单
-export function useMonitorGridFormSchema(): VbenFormSchema[] {
-  return [
-    {
-      component: 'Input',
-      fieldName: 'keyWord',
-      label: '关键字',
-      componentProps: {
-        allowClear: true,
-      },
-    },
-  ];
-}
-
-// 在线用户token
-export function useTokenColumns(
-  onActionClick?: OnActionClickFn<SystemUserApi.UserToken>,
-): VxeTableGridOptions<SystemUserApi.UserToken>['columns'] {
+// Token列表
+export function useTokenColumns<T = SystemUserApi.UserToken>(
+  onActionClick: OnActionClickFn<T>,
+): VxeTableGridOptions['columns'] {
   return [
     { title: '序号', type: 'seq', width: 50 },
     {
-      align: 'left',
-      field: 'username',
-      title: '用户名',
+      field: 'id',
+      title: 'ID',
       width: 100,
+      visible: false,
     },
     {
-      align: 'left',
-      field: 'realName',
-      title: '姓名',
-      minWidth: 120,
+      field: 'accessToken',
+      title: 'Token',
+      width: 300,
     },
     {
-      align: 'left',
+      field: 'ip',
+      title: 'IP',
+      width: 120,
+    },
+    {
+      field: 'address',
+      title: '登录地址',
+      width: 150,
+    },
+    {
+      field: 'userAgent',
+      title: 'User Agent',
+      width: 200,
+    },
+    {
       field: 'loginTime',
       title: '登录时间',
-      minWidth: 120,
+      width: 160,
     },
     {
-      align: 'left',
-      field: 'accessToken',
-      title: 'TOKEN',
-      minWidth: 150,
-    },
-    {
-      align: 'right',
+      align: 'center',
       cellRender: {
         attrs: {
-          nameField: 'realName',
-          nameTitle: '用户',
+          nameField: 'accessToken',
+          nameTitle: 'Token',
           onClick: onActionClick,
         },
         name: 'CellOperation',
         options: [
           {
-            code: 'exit', // 默认的删除按钮
-            // disabled: false,
+            code: 'exit',
             text: '下线',
           },
         ],
       },
       field: 'operation',
       fixed: 'right',
-      headerAlign: 'center',
-      showOverflow: false,
       title: '操作',
-      width: 80,
+      width: 100,
+    },
+  ];
+}
+
+/**
+ * 获取编辑表单的字段配置。如果没有使用多语言，可以直接export一个数组常量
+ */
+export function useSchema(): VbenFormSchema[] {
+  return [
+    {
+      component: 'Input',
+      fieldName: 'username',
+      label: '用户名',
+      rules: 'required',
+    },
+    {
+      component: 'Input',
+      fieldName: 'realName',
+      label: '真实姓名',
+      rules: 'required',
+    },
+    {
+      component: 'Input',
+      fieldName: 'mobile',
+      label: '手机号',
+      rules: 'required',
+    },
+    {
+      component: 'Input',
+      fieldName: 'email',
+      label: '邮箱',
+      rules: 'required',
+    },
+    {
+      component: 'Input',
+      fieldName: 'deptName',
+      label: '部门',
+    },
+    {
+      component: 'Input',
+      fieldName: 'postName',
+      label: '岗位',
+    },
+    {
+      component: 'Switch',
+      fieldName: 'status',
+      label: '状态',
+      defaultValue: 1,
     },
   ];
 }

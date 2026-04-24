@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, onMounted, onUnmounted } from 'vue';
 import { Page } from '@vben/common-ui';
-import { Button, message, Modal, Select } from 'ant-design-vue';
+import { ElButton, ElMessage, ElMessageBox, ElSelect, ElOption } from 'element-plus';
 import BpmnModeler from 'bpmn-js/lib/Modeler';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
@@ -223,11 +223,11 @@ const combinedZhTranslations = {
 
 // 自定义翻译模块
 const CustomTranslateModule = {
-  translate: ['value', function(template, replacements) {
+  translate: ['value', function(template: string, replacements?: Record<string, string>) {
     replacements = replacements || {};
-    const translated = combinedZhTranslations[template] || template;
+    const translated = combinedZhTranslations[template as keyof typeof combinedZhTranslations] || template;
     return translated.replace(/{([^}]+)}/g, (_, key) => {
-      return replacements[key] || '{' + key + '}';
+      return replacements![key] || '{' + key + '}';
     });
   }]
 };
@@ -272,16 +272,16 @@ const handleSelect = async (value: string) => {
       flowId.value = flow.id;
       if (flow.xml) {
         importModel(flow.xml);
-        // message.success('流程加载成功');
+        // ElMessage.success('流程加载成功');
       } else {
-        message.error('流程 XML 为空');
+        ElMessage.error('流程 XML 为空');
       }
     } else {
-      message.error('未找到对应的流程');
+      ElMessage.error('未找到对应的流程');
     }
   } catch (error) {
     console.error('获取流程详情失败:', error);
-    message.error('获取流程详情失败');
+    ElMessage.error('获取流程详情失败');
   }
 };
 
@@ -310,9 +310,9 @@ const initModeler = () => {
     i18n: {
       translate: function(template: string, replacements?: Record<string, string>) {
         replacements = replacements || {};
-        const translated = combinedZhTranslations[template] || template;
+        const translated = combinedZhTranslations[template as keyof typeof combinedZhTranslations] || template;
         return translated.replace(/{([^}]+)}/g, (_: string, key: string) => {
-          return replacements[key] || '{' + key + '}';
+          return replacements![key] || '{' + key + '}';
         });
       }
     }
@@ -394,7 +394,7 @@ const saveModel = async () => {
     
     // 获取流程元素
     const elementRegistry = modeler.value.get('elementRegistry');
-    const processElements = elementRegistry.filter(element => element.type === 'bpmn:Process');
+    const processElements = elementRegistry.filter((element: any) => element.type === 'bpmn:Process');
     
     if (processElements.length > 0) {
       const processElement = processElements[0];
@@ -426,7 +426,7 @@ const saveModel = async () => {
         pageSize: 2
       }).then((res: BpmnFlowApi.BpmnFlowPage) => {
         if (res.list && res.list.length > 0) {
-          message.error('流程key已存在');
+          ElMessage.error('流程key已存在');
           return;
         }else{
           // 调用 createFlow 接口保存流程
@@ -440,7 +440,7 @@ const saveModel = async () => {
             note: processNote || '流程设计器创建'
           };
           createFlow(params).then(() => {
-            message.success('流程新增成功');
+            ElMessage.success('流程新增成功');
           });
         }
       });
@@ -455,12 +455,12 @@ const saveModel = async () => {
             note: processNote || '流程设计器创建'
           };
           updateFlow(params).then(() => {
-            message.success('流程修改成功');
+            ElMessage.success('流程修改成功');
           });
     }
   } catch (error) {
     console.error('保存 BPMN 模型失败:', error);
-    message.error('流程保存失败');
+    ElMessage.error('流程保存失败');
   }
 };
 
@@ -470,7 +470,7 @@ const exportAsImage = async () => {
 
   let processId = 'process';
   const elementRegistry = modeler.value.get('elementRegistry');
-  const processElements = elementRegistry.filter(element => element.type === 'bpmn:Process');
+  const processElements = elementRegistry.filter((element: any) => element.type === 'bpmn:Process');
   if (processElements.length > 0) {
     processId = processElements[0].id;
   }
@@ -486,10 +486,10 @@ const exportAsImage = async () => {
     
     // 直接下载 SVG 文件
     downloadFile(svg, `${processId}.svg`, 'image/svg+xml');
-    message.success('图片导出成功');
+    ElMessage.success('图片导出成功');
   } catch (error) {
     console.error('导出 SVG 失败:', error);
-    message.error('图片导出失败');
+    ElMessage.error('图片导出失败');
   }
 };
 
@@ -500,11 +500,11 @@ const importModel = (xml: string) => {
   modeler.value.importXML(xml)
     .then(() => {
       // console.log('BPMN 模型导入成功');
-      message.success('流程打开成功');
+      ElMessage.success('流程打开成功');
     })
-    .catch((error) => {
+    .catch((error: any) => {
       console.error('BPMN 模型导入失败:', error);
-      message.error('流程打开失败');
+      ElMessage.error('流程打开失败');
     });
 };
 
@@ -546,15 +546,19 @@ const handleOpenProcess = () => {
 
 // 创建新流程
 const createNewProcess = () => {
-  Modal.confirm({
-    title: '确认创建新流程',
-    content: '确定要创建新流程吗？当前未保存的更改将会丢失。',
-    onOk() {
-      editFlag.value = 'new';
-      createDefaultProcess();
-      message.success('新流程创建成功');
+  ElMessageBox.confirm(
+    '确定要创建新流程吗？当前未保存的更改将会丢失。',
+    '确认创建新流程',
+    {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning',
     }
-  });
+  ).then(() => {
+    editFlag.value = 'new';
+    createDefaultProcess();
+    ElMessage.success('新流程创建成功');
+  }).catch(() => {});
 };
 
 // 复制 XML 到粘贴板
@@ -566,10 +570,10 @@ const handleCopyXML = async () => {
     
     // 使用 Clipboard API 复制到粘贴板
     await navigator.clipboard.writeText(xml);
-    message.success('XML 已复制到粘贴板');
+    ElMessage.success('XML 已复制到粘贴板');
   } catch (error) {
     console.error('复制 XML 失败:', error);
-    message.error('复制 XML 失败');
+    ElMessage.error('复制 XML 失败');
   }
 };
 
@@ -614,20 +618,26 @@ onUnmounted(() => {
     <div class="flex justify-between items-center p-4 bg-white border-b border-gray-200 flex-shrink-0">
       <h2 class="m-0 text-lg font-semibold text-gray-800">流程设计器</h2>
       <div class="flex gap-2">
-        <Select
+        <ElSelect
           v-model="selectedItem"
           placeholder="选择流程编辑"
           style="width: 300px"
-          :options="OPTIONS.map(item => ({ value: item.keyCode, label: item.keyCode + ' - ' + item.name }))"
+          filterable
+          clearable
+          remote
+          :remote-method="handleSearch"
           @change="handleSelect"
-          allowClear
-          show-search
-          :filter-option="false"
-          @search="handleSearch"
-        ></Select>
-        <Button @click="createNewProcess">
+        >
+          <ElOption
+            v-for="item in OPTIONS"
+            :key="item.keyCode"
+            :label="item.keyCode + ' - ' + item.name"
+            :value="item.keyCode"
+          />
+        </ElSelect>
+        <ElButton @click="createNewProcess">
           新建
-        </Button>
+        </ElButton>
         <input
           type="file"
           accept=".bpmn"
@@ -635,33 +645,33 @@ onUnmounted(() => {
           class="hidden"
           id="bpmn-upload"
         />
-        <Button @click="handleOpenProcess">
+        <ElButton @click="handleOpenProcess">
           打开
-        </Button>
-        <Button @click="handleCopyXML">
+        </ElButton>
+        <ElButton @click="handleCopyXML">
           复制XML
-        </Button>
-        <Button type="primary" @click="saveModel">
+        </ElButton>
+        <ElButton type="primary" @click="saveModel">
           保存
-        </Button>
-        <Button type="primary" danger @click="exportAsImage">
+        </ElButton>
+        <ElButton type="danger" @click="exportAsImage">
           导出图片
-        </Button>
+        </ElButton>
       </div>
     </div>
     <div class="flex flex-1 gap-4 " style="height: calc(var(--vben-content-height) - 100px);">
       <div ref="containerRef" class="flex-1 bg-white border border-gray-300 rounded-md overflow-hidden relative">
         <!-- 缩放控制栏 -->
         <div class="absolute bottom-20 right-8 flex flex-col gap-1 z-100">
-          <Button size="small" @click="zoomIn" title="放大" class="w-8 h-8 flex items-center justify-center p-0 rounded">
+          <ElButton size="small" @click="zoomIn" title="放大" class="w-8 h-8 flex items-center justify-center p-0 rounded">
             +
-          </Button>
-          <Button size="small" @click="zoomReset" title="重置" class="w-8 h-8 flex items-center justify-center p-0 rounded text-xs">
+          </ElButton>
+          <ElButton size="small" @click="zoomReset" title="重置" class="w-8 h-8 flex items-center justify-center p-0 rounded text-xs">
             100%
-          </Button>
-          <Button size="small" @click="zoomOut" title="缩小" class="w-8 h-8 flex items-center justify-center p-0 rounded">
+          </ElButton>
+          <ElButton size="small" @click="zoomOut" title="缩小" class="w-8 h-8 flex items-center justify-center p-0 rounded">
             -
-          </Button>
+          </ElButton>
         </div>
       </div>
       <div ref="propertiesPanelRef" class="w-[300px] bg-white border border-gray-300 rounded-md overflow-auto flex-shrink-0"></div>

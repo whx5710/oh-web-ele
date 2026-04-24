@@ -5,7 +5,7 @@ import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { Button } from 'ant-design-vue';
+import { ElButton } from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
 import { createDept, updateDept } from '#/api/system/dept';
@@ -72,9 +72,9 @@ const [Modal, modalApi] = useVbenModal({
     <Form class="mx-4" />
     <template #prepend-footer>
       <div class="flex-auto">
-        <Button type="primary" danger @click="resetForm">
+        <ElButton type="danger" @click="resetForm">
           {{ $t('common.reset') }}
-        </Button>
+        </ElButton>
       </div>
     </template>
   </Modal>

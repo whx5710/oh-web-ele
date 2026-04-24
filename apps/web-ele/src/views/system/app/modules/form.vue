@@ -6,13 +6,11 @@ import { computed, reactive, ref } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 
 import {
-  Button,
-  Form,
-  FormItem,
-  Input,
-  InputSearch,
-  Textarea,
-} from 'ant-design-vue';
+  ElButton,
+  ElForm,
+  ElFormItem,
+  ElInput,
+} from 'element-plus';
 
 import { createApp, updateApp } from '#/api/system/app';
 
@@ -78,53 +76,46 @@ const [Modal, modalApi] = useVbenModal({
 
 <template>
   <Modal class="w-full max-w-[600px]" :title="getTitle">
-    <Form
+    <ElForm
       ref="addOrUpdate"
       :model="formState"
-      name="basic"
-      :label-col="{ span: 6 }"
-      :wrapper-col="{ span: 16 }"
+      label-width="120px"
       autocomplete="off"
     >
-      <FormItem
+      <ElFormItem
         label="客户端ID"
-        name="clientId"
+        prop="clientId"
         :rules="[{ required: true, message: '请输入客户端ID!' }]"
       >
-        <Input v-model:value="formState.clientId" />
-      </FormItem>
-      <FormItem
+        <ElInput v-model="formState.clientId" />
+      </ElFormItem>
+      <ElFormItem
         label="客户端名称"
-        name="name"
+        prop="name"
         :rules="[{ required: true, message: '请输入客户端名称!' }]"
       >
-        <Input v-model:value="formState.name" />
-      </FormItem>
-      <FormItem
+        <ElInput v-model="formState.name" />
+      </ElFormItem>
+      <ElFormItem
         label="密钥"
-        name="secretKey"
+        prop="secretKey"
         :rules="[{ required: true, message: '请输入密钥!' }]"
       >
-        <InputSearch
-          v-model:value="formState.secretKey"
-          placeholder="密钥"
-          size="large"
-          @search="randomKey"
-        >
-          <template #enterButton>
-            <Button>随机</Button>
+        <ElInput v-model="formState.secretKey" placeholder="密钥">
+          <template #suffix>
+            <ElButton link @click="randomKey">随机</ElButton>
           </template>
-        </InputSearch>
-      </FormItem>
-      <FormItem label="备注" name="remark">
-        <Textarea v-model:value="formState.remark" :rows="4" />
-      </FormItem>
-    </Form>
+        </ElInput>
+      </ElFormItem>
+      <ElFormItem label="备注" prop="remark">
+        <ElInput v-model="formState.remark" type="textarea" :rows="4" />
+      </ElFormItem>
+    </ElForm>
     <template #prepend-footer>
       <div class="flex-auto">
-        <Button type="primary" danger @click="resetForm">
+        <ElButton type="danger" @click="resetForm">
           {{ $t('common.reset') }}
-        </Button>
+        </ElButton>
       </div>
     </template>
   </Modal>

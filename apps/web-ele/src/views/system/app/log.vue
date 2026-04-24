@@ -10,14 +10,14 @@ import { IconifyIcon } from '@vben/icons';
 import { downloadFileFromBlob } from '@vben/utils';
 
 import {
-  Button,
-  Dropdown,
-  Menu,
-  MenuItem,
-  message,
-  Modal,
-  Popconfirm,
-} from 'ant-design-vue';
+  ElButton,
+  ElDropdown,
+  ElDropdownMenu,
+  ElDropdownItem,
+  ElMessage,
+  ElMessageBox,
+  ElPopconfirm,
+} from 'element-plus';
 import dayjs from 'dayjs';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
@@ -133,27 +133,25 @@ function batchDelete() {
     logIds.push(key);
   });
   if (logIds.length === 0) {
-    message.warning({
-      content: '请勾选要删除的数据',
+    ElMessage.warning({
+      message: '请勾选要删除的数据',
     });
     return;
   }
-  const hideLoading = message.loading({
-    content: '批量删除',
+  const hideLoading = ElMessage.info({
+    message: '批量删除',
     duration: 0,
-    key: 'action_process_msg',
   });
   deleteLog(logIds)
     .then(() => {
-      message.success({
-        content: '批量删除成功',
-        key: 'action_process_msg',
+      ElMessage.success({
+        message: '批量删除成功',
       });
       onRefresh();
       fileMap.clear();
     })
     .catch(() => {
-      hideLoading();
+      hideLoading?.close();
       fileMap.clear();
     });
 }
@@ -162,30 +160,28 @@ function onRefresh() {
   gridApi.query();
 }
 // 按时间删除日志
-function deleteLogs(value: any) {
-  if (value && value.key) {
+function deleteLogs(command: string) {
+  if (command !== undefined) {
     let content = '是否全部删除？';
-    if (value.key !== '0') {
-      content = `是否删除${value.key}天前的日志`;
+    if (command !== '0') {
+      content = `是否删除${command}天前的日志`;
     }
-    Modal.confirm({
-      content,
-      onCancel() {
-        console.warn('已取消');
-      },
-      onOk() {
-        const date = new Date();
-        date.setDate(date.getDate() - value.key);
-        const formattedDate = dayjs(date).format('YYYY-MM-DD HH:mm:ss');
-        deleteByDate(formattedDate).then(() => {
-          message.success({
-            content: '删除成功',
-            key: 'action_process_msg',
-          });
-          onRefresh();
+    ElMessageBox.confirm(content, '是否删除日志', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning',
+    }).then(() => {
+      const date = new Date();
+      date.setDate(date.getDate() - Number(command));
+      const formattedDate = dayjs(date).format('YYYY-MM-DD HH:mm:ss');
+      deleteByDate(formattedDate).then(() => {
+        ElMessage.success({
+          message: '删除成功',
         });
-      },
-      title: '是否删除日志',
+        onRefresh();
+      });
+    }).catch(() => {
+      console.warn('已取消');
     });
   }
 }
@@ -195,35 +191,38 @@ function deleteLogs(value: any) {
   <Page auto-content-height>
     <Grid table-title="日志列表">
       <template #toolbar-tools>
-        <Popconfirm title="确定导出？" @confirm="batchExport">
-          <Button class="mr-2" type="primary">
-            <IconifyIcon icon="carbon:export" /> 导出
-          </Button>
-        </Popconfirm>
-        <Popconfirm title="确定删除？" @confirm="batchDelete">
-          <Button
-            v-access:code="['sys:app:delete']"
-            class="mr-2"
-            type="primary"
-            danger
-          >
-            <IconifyIcon icon="carbon:row-delete" /> 删除
-          </Button>
-        </Popconfirm>
-        <Dropdown class="mr-2">
-          <Button v-access:code="['sys:app:delete']">
+        <ElPopconfirm title="确定导出？" @confirm="batchExport">
+          <template #reference>
+            <ElButton class="mr-2" type="primary">
+              <IconifyIcon icon="carbon:export" /> 导出
+            </ElButton>
+          </template>
+        </ElPopconfirm>
+        <ElPopconfirm title="确定删除？" @confirm="batchDelete">
+          <template #reference>
+            <ElButton
+              v-access:code="['sys:app:delete']"
+              class="mr-2"
+              type="danger"
+            >
+              <IconifyIcon icon="carbon:row-delete" /> 删除
+            </ElButton>
+          </template>
+        </ElPopconfirm>
+        <ElDropdown class="mr-2" @command="deleteLogs">
+          <ElButton v-access:code="['sys:app:delete']">
             按时间删除
             <IconifyIcon icon="ant-design:down-outlined" />
-          </Button>
-          <template #overlay>
-            <Menu @click="deleteLogs">
-              <MenuItem key="0">全部删除</MenuItem>
-              <MenuItem key="1">删除1天前的</MenuItem>
-              <MenuItem key="3">删除3天前的</MenuItem>
-              <MenuItem key="7">删除7天前的</MenuItem>
-            </Menu>
+          </ElButton>
+          <template #dropdown>
+            <ElDropdownMenu>
+              <ElDropdownItem command="0">全部删除</ElDropdownItem>
+              <ElDropdownItem command="1">删除1天前的</ElDropdownItem>
+              <ElDropdownItem command="3">删除3天前的</ElDropdownItem>
+              <ElDropdownItem command="7">删除7天前的</ElDropdownItem>
+            </ElDropdownMenu>
           </template>
-        </Dropdown>
+        </ElDropdown>
       </template>
     </Grid>
   </Page>

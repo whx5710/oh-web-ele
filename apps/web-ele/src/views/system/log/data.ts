@@ -7,7 +7,7 @@ import { h, ref } from 'vue';
 import { useUserStore } from '@vben/stores';
 
 import { useDebounceFn } from '@vueuse/core';
-import { Spin } from 'ant-design-vue';
+import { ElLoading } from 'element-plus';
 
 import { getTenantPage } from '#/api/system/tenant';
 
@@ -34,7 +34,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       fieldName: 'username',
       label: '用户名',
       componentProps: {
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -52,21 +52,19 @@ export function useGridFormSchema(): VbenFormSchema[] {
             }));
           },
           api: fetchRemoteOptions,
-          allowClear: true,
+          clearable: true,
           disabled: userStore.userInfo?.superAdmin !== 1,
           // 禁止本地过滤
-          filterOption: false,
-          // 如果正在获取数据，使用插槽显示一个loading
-          notFoundContent: fetching.value ? undefined : null,
+          filterable: true,
+          remote: true,
           // 搜索词变化时记录下来， 使用useDebounceFn防抖。
-          onSearch: useDebounceFn((value: string) => {
+          remoteMethod: useDebounceFn((value: string) => {
             keyWord.value = value;
           }, 300),
           // 远程搜索参数。当搜索词变化时，params也会更新
           params: {
             keyWord: keyWord.value || undefined,
           },
-          showSearch: true,
         };
       },
       // 字段名
@@ -75,7 +73,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '租户',
       renderComponentContent: () => {
         return {
-          notFoundContent: fetching.value ? h(Spin) : undefined,
+          loading: fetching.value,
         };
       },
       // rules: 'selectRequired',
@@ -109,7 +107,7 @@ export function useOpGridFormSchema(): VbenFormSchema[] {
       fieldName: 'keyWord',
       label: '关键字',
       componentProps: {
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -127,21 +125,19 @@ export function useOpGridFormSchema(): VbenFormSchema[] {
             }));
           },
           api: fetchRemoteOptions,
-          allowClear: true,
+          clearable: true,
           disabled: userStore.userInfo?.superAdmin !== 1,
           // 禁止本地过滤
-          filterOption: false,
-          // 如果正在获取数据，使用插槽显示一个loading
-          notFoundContent: fetching.value ? undefined : null,
+          filterable: true,
+          remote: true,
           // 搜索词变化时记录下来， 使用useDebounceFn防抖。
-          onSearch: useDebounceFn((value: string) => {
+          remoteMethod: useDebounceFn((value: string) => {
             keyWord.value = value;
           }, 300),
           // 远程搜索参数。当搜索词变化时，params也会更新
           params: {
             keyWord: keyWord.value || undefined,
           },
-          showSearch: true,
         };
       },
       // 字段名
@@ -150,7 +146,7 @@ export function useOpGridFormSchema(): VbenFormSchema[] {
       label: '租户',
       renderComponentContent: () => {
         return {
-          notFoundContent: fetching.value ? h(Spin) : undefined,
+          loading: fetching.value,
         };
       },
       // rules: 'selectRequired',

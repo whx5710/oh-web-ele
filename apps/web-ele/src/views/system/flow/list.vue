@@ -2,7 +2,7 @@
 import type { BpmnFlowApi } from '#/api/system/flow';
 import { getFlowList, deleteFlow as deleteFlowApi, publishFlow as publishFlowApi } from '#/api/system/flow';
 import { Page, useVbenDrawer } from '@vben/common-ui';
-import { Button, Card, Space, Tag, message, Input, Pagination, Popconfirm, Empty, Modal } from 'ant-design-vue';
+import { ElButton, ElCard, ElSpace, ElTag, ElMessage, ElInput, ElPagination, ElEmpty, ElPopconfirm, ElDialog } from 'element-plus';
 import { ref, onMounted } from 'vue';
 
 // 导入流程实例列表组件
@@ -46,7 +46,7 @@ const loadFlowList = async () => {
     total.value = res.total || 0;
   } catch (error) {
     console.error('加载流程列表失败:', error);
-    // message.error('加载流程列表失败');
+    // ElMessage.error('加载流程列表失败');
   } finally {
     loading.value = false;
   }
@@ -73,14 +73,14 @@ const viewFlow = (row: BpmnFlowApi.BpmnFlow) => {
 
 // 删除流程
 const deleteFlow = (row: BpmnFlowApi.BpmnFlow) => {
-  // message.info(`删除流程: ${row.name}`);
+  // ElMessage.info(`删除流程: ${row.name}`);
   // 这里可以添加删除流程的逻辑
   deleteFlowApi([row.id || '']).then(() => {
-    message.success('删除成功');
+    ElMessage.success('删除成功');
     loadFlowList();
   }).catch((error) => {
     console.error('删除流程失败:', error);
-    // message.error('删除流程失败');
+    // ElMessage.error('删除流程失败');
   });
 };
 
@@ -89,14 +89,14 @@ const deleteFlow = (row: BpmnFlowApi.BpmnFlow) => {
  * @param row 流程对象
  */
 const publishFlow = (row: BpmnFlowApi.BpmnFlow) => {
-  // message.info(`发布流程: ${row.name}`);
+  // ElMessage.info(`发布流程: ${row.name}`);
   // 这里可以添加发布流程的逻辑
   publishFlowApi(row.keyCode || '').then(() => {
-    message.success('发布成功');
+    ElMessage.success('发布成功');
     loadFlowList();
   }).catch((error) => {
     console.error('发布流程失败:', error);
-    // message.error('发布流程失败');
+    // ElMessage.error('发布流程失败');
   });
 };
 
@@ -110,54 +110,61 @@ onMounted(() => {
     <div class="flow-list-container">
       <!-- 搜索栏 -->
       <div class="search-bar">
-        <Input
-          v-model:value="keyWord"
+        <ElInput
+          v-model="keyWord"
           placeholder="请输入流程名称或编码"
           style="width: 300px"
-          allow-clear
-          @pressEnter="handleSearch"
+          clearable
+          @keyup.enter="handleSearch"
         />
-        <Button type="primary" style="margin-left: 10px" @click="handleSearch">
+        <ElButton type="primary" style="margin-left: 10px" @click="handleSearch">
           搜索
-        </Button>
+        </ElButton>
       </div>
 
       <!-- 流程卡片列表 -->
       <div class="flow-card-list" v-if="flowList.length > 0">
-        <Card 
+        <ElCard 
           v-for="flow in flowList" 
           :key="flow.id"
           style="margin-bottom: 16px;"
-          :title="flow.name"
+          :header="flow.name"
         >
-          <template #extra>
-            <Space>
-              <Popconfirm
-                :title="`确定发布流程: ${flow.name} 吗?发布后将用最新修改的流程.`"
-                ok-text="确定"
-                cancel-text="取消"
-                @confirm="publishFlow(flow)"
-              >
-                <Button type="link" danger ">发布</Button>
-              </Popconfirm>
-              <Popconfirm
-                :title="`确定要删除流程: ${flow.name} 吗?`"
-                ok-text="确定"
-                cancel-text="取消"
-                @confirm="deleteFlow(flow)"
-              >
-                <Button type="link" danger ">删除</Button>
-              </Popconfirm>
-              <Button type="link" @click="viewFlow(flow)">
-                查看
-              </Button>
-            </Space>
+          <template #header>
+            <div class="card-header">
+              <span>{{ flow.name }}</span>
+              <ElSpace>
+                <ElPopconfirm
+                  :title="`确定发布流程: ${flow.name} 吗?发布后将用最新修改的流程.`"
+                  confirm-button-text="确定"
+                  cancel-button-text="取消"
+                  @confirm="publishFlow(flow)"
+                >
+                  <template #reference>
+                    <ElButton link type="danger">发布</ElButton>
+                  </template>
+                </ElPopconfirm>
+                <ElPopconfirm
+                  :title="`确定要删除流程: ${flow.name} 吗?`"
+                  confirm-button-text="确定"
+                  cancel-button-text="取消"
+                  @confirm="deleteFlow(flow)"
+                >
+                  <template #reference>
+                    <ElButton link type="danger">删除</ElButton>
+                  </template>
+                </ElPopconfirm>
+                <ElButton link @click="viewFlow(flow)">
+                  查看
+                </ElButton>
+              </ElSpace>
+            </div>
           </template>
           <div class="flow-card-content">
             <div class="flow-info">
               <div class="flow-info-item">
                 <span class="label">编码:</span>
-                <Tag color="blue">{{ flow.keyCode }}</Tag>
+                <ElTag type="primary">{{ flow.keyCode }}</ElTag>
               </div>
               <div class="flow-info-item">
                 <span class="label">创建时间:</span>
@@ -175,36 +182,34 @@ onMounted(() => {
               <div class="no-svg">无流程图</div>
             </div>
           </div>
-        </Card>
+        </ElCard>
       </div>
 
       <!-- 空状态 -->
       <div class="empty-container" v-else>
-        <Empty description="暂无流程数据" />
+        <ElEmpty description="暂无流程数据" />
       </div>
 
       <!-- 分页 -->
       <div class="pagination-container" v-if="total > 0">
-        <Pagination
-          v-model:current="currentPage"
+        <ElPagination
+          v-model:current-page="currentPage"
           v-model:page-size="pageSize"
           :total="total"
-          show-size-changer
-          :page-size-options="['10', '20', '50', '100']"
-          :show-total="(total) => `共 ${total} 条记录`"
+          :page-sizes="[10, 20, 50, 100]"
+          layout="total, sizes, prev, pager, next, jumper"
           @change="handlePageChange"
         />
       </div>
 
       <!-- 图片预览模态框 -->
-      <Modal
-        v-model:open="previewVisible"
+      <ElDialog
+        v-model="previewVisible"
         title="流程图预览"
         width="80%"
-        :footer="null"
       >
         <div class="preview-svg" v-html="previewSvg"></div>
-      </Modal>
+      </ElDialog>
     </div>
     
     <!-- 流程实例列表抽屉 -->
@@ -230,9 +235,15 @@ onMounted(() => {
   gap: 16px;
 }
 
-.flow-card-list .ant-card {
+.flow-card-list :deep(.el-card) {
   flex: 1 1 calc(50% - 8px);
   min-width: 300px;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .flow-card-content {

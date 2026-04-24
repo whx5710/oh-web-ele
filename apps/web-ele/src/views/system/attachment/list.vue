@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import type { UploadChangeParam } from 'ant-design-vue';
-
 import type {
   OnActionClickParams,
   VxeGridListeners,
@@ -16,7 +14,7 @@ import { IconifyIcon } from '@vben/icons';
 import { useAccessStore } from '@vben/stores';
 import { downloadFileFromUrl } from '@vben/utils';
 
-import { Button, message, Popconfirm, Upload } from 'ant-design-vue';
+import { ElButton, ElMessage, ElPopconfirm, ElUpload } from 'element-plus';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteAttach, getAttachPage } from '#/api/system/attachment';
@@ -114,21 +112,19 @@ function download(row: SystemAttachApi.SysAttach) {
 }
 // 删除
 function onDelete(row: SystemAttachApi.SysAttach) {
-  const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deleting', [row.name]),
+  const hideLoading = ElMessage.info({
+    message: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
-    key: 'action_process_msg',
   });
   deleteAttach([row.id])
     .then(() => {
-      message.success({
-        content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-        key: 'action_process_msg',
+      ElMessage.success({
+        message: $t('ui.actionMessage.deleteSuccess', [row.name]),
       });
       onRefresh();
     })
     .catch(() => {
-      hideLoading();
+      hideLoading?.close();
     });
 }
 // 批量删除
@@ -139,27 +135,25 @@ function batchDelete() {
     attachIds.push(key);
   });
   if (attachIds.length === 0) {
-    message.warning({
-      content: '请勾选要删除的数据',
+    ElMessage.warning({
+      message: '请勾选要删除的数据',
     });
     return;
   }
-  const hideLoading = message.loading({
-    content: '批量删除',
+  const hideLoading = ElMessage.info({
+    message: '批量删除',
     duration: 0,
-    key: 'action_process_msg',
   });
   deleteAttach(attachIds)
     .then(() => {
-      message.success({
-        content: '批量删除成功',
-        key: 'action_process_msg',
+      ElMessage.success({
+        message: '批量删除成功',
       });
       onRefresh();
       fileMap.clear();
     })
     .catch(() => {
-      hideLoading();
+      hideLoading?.close();
       fileMap.clear();
     });
 }
@@ -169,25 +163,19 @@ function onRefresh() {
   gridApi.query();
 }
 
-// 上传
-function handleChange(info: UploadChangeParam) {
-  // if (info.file.status !== 'uploading') {
-  //   console.warn(info.file, info.fileList);
-  // }
-  if (info.file.status === 'done') {
-    if (info.file.response.code === 500) {
-      message.error(`${info.file.name} ${info.file.response.msg}`);
-    } else {
-      message.success(`${info.file.name} 文件上传成功`);
-      gridApi.query();
-    }
-  } else if (info.file.status === 'error') {
-    message.error(`${info.file.name} 文件上传失败`);
-  }
+// 上传成功回调
+function handleSuccess() {
+  ElMessage.success('文件上传成功');
+  gridApi.query();
 }
+
+// 上传失败回调
+function handleError() {
+  ElMessage.error('文件上传失败');
+}
+
 const accessStore = useAccessStore();
 const token = ref('');
-const showUploadList = ref(false);
 // 格式化请求token
 function formatToken() {
   token.value = accessStore.accessToken
@@ -203,8 +191,8 @@ const actionUrl = `${apiURL}/${sysApi}/sys/file/upload`;
 // 上传前
 function beforeUpload(file: any) {
   if (file.size / 1024 / 1024 / 1024 / 1024 > 1) {
-    message.warning({
-      content: '文件大小不能超过100M',
+    ElMessage.warning({
+      message: '文件大小不能超过100M',
     });
     return false;
   }
@@ -216,25 +204,28 @@ function beforeUpload(file: any) {
   <Page auto-content-height>
     <Grid table-title="附件列表">
       <template #toolbar-tools>
-        <Upload
-          class="mr-2"
+        <ElUpload
+          class="mr-2 inline-block"
           name="file"
           :multiple="true"
           :action="actionUrl"
           :headers="headers"
-          :show-upload-list="showUploadList"
+          :show-file-list="false"
           :before-upload="beforeUpload"
-          @change="handleChange"
+          :on-success="handleSuccess"
+          :on-error="handleError"
         >
-          <Button type="primary">
+          <ElButton type="primary">
             <IconifyIcon icon="carbon:cloud-upload" /> 上传
-          </Button>
-        </Upload>
-        <Popconfirm title="确定删除？" @confirm="batchDelete">
-          <Button class="mr-2" type="primary" danger>
-            <IconifyIcon icon="carbon:row-delete" /> 删除
-          </Button>
-        </Popconfirm>
+          </ElButton>
+        </ElUpload>
+        <ElPopconfirm title="确定删除？" @confirm="batchDelete">
+          <template #reference>
+            <ElButton class="mr-2" type="danger">
+              <IconifyIcon icon="carbon:row-delete" /> 删除
+            </ElButton>
+          </template>
+        </ElPopconfirm>
       </template>
     </Grid>
   </Page>

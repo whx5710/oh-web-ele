@@ -8,7 +8,7 @@ import type { SystemAppApi } from '#/api/system/app';
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Plus } from '@vben/icons';
 
-import { Button, message } from 'ant-design-vue';
+import { ElButton, ElMessage } from 'element-plus';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteFunc, getFuncPage } from '#/api/system/app';
@@ -78,21 +78,19 @@ function onEdit(row: SystemAppApi.Func) {
 }
 
 function onDelete(row: SystemAppApi.Func) {
-  const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deleting', [row.name]),
+  const hideLoading = ElMessage.info({
+    message: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
-    key: 'action_process_msg',
   });
   deleteFunc(row.id)
     .then(() => {
-      message.success({
-        content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-        key: 'action_process_msg',
+      ElMessage.success({
+        message: $t('ui.actionMessage.deleteSuccess', [row.name]),
       });
       onRefresh();
     })
     .catch(() => {
-      hideLoading();
+      hideLoading?.close();
     });
 }
 
@@ -109,10 +107,10 @@ function onCreate() {
     <FormModal @success="onRefresh" />
     <Grid table-title="接口列表">
       <template #toolbar-tools>
-        <Button type="primary" @click="onCreate">
+        <ElButton type="primary" @click="onCreate">
           <Plus class="size-5" />
           新增接口
-        </Button>
+        </ElButton>
       </template>
     </Grid>
   </Page>

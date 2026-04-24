@@ -9,7 +9,7 @@ import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { Modal as Amodal } from 'ant-design-vue';
+import { ElMessageBox } from 'element-plus';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { forceLogout, tokenList } from '#/api/system/user';
@@ -68,17 +68,20 @@ function onRefresh() {
 }
 // 退出登录
 function handleForceLogout(token: string) {
-  Amodal.confirm({
-    content: '是否下线',
-    onCancel() {
-      console.warn('已取消');
-    },
-    onOk() {
-      forceLogout(token).then(() => {
-        onRefresh();
-      });
-    },
-    title: '请确认',
+  ElMessageBox.confirm(
+    '是否下线',
+    '请确认',
+    {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning',
+    }
+  ).then(() => {
+    forceLogout(token).then(() => {
+      onRefresh();
+    });
+  }).catch(() => {
+    console.warn('已取消');
   });
 }
 function onActionClick({

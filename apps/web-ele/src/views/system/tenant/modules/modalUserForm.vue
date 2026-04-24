@@ -8,7 +8,7 @@ import { useDebounceFn } from '@vueuse/core';
 
 import { useVbenForm } from '#/adapter/form';
 import { bindTenantUser } from '#/api/system/user';
-import { Spin } from 'ant-design-vue';
+import { ElLoading } from 'element-plus';
 import { getUserPage, type SystemUserApi } from '#/api/system/user';
 
 const emit = defineEmits(['success']);
@@ -45,11 +45,11 @@ const [Form, formApi] = useVbenForm({
           api: getUserPage,
           afterFetch: transformData,
           // 禁止本地过滤
-          filterOption: false,
+          filterable: true,
+          remote: true,
           // 如果正在获取数据，使用插槽显示一个loading
-          notFoundContent: fetching.value ? undefined : null,
           // 搜索词变化时记录下来， 使用useDebounceFn防抖。
-          onSearch: useDebounceFn((value: string) => {
+          remoteMethod: useDebounceFn((value: string) => {
             keyword.value = value;
           }, 300),
           // 远程搜索参数。当搜索词变化时，params也会更新
@@ -60,7 +60,6 @@ const [Form, formApi] = useVbenForm({
             tenantRole: true, // 有租户角色的
             tenantFlag: 0 // 未绑定租户的用户
           },
-          showSearch: true,
           style: 'width: 100%;',
           // resultField: 'list',
           // labelField: 'realName',
@@ -74,7 +73,7 @@ const [Form, formApi] = useVbenForm({
       help: '一般只添加初始的管理用户',
       renderComponentContent: () => {
         return {
-          notFoundContent: fetching.value ? h(Spin) : undefined,
+          loading: fetching.value,
         };
       },
       rules: 'selectRequired',

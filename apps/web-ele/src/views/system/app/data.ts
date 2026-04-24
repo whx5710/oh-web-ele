@@ -48,7 +48,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       fieldName: 'keyWord',
       label: '搜索关键字',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入关键字搜索',
       },
     },
@@ -63,7 +63,7 @@ export function useLogGridFormSchema(): VbenFormSchema[] {
       fieldName: 'keyWord',
       label: '搜索关键字',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入关键字搜索',
       },
     },
@@ -192,7 +192,7 @@ export function useSchema(): VbenFormSchema[] {
     {
       component: 'Textarea',
       componentProps: {
-        maxLength: 100,
+        maxlength: 100,
         rows: 3,
         showCount: true,
         style: 'width: 100%',
@@ -236,7 +236,7 @@ export function useFuncSchema(): VbenFormSchema[] {
     {
       component: 'Textarea',
       componentProps: {
-        maxLength: 100,
+        maxlength: 100,
         rows: 3,
         showCount: true,
         style: 'width: 100%',

@@ -7,7 +7,7 @@ import type { SystemUserApi } from '#/api/system/user';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
-import { Modal } from 'ant-design-vue';
+import { ElMessageBox } from 'element-plus';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { forceLogoutAll, onlineUserPage } from '#/api/system/user';
@@ -78,17 +78,20 @@ const [FormModal, formModalApi] = useVbenModal({
 
 // 下线
 function forceLogout(userId: string, userName: string) {
-  Modal.confirm({
-    content: `是否下线 ${userName}`,
-    onCancel() {
-      console.warn('已取消');
-    },
-    onOk() {
-      forceLogoutAll(userId).then(() => {
-        onRefresh();
-      });
-    },
-    title: '是否下线',
+  ElMessageBox.confirm(
+    `是否下线 ${userName}`,
+    '是否下线',
+    {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning',
+    }
+  ).then(() => {
+    forceLogoutAll(userId).then(() => {
+      onRefresh();
+    });
+  }).catch(() => {
+    console.warn('已取消');
   });
 }
 // 刷新列表
@@ -99,7 +102,6 @@ function showList(row: SystemUserApi.SystemUser) {
   formModalApi.setData(row).open();
 }
 </script>
-
 <template>
   <Page auto-content-height>
     <FormModal @success="onRefresh" />

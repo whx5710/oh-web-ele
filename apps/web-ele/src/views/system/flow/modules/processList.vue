@@ -8,7 +8,7 @@ import type {
 import { ref } from 'vue';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { listProcessByKey as listProcessByKeyApi, getNodeList, updateNode, updateNodeBatch } from '#/api/system/flow';
-import { Button, message, Row, Col, Modal as ModalComponent, Layout, LayoutContent, LayoutFooter } from 'ant-design-vue';
+import { ElButton, ElMessage, ElMessageBox } from 'element-plus';
 import { useVbenDrawer, useVbenModal, JsonViewer, Page } from '@vben/common-ui';
 import { useProcessHistoryColumns, useGridFormSchema } from '../data';
 import type { BpmnFlowApi } from '#/api/system/flow';
@@ -45,7 +45,7 @@ const [Grid] = useVbenVxeGrid({
             return await listProcessByKeyApi(keyCode.value);
           } catch (error) {
             console.error('加载流程实例列表失败:', error);
-            message.error('加载流程实例列表失败');
+            ElMessage.error('加载流程实例列表失败');
             return [];
           }
         },
@@ -87,21 +87,24 @@ const [Modal, modalApi] = useVbenModal({
     if (!data) {
       return;
     }
-    ModalComponent.confirm({
-      content: '是否全部保存？',
-      onCancel() {
-        console.warn('已取消');
-      },
-      onOk() {
-        updateNodeBatch(data).then(() => {
-          message.success('保存成功');
-          nodeGridApi.query();
-        }).catch(() => {
-          console.error('保存节点失败');
-          message.error('保存节点失败');
-        });
-      },
-      title: '是否保存当前页',
+    ElMessageBox.confirm(
+      '是否全部保存？',
+      '是否保存当前页',
+      {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      }
+    ).then(() => {
+      updateNodeBatch(data).then(() => {
+        ElMessage.success('保存成功');
+        nodeGridApi.query();
+      }).catch(() => {
+        console.error('保存节点失败');
+        ElMessage.error('保存节点失败');
+      });
+    }).catch(() => {
+      console.warn('已取消');
     });
   },
   onOpenChange(isOpen) {
@@ -195,7 +198,7 @@ const [NodeGrid, nodeGridApi] = useVbenVxeGrid({
     zoom: true,
   },
   // showSearchForm: false, // 默认隐藏搜索表单
- });
+});
 
 // 判断是否在编辑状态
 function hasEditStatus(row: BpmnFlowApi.Node) {
@@ -211,11 +214,11 @@ async function saveRowEvent(row: BpmnFlowApi.Node) {
   nodeGridApi.setLoading(true);
   await updateNode(row).then(() => {
     nodeGridApi.setLoading(false);
-    message.success({ content: `保存成功！nodeName=${row.nodeName || row.actDefId || ''}` });
+    ElMessage.success({ message: `保存成功！nodeName=${row.nodeName || row.actDefId || ''}` });
     nodeGridApi.query();
   }).catch(() => {
     nodeGridApi.setLoading(false);
-    message.error({ content: `保存失败！nodeName=${row.nodeName || row.actDefId || ''}` }); 
+    ElMessage.error({ message: `保存失败！nodeName=${row.nodeName || row.actDefId || ''}` }); 
   });
 }
 // 编辑
@@ -232,25 +235,25 @@ function editRowEvent(row: BpmnFlowApi.Node) {
     </Grid>
   </Drawer>
   <Modal :title="nodeTitle" class="min-w-[80%]">
-    <Layout>
-      <LayoutContent>
-        <Page auto-content-height style="height: calc(var(--vben-content-height) - 200px); overflow-y: auto;">
+    <div class="flex flex-col h-full">
+      <div class="flex-1 overflow-y-auto">
+        <Page auto-content-height style="height: calc(var(--vben-content-height) - 200px);">
           <NodeGrid table-title="" auto-content-height class="min-h-[550px]">
             <!-- <template #toolbar-tools>
             </template> -->
             <template #action="{ row }">
               <template v-if="hasEditStatus(row)">
-                <Button type="link" @click="saveRowEvent(row)">保存</Button>
-                <Button type="link" @click="cancelRowEvent(row)">取消</Button>
+                <ElButton link @click="saveRowEvent(row)">保存</ElButton>
+                <ElButton link @click="cancelRowEvent(row)">取消</ElButton>
               </template>
               <template v-else>
-                <Button type="link" @click="editRowEvent(row)">编辑</Button>
+                <ElButton link @click="editRowEvent(row)">编辑</ElButton>
               </template>
             </template>
           </NodeGrid>
         </Page>
-      </LayoutContent>
-      <LayoutFooter style="padding: 8px 8px;">
+      </div>
+      <div style="padding: 8px 8px;">
         <JsonViewer
           style="min-height: 145px;"
           :value="jsonParams"
@@ -258,8 +261,8 @@ function editRowEvent(row: BpmnFlowApi.Node) {
           preview-mode
           :showDoubleQuotes="true"
           :show-array-index="false" />
-      </LayoutFooter>
-    </Layout>
+      </div>
+    </div>
   </Modal>
 </template>
 
