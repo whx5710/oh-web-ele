@@ -101,21 +101,21 @@ function onAppend(row: SystemMenuApi.SystemMenu) {
 }
 
 function onDelete(row: SystemMenuApi.SystemMenu) {
-  const hideLoading = ElMessage.loading({
-    content: $t('ui.actionMessage.deleting', [row.name]),
+  const loadingInstance = ElMessage({
+    type: 'info',
+    message: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
-    key: 'action_process_msg',
   });
   deleteMenu(row.id)
     .then(() => {
+      loadingInstance.close();
       ElMessage.success({
-        content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-        key: 'action_process_msg',
+        message: $t('ui.actionMessage.deleteSuccess', [row.name]),
       });
       onRefresh();
     })
     .catch(() => {
-      hideLoading();
+      loadingInstance.close();
     });
 }
 </script>

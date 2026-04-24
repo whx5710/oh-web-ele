@@ -51,7 +51,7 @@ setupVbenVxeTable({
           showResponseMsg: false,
         },
         round: true,
-        showOverflow: true,
+        showOverflow: false,
         size: 'small',
       } as VxeTableGridOptions,
     });
@@ -82,7 +82,7 @@ setupVbenVxeTable({
         return h(
           ElButton,
           { size: 'small', link: true },
-          { default: () => props?.text },
+          { default: () => props?.text || '' },
         );
       },
     });
@@ -192,12 +192,20 @@ setupVbenVxeTable({
 
         function renderBtn(opt: Recordable<any>, listen = true) {
           // 从 props 中排除 text 属性，因为 Element Plus 的 ElButton 的 text 是布尔类型
-          const { text: _text, ...btnProps } = opt;
+          const { text: _text, type, ...btnProps } = opt;
+          // 确保按钮有文本内容，避免 ElOnlyChild 错误
+          const btnText = opt.text || opt.code || '';
+          // 处理 type 属性：Element Plus 的 ElButton 不支持 'link' 作为 type
+          // link 应该作为单独的布尔属性
+          const btnType = type === 'link' ? undefined : type;
+          const isLink = type === 'link' || opt.link === true;
           return h(
             ElButton,
             {
               ...props,
               ...btnProps,
+              type: btnType,
+              link: isLink,
               icon: undefined,
               onClick: listen
                 ? () =>
@@ -208,16 +216,7 @@ setupVbenVxeTable({
                 : undefined,
             },
             {
-              default: () => {
-                const content = [];
-                if (opt.icon) {
-                  content.push(
-                    h(IconifyIcon, { class: 'size-5', icon: opt.icon }),
-                  );
-                }
-                content.push(opt.text);
-                return content;
-              },
+              default: () => btnText,
             },
           );
         }
@@ -259,15 +258,7 @@ setupVbenVxeTable({
               },
             },
             {
-              default: () => renderBtn({ ...opt }, false),
-              description: () =>
-                h(
-                  'div',
-                  { class: 'truncate' },
-                  $t('ui.actionMessage.deleteConfirm', [
-                    row[attrs?.nameField || 'name'],
-                  ]),
-                ),
+              reference: () => renderBtn({ ...opt }, false),
             },
           );
         }
