@@ -7,10 +7,11 @@ import { LOGIN_PATH } from '@vben/constants';
 import { preferences } from '@vben/preferences';
 import { resetAllStores, useAccessStore, useUserStore } from '@vben/stores';
 
-import { ElNotification } from 'element-plus';
+import { ElMessage, ElNotification } from 'element-plus';
 import { defineStore } from 'pinia';
 
-import { getAccessCodesApi, getUserInfoApi, loginApi, logoutApi } from '#/api';
+import { getAccessCodesApi, loginApi, logoutApi } from '#/api/core';
+import { getUserInfoApi } from '#/api/system/user';
 import { $t } from '#/locales';
 
 export const useAuthStore = defineStore('auth', () => {
@@ -30,49 +31,67 @@ export const useAuthStore = defineStore('auth', () => {
     onSuccess?: () => Promise<void> | void,
   ) {
     // 异步处理用户登录操作并获取 accessToken
-    let userInfo: null | UserInfo = null;
     try {
       loginLoading.value = true;
-      const { accessToken } = await loginApi(params);
-
-      // 如果成功获取到 accessToken
-      if (accessToken) {
-        // 将 accessToken 存储到 accessStore 中
-        accessStore.setAccessToken(accessToken);
-
-        // 获取用户信息并存储到 accessStore 中
-        const [fetchUserInfoResult, accessCodes] = await Promise.all([
-          fetchUserInfo(),
-          getAccessCodesApi(),
-        ]);
-
-        userInfo = fetchUserInfoResult;
-
-        userStore.setUserInfo(userInfo);
-        accessStore.setAccessCodes(accessCodes);
-
-        if (accessStore.loginExpired) {
-          accessStore.setLoginExpired(false);
+      loginApi(params).then((res) => {
+        if (res.success && res.code === 0) {
+          return userByToken(
+            res.data.accessToken,
+            res.data.refreshToken,
+            onSuccess,
+          );
         } else {
-          onSuccess
-            ? await onSuccess?.()
-            : await router.push(
-                userInfo.homePath || preferences.app.defaultHomePath,
-              );
+          ElMessage.error(res.msg);
         }
-
-        if (userInfo?.realName) {
-          ElNotification({
-            message: `${$t('authentication.loginSuccessDesc')}:${userInfo?.realName}`,
-            title: $t('authentication.loginSuccess'),
-            type: 'success',
-          });
-        }
-      }
+      });
     } finally {
       loginLoading.value = false;
     }
+  }
+  // 获取用户信息
+  async function userByToken(
+    accessToken: string,
+    refreshToken: string,
+    onSuccess?: () => Promise<void> | void,
+  ) {
+    // 异步处理用户登录操作并获取 accessToken
+    let userInfo: null | UserInfo = null;
+    // 如果成功获取到 accessToken
+    if (accessToken) {
+      accessStore.setAccessToken(accessToken);
+      // 刷新token
+      if (refreshToken) {
+        accessStore.setRefreshToken(refreshToken);
+      }
+      // 获取用户信息并存储到 accessStore 中
+      const [fetchUserInfoResult, accessCodes] = await Promise.all([
+        fetchUserInfo(),
+        getAccessCodesApi(),
+      ]);
 
+      userInfo = fetchUserInfoResult;
+
+      userStore.setUserInfo(userInfo);
+      accessStore.setAccessCodes(accessCodes);
+
+      if (accessStore.loginExpired) {
+        accessStore.setLoginExpired(false);
+      } else {
+        onSuccess
+          ? await onSuccess?.()
+          : await router.push(
+              userInfo.homePath || preferences.app.defaultHomePath,
+            );
+      }
+
+      if (userInfo?.realName) {
+        ElNotification.success({
+          title: $t('authentication.loginSuccess'),
+          message: `${$t('authentication.loginSuccessDesc')}:${userInfo?.realName}`,
+          duration: 3000,
+        });
+      }
+    }
     return {
       userInfo,
     };
@@ -115,5 +134,6 @@ export const useAuthStore = defineStore('auth', () => {
     fetchUserInfo,
     loginLoading,
     logout,
+    userByToken,
   };
 });
