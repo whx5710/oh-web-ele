@@ -21,6 +21,18 @@ const ElAutocomplete = defineAsyncComponent(() =>
     import('element-plus/es/components/autocomplete/style/css'),
   ]).then(([res]) => res.ElAutocomplete),
 );
+const ElCol = defineAsyncComponent(() =>
+  Promise.all([
+    import('element-plus/es/components/col/index'),
+    import('element-plus/es/components/col/style/css'),
+  ]).then(([res]) => res.ElCol),
+);
+const ElRow = defineAsyncComponent(() =>
+  Promise.all([
+    import('element-plus/es/components/row/index'),
+    import('element-plus/es/components/row/style/css'),
+  ]).then(([res]) => res.ElRow),
+);
 
 const ElButton = defineAsyncComponent(() =>
   Promise.all([
@@ -165,12 +177,14 @@ export type ComponentType =
   | 'ApiTreeSelect'
   | 'Checkbox'
   | 'CheckboxGroup'
+  | 'Col'
   | 'DatePicker'
   | 'Divider'
   | 'IconPicker'
   | 'Input'
   | 'InputNumber'
   | 'RadioGroup'
+  | 'Row'
   | 'Select'
   | 'Space'
   | 'Switch'
@@ -232,6 +246,7 @@ async function initComponentAdapter() {
         { ...slots, default: defaultSlot },
       );
     },
+    Col: ElCol,
     // 自定义默认按钮
     DefaultButton: (props, { attrs, slots }) => {
       return h(ElButton, { ...props, attrs, type: 'info' }, slots);
@@ -267,6 +282,7 @@ async function initComponentAdapter() {
         { ...slots, default: defaultSlot },
       );
     },
+    Row: ElRow,
     Select: (props, { attrs, slots }) => {
       return h(ElSelectV2, { ...props, attrs }, slots);
     },
