@@ -5,11 +5,11 @@ import type { SystemDictApi } from '#/api/system/dict';
 // 字典样式标签
 export function getDictClassOptions() {
   return [
-    { color: 'default', label: 'info', value: 'info' },
-    { color: '#ff2700', label: 'danger', value: 'danger' },
-    { color: '#006be6', label: 'primary', value: 'primary' },
-    { color: 'success', label: 'success', value: 'success' },
-    { color: 'warning', label: 'warning', value: 'warning' },
+    { type: 'info', label: 'info', value: 'info' },
+    { type: 'danger', label: 'danger', value: 'danger' },
+    { type: 'primary', label: 'primary', value: 'primary' },
+    { type: 'success', label: 'success', value: 'success' },
+    { type: 'warning', label: 'warning', value: 'warning' },
   ];
 }
 
@@ -120,6 +120,7 @@ export function useDataSchema(): VbenFormSchema[] {
       component: 'Input',
       fieldName: 'labelClass',
       label: '标签样式',
+      help: 'primary, success, warning, info, danger',
     },
     {
       component: 'InputNumber',
@@ -187,8 +188,8 @@ export function useColumns<T = SystemDictApi.SystemType>(
       cellRender: {
         name: 'CellTag',
         options: [
-          { color: 'warning', label: '动态SQL', value: 1 },
-          { color: 'success', label: '字典数据', value: 0 },
+          { type: 'warning', label: '动态SQL', value: 1 },
+          { type: 'success', label: '字典数据', value: 0 },
         ],
       },
       field: 'dictSource',

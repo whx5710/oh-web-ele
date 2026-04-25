@@ -84,8 +84,8 @@ export function useColumns<T = SystemRoleApi.SystemRole>(
       cellRender: {
         name: 'CellTag',
         options: [
-          { color: 'warning', label: '是', value: 1 },
-          { color: 'success', label: '否', value: 0 },
+          { type: 'warning', label: '是', value: 1 },
+          { type: 'success', label: '否', value: 0 },
         ],
       },
       field: 'isSystem',

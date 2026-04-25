@@ -160,8 +160,8 @@ export function useColumns<T = SystemPostApi.SystemPost>(
       cellRender: {
         name: 'CellTag',
         options: [
-          { color: 'success', label: '正常', value: 1 },
-          { color: 'warning', label: '停用', value: 0 },
+          { type: 'success', label: '正常', value: 1 },
+          { type: 'warning', label: '停用', value: 0 },
         ],
       },
       field: 'status',

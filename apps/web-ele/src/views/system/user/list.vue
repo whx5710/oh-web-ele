@@ -70,13 +70,13 @@ function onCreate() {
  */
 function onDelete(row: SystemUserApi.SystemUser) {
   const hideLoading = ElMessage.loading({
-    content: $t('ui.actionMessage.deleting', [row.realName]),
+    message: $t('ui.actionMessage.deleting', [row.realName]),
     duration: 0,
   });
   deleteUser(row.id)
     .then(() => {
       ElMessage.success({
-        content: $t('ui.actionMessage.deleteSuccess', [row.realName]),
+        message: $t('ui.actionMessage.deleteSuccess', [row.realName]),
       });
       refreshGrid();
     })
