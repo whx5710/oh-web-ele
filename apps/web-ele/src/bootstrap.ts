@@ -10,6 +10,11 @@ import '@vben/styles/ele';
 import { useTitle } from '@vueuse/core';
 import { ElLoading } from 'element-plus';
 
+// 全局导入 Element Plus 基础组件样式
+import 'element-plus/es/components/card/style/css';
+import 'element-plus/es/components/col/style/css';
+import 'element-plus/es/components/row/style/css';
+
 import { $t, setupI18n } from '#/locales';
 
 import { initComponentAdapter } from './adapter/component';
