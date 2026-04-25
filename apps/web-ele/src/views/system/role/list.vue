@@ -93,25 +93,24 @@ function onViewUser(row: SystemRoleApi.SystemRole) {
 function onDelete(row: SystemRoleApi.SystemRole) {
   if (row.isSystem === 1) {
     ElMessage.warning({
-      content: '内置角色不能删除',
+      message: '内置角色不能删除',
     });
     return;
   }
-  const hideLoading = ElMessage.loading({
-    content: $t('ui.actionMessage.deleting', [row.name]),
-    duration: 0,
-    key: 'action_process_msg',
-  });
   deleteRole(row.id)
     .then(() => {
       ElMessage.success({
-        content: $t('ui.actionMessage.deleteSuccess', [row.name]),
+        message: $t('ui.actionMessage.deleteSuccess', [row.name]),
         key: 'action_process_msg',
       });
       onRefresh();
     })
     .catch(() => {
-      hideLoading();
+      console.log('删除失败');
+      ElMessage.error({
+        message: '删除失败',
+        key: 'action_process_msg',
+      });
     });
 }
 

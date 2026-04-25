@@ -120,6 +120,9 @@ export function useColumns<T = SystemRoleApi.SystemRole>(
           nameTitle: $t('system.role.name'),
           onClick: onActionClick,
         },
+        props: {
+          width: '220', // 提示框宽度
+        },
         name: 'CellOperation',
         options: [
           'edit', // 默认的编辑按钮

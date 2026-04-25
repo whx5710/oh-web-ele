@@ -238,7 +238,9 @@ setupVbenVxeTable({
                 return document.body;
               },
               placement: 'top-start',
-              title: $t('ui.actionTitle.delete', [attrs?.nameTitle || '']),
+              title: $t('ui.actionMessage.deleteConfirm', [
+                    row[attrs?.nameField || 'name'],
+                  ]),
               ...props,
               ...opt,
               icon: undefined,
