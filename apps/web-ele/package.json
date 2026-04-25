@@ -26,6 +26,7 @@
     "#/*": "./src/*"
   },
   "dependencies": {
+    "@bpmn-io/properties-panel": "^3.40.5",
     "@vben-core/menu-ui": "workspace:*",
     "@vben/access": "workspace:*",
     "@vben/common-ui": "workspace:*",
@@ -42,6 +43,11 @@
     "@vben/types": "workspace:*",
     "@vben/utils": "workspace:*",
     "@vueuse/core": "catalog:",
+    "bpmn-js": "catalog:",
+    "bpmn-js-i18n": "catalog:",
+    "bpmn-js-properties-panel": "catalog:",
+    "camunda-bpmn-js-behaviors": "catalog:",
+    "camunda-bpmn-moddle": "catalog:",
     "dayjs": "catalog:",
     "element-plus": "catalog:",
     "pinia": "catalog:",
