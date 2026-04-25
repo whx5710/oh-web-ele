@@ -16,21 +16,7 @@ import { ElLoading } from 'element-plus';
  * 2. 项目中的 adapter/component/index.ts 主要为表单组件（vben-form）服务
  * 3. 布局组件（Row/Col/Card）通常直接在页面模板中使用，所以需要单独处理样式
  */
-import 'element-plus/es/components/button/style/css';
-import 'element-plus/es/components/card/style/css';
-import 'element-plus/es/components/col/style/css';
-import 'element-plus/es/components/dialog/style/css';
-import 'element-plus/es/components/empty/style/css';
-import 'element-plus/es/components/input/style/css';
-import 'element-plus/es/components/loading/style/css';
-import 'element-plus/es/components/message/style/css';
-import 'element-plus/es/components/message-box/style/css';
-import 'element-plus/es/components/pagination/style/css';
-import 'element-plus/es/components/popconfirm/style/css';
-import 'element-plus/es/components/row/style/css';
-import 'element-plus/es/components/space/style/css';
-import 'element-plus/es/components/tag/style/css';
-import 'element-plus/es/components/upload/style/css';
+import 'element-plus/dist/index.css';
 
 import { $t, setupI18n } from '#/locales';
 
