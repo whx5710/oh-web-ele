@@ -56,6 +56,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       zoom: true,
       search: true,
     },
+    // 树形结构配置
     treeConfig: {
       parentField: 'parentId',
       rowField: 'id',
@@ -132,7 +133,7 @@ function onDelete(row: SystemMenuApi.SystemMenu) {
       <template #title="{ row }">
         <div class="flex w-full items-center gap-1">
           <div class="size-5 flex-shrink-0">
-            <IconifyIcon
+            <IconifyIcon:54:55
               v-if="row.type === 'button'"
               icon="carbon:security"
               class="size-full"
