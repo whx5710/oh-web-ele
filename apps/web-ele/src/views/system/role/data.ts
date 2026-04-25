@@ -176,9 +176,9 @@ export function useUserColumns<T = SystemTenantApi.SystemTenant>(
       cellRender: {
         name: 'CellTag',
         options: [
-          { color: 'warning', label: '男', value: 0 },
-          { color: 'success', label: '女', value: 1 },
-          { color: 'error', label: '未知', value: 2 },
+          { type: 'warning', label: '男', value: 0 },
+          { type: 'success', label: '女', value: 1 },
+          { type: 'danger', label: '未知', value: 2 },
         ],
       },
     },

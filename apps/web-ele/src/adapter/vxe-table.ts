@@ -158,7 +158,7 @@ setupVbenVxeTable({
         }
         const presets: Recordable<Recordable<any>> = {
           delete: {
-            danger: true,
+            type: 'danger',
             text: $t('common.delete'),
           },
           edit: {
@@ -259,6 +259,14 @@ setupVbenVxeTable({
             },
             {
               reference: () => renderBtn({ ...opt }, false),
+              description: () =>
+                h(
+                  'div',
+                  { class: 'truncate' },
+                  $t('ui.actionMessage.deleteConfirm', [
+                    row[attrs?.nameField || 'name'],
+                  ]),
+                ),
             },
           );
         }

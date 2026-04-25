@@ -81,7 +81,7 @@ function onDelete(row: SystemUserApi.SystemUser) {
       refreshGrid();
     })
     .catch(() => {
-      hideLoading();
+      hideLoading?.close();
     });
 }
 
