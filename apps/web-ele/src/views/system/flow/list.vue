@@ -138,6 +138,7 @@ onMounted(() => {
                   :title="`确定发布流程: ${flow.name} 吗?发布后将用最新修改的流程.`"
                   confirm-button-text="确定"
                   cancel-button-text="取消"
+                  width="300px"
                   @confirm="publishFlow(flow)"
                 >
                   <template #reference>
@@ -148,6 +149,7 @@ onMounted(() => {
                   :title="`确定要删除流程: ${flow.name} 吗?`"
                   confirm-button-text="确定"
                   cancel-button-text="取消"
+                  width="300px"
                   @confirm="deleteFlow(flow)"
                 >
                   <template #reference>

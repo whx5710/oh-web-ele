@@ -19,10 +19,17 @@ import { ElLoading } from 'element-plus';
 import 'element-plus/es/components/button/style/css';
 import 'element-plus/es/components/card/style/css';
 import 'element-plus/es/components/col/style/css';
+import 'element-plus/es/components/dialog/style/css';
+import 'element-plus/es/components/empty/style/css';
+import 'element-plus/es/components/input/style/css';
 import 'element-plus/es/components/loading/style/css';
 import 'element-plus/es/components/message/style/css';
+import 'element-plus/es/components/message-box/style/css';
+import 'element-plus/es/components/pagination/style/css';
 import 'element-plus/es/components/popconfirm/style/css';
 import 'element-plus/es/components/row/style/css';
+import 'element-plus/es/components/space/style/css';
+import 'element-plus/es/components/tag/style/css';
 import 'element-plus/es/components/upload/style/css';
 
 import { $t, setupI18n } from '#/locales';
