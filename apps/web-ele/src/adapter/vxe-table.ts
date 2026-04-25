@@ -51,7 +51,7 @@ setupVbenVxeTable({
           showResponseMsg: false,
         },
         round: true,
-        showOverflow: false,
+        showOverflow: true,
         size: 'small',
       } as VxeTableGridOptions,
     });
