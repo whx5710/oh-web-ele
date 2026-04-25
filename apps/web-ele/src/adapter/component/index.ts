@@ -15,6 +15,13 @@ import { $t } from '@vben/locales';
 
 import { ElNotification } from 'element-plus';
 
+const ElAutocomplete = defineAsyncComponent(() =>
+  Promise.all([
+    import('element-plus/es/components/autocomplete/index'),
+    import('element-plus/es/components/autocomplete/style/css'),
+  ]).then(([res]) => res.ElAutocomplete),
+);
+
 const ElButton = defineAsyncComponent(() =>
   Promise.all([
     import('element-plus/es/components/button/index'),
@@ -204,6 +211,7 @@ async function initComponentAdapter() {
         visibleEvent: 'onVisibleChange',
       },
     ),
+    AutoComplete: ElAutocomplete,
     Checkbox: ElCheckbox,
     CheckboxGroup: (props, { attrs, slots }) => {
       let defaultSlot;
