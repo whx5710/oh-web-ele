@@ -10,7 +10,12 @@ import '@vben/styles/ele';
 import { useTitle } from '@vueuse/core';
 import { ElLoading } from 'element-plus';
 
-// 全局导入 Element Plus 基础组件样式
+/** 全局导入 Element Plus 基础组件样式
+ * ElRow , ElCol , ElCard 需要单独导入样式是因为：
+ * 1. 它们是在页面中直接导入使用的，而不是通过 adapter/component/index.ts 注册的
+ * 2. 项目中的 adapter/component/index.ts 主要为表单组件（vben-form）服务
+ * 3. 布局组件（Row/Col/Card）通常直接在页面模板中使用，所以需要单独处理样式
+ */
 import 'element-plus/es/components/card/style/css';
 import 'element-plus/es/components/col/style/css';
 import 'element-plus/es/components/row/style/css';
