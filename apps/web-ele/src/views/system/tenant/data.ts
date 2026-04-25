@@ -50,8 +50,9 @@ export function useSchema(): VbenFormSchema[] {
       label: '状态',
     },
     {
-      component: 'Textarea',
+      component: 'Input',
       componentProps: {
+        type: 'textarea',
         maxLength: 100,
         rows: 3,
         showCount: true,

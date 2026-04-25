@@ -100,8 +100,9 @@ export function useSchema(): VbenFormSchema[] {
       label: '排序',
     },
     {
-      component: 'Textarea',
+      component: 'Input',
       componentProps: {
+        type: 'textarea',
         maxlength: 100,
         rows: 3,
         showCount: true,

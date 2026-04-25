@@ -58,13 +58,14 @@ export function useSchema(): VbenFormSchema[] {
       label: '字典来源',
     },
     {
-      component: 'Textarea',
+      component: 'Input',
       fieldName: 'dictSql',
       label: 'SQL脚本',
       componentProps: (values) => {
         return {
           allowClear: true,
           class: 'w-full',
+          type: 'textarea',
           disabled: values?.dictSource === 0,
         };
       },
@@ -79,13 +80,14 @@ export function useSchema(): VbenFormSchema[] {
       },
     },
     {
-      component: 'Textarea',
+      component: 'Input',
       fieldName: 'remark',
       label: '备注',
       componentProps: () => {
         return {
           allowClear: true,
           class: 'w-full',
+          type: 'textarea',
         };
       },
     },
@@ -129,13 +131,14 @@ export function useDataSchema(): VbenFormSchema[] {
       },
     },
     {
-      component: 'Textarea',
+      component: 'Input',
       fieldName: 'remark',
       label: '备注',
       componentProps: () => {
         return {
           allowClear: true,
           class: 'w-full',
+          type: 'textarea',
         };
       },
     },

@@ -37,9 +37,12 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '系统参数',
     },
     {
-      component: 'Textarea',
+      component: 'Input',
       fieldName: 'remark',
       label: '备注',
+      componentProps: {
+        type: 'textarea',
+      },
     },
   ];
 }

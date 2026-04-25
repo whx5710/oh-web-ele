@@ -20,7 +20,10 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
     },
     {
-      component: 'Textarea',
+      component: 'Input',
+      componentProps: {
+        type: 'textarea',
+      },
       fieldName: 'remark',
       label: $t('system.role.remark'),
     },

@@ -190,8 +190,9 @@ export function useSchema(): VbenFormSchema[] {
       help: '复杂随机字符串',
     },
     {
-      component: 'Textarea',
+      component: 'Input',
       componentProps: {
+        type: 'textarea',
         maxlength: 100,
         rows: 3,
         showCount: true,
@@ -234,8 +235,9 @@ export function useFuncSchema(): VbenFormSchema[] {
       label: '是否异步',
     },
     {
-      component: 'Textarea',
+      component: 'Input',
       componentProps: {
+        type: 'textarea',
         maxlength: 100,
         rows: 3,
         showCount: true,
