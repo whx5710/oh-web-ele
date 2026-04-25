@@ -92,8 +92,8 @@ setupVbenVxeTable({
       renderTableDefault({ options, props }, { column, row }) {
         const value = get(row, column.field);
         const tagElOptions = options ?? [
-          { color: 'success', label: $t('common.enabled'), value: 1 },
-          { color: 'error', label: $t('common.disabled'), value: 0 },
+          { type: 'success', label: $t('common.enabled'), value: 1 },
+          { type: 'warning', label: $t('common.disabled'), value: 0 },
         ];
         const tagItem = tagElOptions.find((item) => item.value === value);
         return h(
