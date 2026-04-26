@@ -78,10 +78,6 @@ function onEdit(row: SystemAppApi.Func) {
 }
 
 function onDelete(row: SystemAppApi.Func) {
-  const hideLoading = ElMessage.info({
-    message: $t('ui.actionMessage.deleting', [row.name]),
-    duration: 0,
-  });
   deleteFunc(row.id)
     .then(() => {
       ElMessage.success({
@@ -90,7 +86,7 @@ function onDelete(row: SystemAppApi.Func) {
       onRefresh();
     })
     .catch(() => {
-      hideLoading?.close();
+      ElMessage.error('删除失败');
     });
 }
 

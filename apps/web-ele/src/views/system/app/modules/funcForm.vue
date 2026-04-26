@@ -5,7 +5,7 @@ import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { ElButton } from 'element-plus';
+import { ElButton, ElMessage } from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
 import { createFunc, updateFunc } from '#/api/system/app';
@@ -38,12 +38,13 @@ const [Modal, modalApi] = useVbenModal({
     const { valid } = await formApi.validate();
     if (valid) {
       modalApi.lock();
-      const data = await formApi.getValues();
+      const data: SystemAppApi.Func = await formApi.getValues();
       try {
         await (formData.value?.id
           ? updateFunc(formData.value.id, data)
           : createFunc(data));
         modalApi.close();
+        ElMessage.success('操作成功');
         emit('success');
       } finally {
         modalApi.lock(false);

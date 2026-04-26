@@ -151,7 +151,7 @@ function refreshGrid() {
 }
 
 const treeData = ref([]);
-const expandedParams = ref<string[]>([]) // 受控展开
+const expandedParams = ref<string[]>([]) // 受控展开状态
 const expandedFlag = ref(true)
 // 加载树形单位信息
 const getDeptTree = (params: Recordable<any>) => {
@@ -243,6 +243,7 @@ watch(searchValue, (value) => {
             :tree-data="treeData"
             bordered
             :transition="false"
+            :show-expand-all="false"
             value-field="id"
             label-field="name"
             v-model:expanded="expandedParams"

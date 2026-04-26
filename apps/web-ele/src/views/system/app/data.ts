@@ -328,8 +328,8 @@ export function useFuncListColumns<T = SystemAppApi.Func>(
       cellRender: {
         name: 'CellTag',
         options: [
-          { color: 'warning', label: '否', value: false },
-          { color: 'success', label: '是', value: true },
+          { type: 'warning', label: '否', value: false },
+          { type: 'success', label: '是', value: true },
         ],
       },
     },

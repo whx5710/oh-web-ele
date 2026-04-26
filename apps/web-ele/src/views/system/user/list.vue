@@ -69,10 +69,6 @@ function onCreate() {
  * @param row
  */
 function onDelete(row: SystemUserApi.SystemUser) {
-  const hideLoading = ElMessage.loading({
-    message: $t('ui.actionMessage.deleting', [row.realName]),
-    duration: 0,
-  });
   deleteUser(row.id)
     .then(() => {
       ElMessage.success({
@@ -81,7 +77,7 @@ function onDelete(row: SystemUserApi.SystemUser) {
       refreshGrid();
     })
     .catch(() => {
-      hideLoading?.close();
+      console.log('删除失败');
     });
 }
 
@@ -163,6 +159,8 @@ function refreshGrid() {
 }
 // 部门树
 const treeData = ref([]);
+const expandedParams = ref<string[]>([]) // 受控展开状态
+const expandedFlag = ref(true)
 // 加载树形单位信息
 const getDeptTree = (params: Recordable<any>) => {
   getDeptTreeList(params).then((data) => {
@@ -175,15 +173,16 @@ const getDeptTree = (params: Recordable<any>) => {
     treeData.value = tmpData;
     treeData.value = tmpData;
     generateList(treeData.value);
-
     setTimeout(() => {
-      // 展开-延迟执行
-      // deptTreeRef.value.expandNodes(['0']);
+      if(expandedFlag.value){
+        // 展开-延迟执行
+        expandedParams.value = ['0']
+      }
     }, 100);
   });
 };
 getDeptTree({});
-const deptTreeRef = ref();
+
 // 点击左边树形列表，查询单位信息
 const getDeptById = (node: any) => {
   queryParam.value = { deptId: node.value.id };
@@ -227,7 +226,8 @@ watch(searchValue, (value) => {
   searchValue.value = value;
   const params = [...new Set(expandedKeys)];
   getDeptTree({ deptIds: params });
-  deptTreeRef.value.expandNodes(params);
+  expandedParams.value = params.map((item) => item.toString());
+  expandedFlag.value = false
 });
 // 批量导出
 function batchExport() {
@@ -266,9 +266,11 @@ function batchExport() {
             :tree-data="treeData"
             bordered
             :transition="false"
+            :show-expand-all="false"
             value-field="id"
             label-field="name"
             @select="getDeptById"
+            v-model:expanded="expandedParams"
           >
             <template #node="item">
               <span v-if="item.value.name.includes(searchValue)">
@@ -278,7 +280,7 @@ function batchExport() {
                     item.value.name.indexOf(searchValue),
                   )
                 }}
-                <span style="font-weight: bold;">{{
+                <span style="font-weight: bold; color: #f50">{{
                   searchValue
                 }}</span>
                 {{
