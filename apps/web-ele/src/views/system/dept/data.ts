@@ -141,6 +141,9 @@ export function useColumns(
           nameTitle: $t('system.dept.name'),
           onClick: onActionClick,
         },
+        props: {
+          width: 220,
+        },
         name: 'CellOperation',
         options: [
           {

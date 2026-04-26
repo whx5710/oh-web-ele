@@ -278,7 +278,7 @@ function batchExport() {
                     item.value.name.indexOf(searchValue),
                   )
                 }}
-                <span style="font-weight: bold; color: #f50">{{
+                <span style="font-weight: bold;">{{
                   searchValue
                 }}</span>
                 {{
