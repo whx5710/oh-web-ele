@@ -2,14 +2,16 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemUserApi } from '#/api/system/user';
 
-import { h, ref } from 'vue';
+import { ref } from 'vue';
 
 import { useUserStore } from '@vben/stores';
-
 import { useDebounceFn } from '@vueuse/core';
-import { ElLoading } from 'element-plus';
-
 import { getTenantPage } from '#/api/system/tenant';
+import { getDeptTreeList } from '#/api/system/dept';
+import { getRoleList } from '#/api/system/role';
+import { getPostList } from '#/api/system/post';
+import { $t } from '#/locales';
+import { z } from '#/adapter/form';
 
 const keyWord = ref('');
 
@@ -191,8 +193,8 @@ export function useColumns<T = SystemUserApi.SystemUser>(
       cellRender: {
         name: 'CellTag',
         options: [
-          { color: 'warning', label: '禁用', value: 0 },
-          { color: 'success', label: '启用', value: 1 },
+          { type: 'warning', label: '禁用', value: 0 },
+          { type: 'success', label: '启用', value: 1 },
         ],
       },
     },
@@ -373,41 +375,126 @@ export function useSchema(): VbenFormSchema[] {
       component: 'Input',
       fieldName: 'username',
       label: '用户名',
-      rules: 'required',
+      rules: z
+        .string()
+        .min(2, $t('ui.formRules.minLength', ['用户名', 2]))
+        .max(50, $t('ui.formRules.maxLength', ['用户名', 50])),
     },
     {
       component: 'Input',
       fieldName: 'realName',
-      label: '真实姓名',
-      rules: 'required',
+      label: '姓名',
+      rules: z
+        .string()
+        .min(2, $t('ui.formRules.minLength', ['姓名', 2]))
+        .max(50, $t('ui.formRules.maxLength', ['姓名', 50])),
+    },
+    {
+      component: 'ApiTreeSelect',
+      componentProps: {
+        allowClear: true,
+        api: getDeptTreeList,
+        class: 'w-full',
+        labelField: 'name',
+        valueField: 'id',
+        childrenField: 'children',
+      },
+      fieldName: 'deptId',
+      label: '所属部门',
+    },
+    {
+      component: 'RadioGroup',
+      componentProps: {
+        buttonStyle: 'solid',
+        options: [
+          { label: '男', value: 0 },
+          { label: '女', value: 1 },
+          { label: '未知', value: 2 },
+        ],
+        // optionType: 'button',
+      },
+      defaultValue: 0,
+      fieldName: 'gender',
+      label: '性别',
     },
     {
       component: 'Input',
       fieldName: 'mobile',
       label: '手机号',
-      rules: 'required',
+      rules: z.string().min(11, $t('ui.formRules.minLength', ['手机号', 11])),
     },
     {
       component: 'Input',
       fieldName: 'email',
       label: '邮箱',
-      rules: 'required',
+      rules: z.string().min(4, $t('ui.formRules.minLength', ['邮箱', 4])),
     },
     {
       component: 'Input',
-      fieldName: 'deptName',
-      label: '部门',
+      fieldName: 'password',
+      label: '密码',
+      componentProps: {
+        type: 'password',
+        showPassword: true,
+      },
     },
     {
-      component: 'Input',
-      fieldName: 'postName',
-      label: '岗位',
-    },
-    {
-      component: 'Switch',
+      component: 'RadioGroup',
+      componentProps: {
+        buttonStyle: 'solid',
+        options: [
+          { label: $t('common.enabled'), value: 1 },
+          { label: $t('common.disabled'), value: 0 },
+        ],
+        optionType: 'button',
+      },
+      defaultValue: 1,
       fieldName: 'status',
       label: '状态',
-      defaultValue: 1,
+    },
+    {
+      component: 'ApiTreeSelect',
+      componentProps: {
+        allowClear: true,
+        multiple: true,
+        api: getPostList,
+        class: 'w-full',
+        labelField: 'postName',
+        valueField: 'id',
+      },
+      fieldName: 'postIdList',
+      label: '所属岗位',
+    },
+    {
+      component: 'ApiTreeSelect',
+      componentProps: {
+        allowClear: true,
+        multiple: true,
+        api: getRoleList,
+        class: 'w-full',
+        labelField: 'name',
+        valueField: 'id',
+      },
+      fieldName: 'roleIdList',
+      label: '角色',
+    },
+    {
+      component: 'Input',
+      fieldName: 'userKey',
+      label: '密钥',
+      help: () => '用于第三方登录，不校验验证码', // ['用于第三方登录，不校验验证码', '第二行'].map((v) => h('p', v)),
+    },
+    {
+      component: 'Input',
+      componentProps: {
+        maxLength: 100,
+      },
+      fieldName: 'note',
+      label: '备注',
+      rules: z
+        .string()
+        .max(100, $t('ui.formRules.maxLength', ['备注', 100]))
+        .optional(),
     },
   ];
 }

@@ -19,6 +19,7 @@ export namespace SystemUserApi {
     tenantId: string;
     userKey: string;
     username: string;
+    isSystem: 0 | 1;
     roleIdList: string[];
     postIdList: string[];
   }
