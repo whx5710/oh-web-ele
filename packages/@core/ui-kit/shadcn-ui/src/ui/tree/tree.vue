@@ -286,7 +286,7 @@ defineExpose({
     v-slot="{ flattenItems }"
     :class="
       cn(
-        'text-blackA11 container select-none list-none rounded-lg text-sm font-medium',
+        'text-foreground container select-none list-none rounded-lg text-sm font-medium',
         $attrs.class as unknown as ClassType,
         bordered ? 'border' : '',
       )

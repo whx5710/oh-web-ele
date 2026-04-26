@@ -17,6 +17,8 @@ import { ElLoading } from 'element-plus';
  * 3. 布局组件（Row/Col/Card）通常直接在页面模板中使用，所以需要单独处理样式
  */
 import 'element-plus/dist/index.css';
+// Element Plus 黑暗模式样式
+import 'element-plus/theme-chalk/dark/css-vars.css';
 
 import { $t, setupI18n } from '#/locales';
 
