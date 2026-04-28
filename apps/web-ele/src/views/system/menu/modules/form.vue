@@ -267,7 +267,7 @@ const schema: VbenFormSchema[] = [
   {
     component: 'Select',
     componentProps: {
-      allowClear: true,
+      clearable: true,
       class: 'w-full',
       options: [
         { label: $t('system.menu.badgeType.dot'), value: 'dot' },
@@ -287,7 +287,7 @@ const schema: VbenFormSchema[] = [
     component: 'Input',
     componentProps: (values) => {
       return {
-        allowClear: true,
+        clearable: true,
         class: 'w-full',
         disabled: values.meta?.badgeType !== 'normal',
       };
@@ -304,7 +304,7 @@ const schema: VbenFormSchema[] = [
   {
     component: 'Select',
     componentProps: {
-      allowClear: true,
+      clearable: true,
       class: 'w-full',
       options: SystemMenuApi.BadgeVariants.map((v) => ({
         label: v,
@@ -326,7 +326,7 @@ const schema: VbenFormSchema[] = [
     label: '排序',
     componentProps: {
       style: 'width: 100%',
-      defaultValue: 0,
+      min: 1,
     },
   },
   {

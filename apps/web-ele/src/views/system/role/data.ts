@@ -44,7 +44,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       fieldName: 'name',
       label: $t('system.role.roleName'),
       componentProps: {
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -52,7 +52,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       fieldName: 'tenantName',
       label: '租户名',
       componentProps: {
-        allowClear: true,
+        clearable: true,
       },
     },
   ];
@@ -199,8 +199,8 @@ export function useUserColumns<T = SystemTenantApi.SystemTenant>(
       cellRender: {
         name: 'CellTag',
         options: [
-          { color: 'warning', label: '停用', value: 0 },
-          { color: 'success', label: '正常', value: 1 },
+          { type: 'warning', label: '停用', value: 0 },
+          { type: 'success', label: '正常', value: 1 },
         ],
       },
     },

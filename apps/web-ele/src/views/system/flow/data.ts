@@ -66,7 +66,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       fieldName: 'keyWord',
       label: '关键字',
       componentProps: {
-        allowClear: true,
+        clearable: true,
       },
     },
   ];

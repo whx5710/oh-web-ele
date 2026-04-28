@@ -72,13 +72,13 @@ export function useGridFormSchema(): VbenFormSchema[] {
       fieldName: 'keyWord',
       label: '关键字搜索',
       componentProps: {
-        allowClear: true,
+        clearable: true,
       },
     },
     {
       component: 'Select',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         class: 'w-full',
         options: [
           { label: '全部', value: null },
@@ -103,7 +103,7 @@ export function userSchema(): VbenFormSchema[] {
       fieldName: 'keyWord',
       label: '关键字搜索',
       componentProps: {
-        allowClear: true,
+        clearable: true,
       },
     }
   ];
@@ -135,8 +135,8 @@ export function useColumns<T = SystemTenantApi.SystemTenant>(
       cellRender: {
         name: 'CellTag',
         options: [
-          { color: 'success', label: '正常', value: 1 },
-          { color: 'warning', label: '停用', value: 0 },
+          { type: 'success', label: '正常', value: 1 },
+          { type: 'warning', label: '停用', value: 0 },
         ],
       },
       field: 'status',
@@ -207,9 +207,9 @@ export function useUserColumns<T = SystemTenantApi.SystemTenant>(
       cellRender: {
         name: 'CellTag',
         options: [
-          { color: 'warning', label: '男', value: 0 },
-          { color: 'success', label: '女', value: 1 },
-          { color: 'error', label: '未知', value: 2 },
+          { type: 'warning', label: '男', value: 0 },
+          { type: 'success', label: '女', value: 1 },
+          { type: 'danger', label: '未知', value: 2 },
         ],
       },
     },
@@ -227,8 +227,8 @@ export function useUserColumns<T = SystemTenantApi.SystemTenant>(
       cellRender: {
         name: 'CellTag',
         options: [
-          { color: 'warning', label: '停用', value: 0 },
-          { color: 'success', label: '正常', value: 1 },
+          { type: 'warning', label: '停用', value: 0 },
+          { type: 'success', label: '正常', value: 1 },
         ],
       },
     },
@@ -294,9 +294,9 @@ export function useCheckUserColumns(): VxeTableGridOptions['columns'] {
       cellRender: {
         name: 'CellTag',
         options: [
-          { color: 'warning', label: '男', value: 0 },
-          { color: 'success', label: '女', value: 1 },
-          { color: 'error', label: '未知', value: 2 },
+          { type: 'warning', label: '男', value: 0 },
+          { type: 'success', label: '女', value: 1 },
+          { type: 'danger', label: '未知', value: 2 },
         ],
       },
     },
@@ -313,8 +313,8 @@ export function useCheckUserColumns(): VxeTableGridOptions['columns'] {
       cellRender: {
         name: 'CellTag',
         options: [
-          { color: 'warning', label: '停用', value: 0 },
-          { color: 'success', label: '正常', value: 1 },
+          { type: 'warning', label: '停用', value: 0 },
+          { type: 'success', label: '正常', value: 1 },
         ],
       },
     },

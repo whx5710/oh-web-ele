@@ -205,8 +205,8 @@ export function useLoginColumns(): VxeTableGridOptions['columns'] {
       cellRender: {
         name: 'CellTag',
         options: [
-          { color: 'warning', label: '失败', value: 0 },
-          { color: 'success', label: '成功', value: 1 },
+          { type: 'warning', label: '失败', value: 0 },
+          { type: 'success', label: '成功', value: 1 },
         ],
       },
     },
@@ -337,8 +337,8 @@ export function useOpColumns(): VxeTableGridOptions['columns'] {
       cellRender: {
         name: 'CellTag',
         options: [
-          { color: 'warning', label: '失败', value: 0 },
-          { color: 'success', label: '成功', value: 1 },
+          { type: 'warning', label: '失败', value: 0 },
+          { type: 'success', label: '成功', value: 1 },
         ],
       },
     },

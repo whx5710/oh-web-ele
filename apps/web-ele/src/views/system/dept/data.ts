@@ -47,7 +47,7 @@ export function useSchema(): VbenFormSchema[] {
       label: '排序',
       componentProps: {
         style: 'width: 100%',
-        defaultValue: 0,
+        min: 1,
       },
     },
     {
@@ -76,7 +76,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       fieldName: 'name',
       label: $t('system.dept.deptName'),
       componentProps: {
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -84,7 +84,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       fieldName: 'tenantName',
       label: '租户名',
       componentProps: {
-        allowClear: true,
+        clearable: true,
       },
     },
   ];

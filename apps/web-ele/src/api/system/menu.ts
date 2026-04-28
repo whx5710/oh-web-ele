@@ -4,14 +4,10 @@ import { requestClient } from '#/api/request';
 import { sysApi } from '#/config/env';
 
 export namespace SystemMenuApi {
-  /** 徽标颜色集合 */
-  export const BadgeVariants = [
-    'default',
-    'destructive',
-    'primary',
-    'success',
-    'warning',
-  ] as const;
+  /** 徽标颜色集合
+   * 'default' | 'primary' | 'success' | 'warning' | 'danger' | 'info'
+   */
+  export const BadgeVariants = ['default' , 'primary' , 'success' , 'warning' , 'danger' , 'info'] as const;
   /** 徽标类型集合 */
   export const BadgeTypes = ['dot', 'normal'] as const;
   /** 菜单类型集合 */

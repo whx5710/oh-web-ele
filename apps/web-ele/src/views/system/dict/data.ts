@@ -1,6 +1,7 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemDictApi } from '#/api/system/dict';
+import { SystemMenuApi } from '#/api/system/menu';
 
 // 字典样式标签
 export function getDictClassOptions() {
@@ -32,7 +33,7 @@ export function useSchema(): VbenFormSchema[] {
       label: '字典类型',
       componentProps: (values) => {
         return {
-          allowClear: true,
+          clearable: true,
           class: 'w-full',
           disabled: values?.dictType !== undefined && values?.id !== undefined,
         };
@@ -63,7 +64,7 @@ export function useSchema(): VbenFormSchema[] {
       label: 'SQL脚本',
       componentProps: (values) => {
         return {
-          allowClear: true,
+          clearable: true,
           class: 'w-full',
           type: 'textarea',
           disabled: values?.dictSource === 0,
@@ -74,9 +75,10 @@ export function useSchema(): VbenFormSchema[] {
       component: 'InputNumber',
       fieldName: 'sort',
       label: '排序',
+      defaultValue: 1,
       componentProps: {
         style: 'width: 100%',
-        defaultValue: 0,
+        min: 1,
       },
     },
     {
@@ -85,7 +87,7 @@ export function useSchema(): VbenFormSchema[] {
       label: '备注',
       componentProps: () => {
         return {
-          allowClear: true,
+          clearable: true,
           class: 'w-full',
           type: 'textarea',
         };
@@ -106,7 +108,7 @@ export function useDataSchema(): VbenFormSchema[] {
       label: '字典标签',
       componentProps: () => {
         return {
-          allowClear: true,
+          clearable: true,
           class: 'w-full',
         };
       },
@@ -117,18 +119,27 @@ export function useDataSchema(): VbenFormSchema[] {
       label: '字典值',
     },
     {
-      component: 'Input',
+      component: 'Select',
       fieldName: 'labelClass',
       label: '标签样式',
       help: 'primary, success, warning, info, danger',
+      componentProps: {
+        clearable: true,
+        class: 'w-full',
+        options: SystemMenuApi.BadgeVariants.map((v) => ({
+          label: v,
+          value: v,
+        })),
+      },
     },
     {
       component: 'InputNumber',
       fieldName: 'sort',
       label: '排序',
+      defaultValue: 1,
       componentProps: {
         style: 'width: 100%',
-        defaultValue: 0,
+        min: 1,
       },
     },
     {
@@ -137,7 +148,7 @@ export function useDataSchema(): VbenFormSchema[] {
       label: '备注',
       componentProps: () => {
         return {
-          allowClear: true,
+          clearable: true,
           class: 'w-full',
           type: 'textarea',
         };
@@ -154,7 +165,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       fieldName: 'keyWord',
       label: '关键字搜索',
       componentProps: {
-        allowClear: true,
+        clearable: true,
       },
     },
   ];

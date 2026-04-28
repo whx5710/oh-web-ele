@@ -57,7 +57,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
       keyField: 'id',
       isCurrent: true, // 高亮选中行
     },
-
     toolbarConfig: {
       custom: true,
       export: false,
@@ -95,21 +94,16 @@ function onEditData(row: SystemDictApi.SystemType) {
 }
 
 function onDelete(row: SystemDictApi.SystemType) {
-  const hideLoading = ElMessage.loading({
-    content: $t('ui.actionMessage.deleting', [row.name]),
-    duration: 0,
-    key: 'action_process_msg',
-  });
   deleteDictType(row.id)
     .then(() => {
       ElMessage.success({
-        content: $t('ui.actionMessage.deleteSuccess', [row.name]),
+        message: $t('ui.actionMessage.deleteSuccess', [row.name]),
         key: 'action_process_msg',
       });
       onRefresh();
-    })
-    .catch(() => {
-      hideLoading();
+    }).catch(() => {
+      console.log('删除失败');
+      onRefresh();
     });
 }
 

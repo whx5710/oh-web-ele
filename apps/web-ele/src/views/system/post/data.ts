@@ -52,7 +52,7 @@ export function useSchema(): VbenFormSchema[] {
       label: '排序',
       componentProps: {
         style: 'width: 100%',
-        defaultValue: 0,
+        min: 1,
       },
     },
   ];
@@ -76,7 +76,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       fieldName: 'postName',
       label: '岗位名称',
       componentProps: {
-        allowClear: true,
+        clearable: true,
       },
     },
     {

@@ -70,7 +70,6 @@ export function useLogGridFormSchema(): VbenFormSchema[] {
     {
       component: 'Select',
       componentProps: {
-        // allowClear: true,
         class: 'w-full',
         options: [
           { label: '全部', value: null },
@@ -284,8 +283,8 @@ export function useFuncColumns(): VxeTableGridOptions['columns'] {
       cellRender: {
         name: 'CellTag',
         options: [
-          { color: 'warning', label: '否', value: false },
-          { color: 'success', label: '是', value: true },
+          { type: 'warning', label: '否', value: false },
+          { type: 'success', label: '是', value: true },
         ],
       },
     },
@@ -412,10 +411,10 @@ export function useLogColumns(): VxeTableGridOptions['columns'] {
       cellRender: {
         name: 'CellTag',
         options: [
-          { color: 'warning', label: '未处理', value: '0' },
-          { color: 'success', label: '已处理', value: '1' },
-          { color: 'processing', label: '未找到对应服务', value: '2' },
-          { color: 'error', label: '业务处理失败', value: '3' },
+          { type: 'warning', label: '未处理', value: '0' },
+          { type: 'success', label: '已处理', value: '1' },
+          { type: 'primary', label: '未找到对应服务', value: '2' },
+          { type: 'danger', label: '业务处理失败', value: '3' },
         ],
       },
     },
