@@ -112,10 +112,8 @@ export function useOpGridFormSchema(): VbenFormSchema[] {
     },
     {
       component: 'ApiSelect',
-      // 对应组件的参数
       componentProps: () => {
         return {
-          // 接口转options格式 { tenantId: string; tenantName: string }[]
           afterFetch: (res: any) => {
             fetching.value = false;
             const data: { name: string; path: string }[] = res.list;
@@ -127,49 +125,71 @@ export function useOpGridFormSchema(): VbenFormSchema[] {
           api: fetchRemoteOptions,
           clearable: true,
           disabled: userStore.userInfo?.superAdmin !== 1,
-          // 禁止本地过滤
           filterable: true,
           remote: true,
-          // 搜索词变化时记录下来， 使用useDebounceFn防抖。
           remoteMethod: useDebounceFn((value: string) => {
             keyWord.value = value;
           }, 300),
-          // 远程搜索参数。当搜索词变化时，params也会更新
           params: {
             keyWord: keyWord.value || undefined,
           },
         };
       },
-      // 字段名
       fieldName: 'tenantId',
-      // 界面显示的label
       label: '租户',
       renderComponentContent: () => {
         return {
           loading: fetching.value,
         };
       },
-      // rules: 'selectRequired',
     },
-    // 暂时移除日期选择器，避免 Element Plus 日期组件错误
-    // {
-    //   component: 'DatePicker',
-    //   fieldName: 'startTime',
-    //   label: '开始时间',
-    //   componentProps: {
-    //     valueFormat: 'YYYY-MM-DD',
-    //     placeholder: '请选择开始时间',
-    //   },
-    // },
-    // {
-    //   component: 'DatePicker',
-    //   fieldName: 'endTime',
-    //   label: '结束时间',
-    //   componentProps: {
-    //     valueFormat: 'YYYY-MM-DD',
-    //     placeholder: '请选择结束时间',
-    //   },
-    // },
+  ];
+}
+
+// 错误日志表单
+export function useErrorLogGridFormSchema(): VbenFormSchema[] {
+  return [
+    {
+      component: 'Input',
+      fieldName: 'keyWord',
+      label: '关键字',
+      componentProps: {
+        clearable: true,
+      },
+    },
+    {
+      component: 'ApiSelect',
+      componentProps: () => {
+        return {
+          afterFetch: (res: any) => {
+            fetching.value = false;
+            const data: { name: string; path: string }[] = res.list;
+            return data.map((item: any) => ({
+              label: item.tenantName,
+              value: item.tenantId,
+            }));
+          },
+          api: fetchRemoteOptions,
+          clearable: true,
+          disabled: userStore.userInfo?.superAdmin !== 1,
+          filterable: true,
+          remote: true,
+          remoteMethod: useDebounceFn((value: string) => {
+            keyWord.value = value;
+          }, 300),
+          params: {
+            keyWord: keyWord.value || undefined,
+          },
+        };
+      },
+      fieldName: 'tenantId',
+      label: '租户',
+      renderComponentContent: () => {
+        return {
+          loading: fetching.value,
+        };
+      },
+    },
   ];
 }
 // 登录日志
@@ -355,7 +375,65 @@ export function useOpColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'userId',
       title: '用户ID',
-      visible: false, // 是否可见-隐藏列
+      visible: false,
+    },
+  ];
+}
+
+// 错误日志
+export function useErrorLogColumns(): VxeTableGridOptions['columns'] {
+  return [
+    { type: 'checkbox', width: 60 },
+    { title: '序号', type: 'seq', width: 50 },
+    {
+      field: 'id',
+      title: 'ID',
+      minWidth: 100,
+      visible: false,
+    },
+    {
+      field: 'errCode',
+      title: '错误代码',
+      width: 150,
+    },
+    {
+      field: 'msg',
+      title: '错误消息',
+      minWidth: 200,
+      showOverflow: true,
+    },
+    {
+      field: 'traceId',
+      title: '跟踪ID',
+      minWidth: 180,
+      showOverflow: true,
+    },
+    {
+      field: 'tenantName',
+      title: '租户',
+      minWidth: 150,
+    },
+    {
+      field: 'stackInfo',
+      title: '错误栈信息',
+      minWidth: 250,
+      showOverflow: true,
+    },
+    {
+      field: 'errTime',
+      title: '报错时间',
+      width: 180,
+    },
+    {
+      field: 'createTime',
+      width: 180,
+      title: '创建时间',
+    },
+    {
+      field: 'note',
+      title: '备注',
+      minWidth: 150,
+      showOverflow: true,
     },
   ];
 }
