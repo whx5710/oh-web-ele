@@ -89,7 +89,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
       keyField: 'id',
       isCurrent: true,
     },
-
     toolbarConfig: {
       custom: true,
       export: false,
@@ -133,14 +132,8 @@ function batchDelete() {
     });
     return;
   }
-  const hideLoading = ElMessage({
-    type: 'loading',
-    message: '批量删除',
-    duration: 0,
-  });
   deleteErrorLog(logIds)
     .then(() => {
-      hideLoading.close();
       ElMessage.success({
         message: '批量删除成功',
       });
@@ -148,7 +141,6 @@ function batchDelete() {
       fileMap.clear();
     })
     .catch(() => {
-      hideLoading.close();
       fileMap.clear();
     });
 }

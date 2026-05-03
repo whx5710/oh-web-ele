@@ -394,18 +394,19 @@ export function useErrorLogColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'errCode',
       title: '错误代码',
-      width: 150,
+      width: 90,
     },
     {
       field: 'msg',
       title: '错误消息',
-      minWidth: 200,
+      minWidth: 150,
       showOverflow: true,
+      visible: false, // 是否可见-隐藏
     },
     {
       field: 'traceId',
       title: '跟踪ID',
-      minWidth: 180,
+      minWidth: 200,
       showOverflow: true,
     },
     {
@@ -418,6 +419,20 @@ export function useErrorLogColumns(): VxeTableGridOptions['columns'] {
       title: '错误栈信息',
       minWidth: 250,
       showOverflow: true,
+      visible: false, // 是否可见-隐藏
+    },
+    {
+      field: 'score',
+      title: '队列拥挤度',
+      width: 150,
+      cellRender: {
+        name: 'CellRate',
+        props: {
+          max: 5,
+          modelValue: 'score',
+          allowHalf: true,
+        },
+      },
     },
     {
       field: 'errTime',
@@ -428,11 +443,12 @@ export function useErrorLogColumns(): VxeTableGridOptions['columns'] {
       field: 'createTime',
       width: 180,
       title: '创建时间',
+      visible: false, // 是否可见-隐藏
     },
     {
       field: 'note',
       title: '备注',
-      minWidth: 150,
+      minWidth: 50,
       showOverflow: true,
     },
   ];
