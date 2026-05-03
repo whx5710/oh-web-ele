@@ -190,6 +190,7 @@ export type ComponentType =
   | 'Input'
   | 'InputNumber'
   | 'RadioGroup'
+  | 'RangePicker'
   | 'Rate'
   | 'Row'
   | 'Select'
@@ -330,6 +331,26 @@ async function initComponentAdapter() {
       return h(
         ElDatePicker,
         {
+          ...props,
+          ...attrs,
+          ...extraProps,
+        },
+        slots,
+      );
+    },
+    RangePicker: (props, { attrs, slots }) => {
+      const { name, id } = props;
+      const extraProps: Recordable<any> = {};
+      if (name && !Array.isArray(name)) {
+        extraProps.name = [name, `${name}_end`];
+      }
+      if (id && !Array.isArray(id)) {
+        extraProps.id = [id, `${id}_end`];
+      }
+      return h(
+        ElDatePicker,
+        {
+          type: 'daterange',
           ...props,
           ...attrs,
           ...extraProps,
