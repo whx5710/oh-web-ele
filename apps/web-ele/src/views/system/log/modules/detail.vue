@@ -26,7 +26,7 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal :title="getTitle" class="w-[750px]">
+  <Modal :title="getTitle" class="w-[800px]">
     <div v-if="detailData" class="space-y-4">
       <div class="flex items-center gap-3">
         <span class="w-24 text-right text-gray-500">错误代码：</span>
@@ -53,7 +53,7 @@ const [Modal, modalApi] = useVbenModal({
       <div class="grid grid-cols-2 gap-4">
         <div class="flex gap-3">
           <span class="w-24 text-right text-gray-500 flex-shrink-0">队列拥挤度：</span>
-          <div class="flex-1 text-left">{{ detailData.score }} / 10</div>
+          <div class="flex-1 text-left">{{ detailData.score }} / 5</div>
         </div>
         <div class="flex gap-3">
           <span class="w-24 text-right text-gray-500 flex-shrink-0">创建时间：</span>
@@ -62,7 +62,7 @@ const [Modal, modalApi] = useVbenModal({
       </div>
       <div class="flex gap-3">
         <span class="w-24 text-right text-gray-500 flex-shrink-0">错误栈信息：</span>
-        <pre class="flex-1 text-xs text-gray-600 h-40 overflow-y-auto bg-gray-50 p-3 rounded whitespace-pre-wrap break-all">{{ detailData.stackInfo }}</pre>
+        <pre class="flex-1 text-xs text-gray-600 h-60 overflow-y-auto bg-gray-50 p-3 rounded whitespace-pre-wrap break-all">{{ detailData.stackInfo }}</pre>
       </div>
       <div class="flex gap-3">
         <span class="w-24 text-right text-gray-500 flex-shrink-0">备注：</span>

@@ -101,13 +101,14 @@ const [Grid, gridApi] = useVbenVxeGrid({
         },
       },
     },
+    exportConfig: {},
     rowConfig: {
       keyField: 'id',
       isCurrent: true,
     },
     toolbarConfig: {
       custom: true,
-      export: false,
+      export: true,
       refresh: true,
       refreshOptions: { code: 'query' },
       search: true,

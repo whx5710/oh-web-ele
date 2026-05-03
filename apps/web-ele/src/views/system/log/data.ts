@@ -399,7 +399,7 @@ export function useErrorLogColumns<T = SystemLogApi.SysErrorLog>(
     {
       field: 'errCode',
       title: '错误代码',
-      width: 90,
+      width: 95,
     },
     {
       field: 'msg',
@@ -422,7 +422,12 @@ export function useErrorLogColumns<T = SystemLogApi.SysErrorLog>(
     {
       field: 'tenantName',
       title: '租户',
-      minWidth: 150,
+      minWidth: 100,
+    },
+    {
+      field: 'queueSize',
+      title: '队列数量',
+      width: 85,
     },
     {
       field: 'stackInfo',

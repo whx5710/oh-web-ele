@@ -47,7 +47,7 @@ export namespace SystemLogApi {
     tenantId: string; // 租户ID
     tenantName: string; // 租户名称
     note: string; // 备注
-    score: number; // 队列拥挤程度0-10
+    score: number; // 队列拥挤程度0-5
     queueSize: number; // 错误队列大小
   }
   export interface SysErrorLogPage {

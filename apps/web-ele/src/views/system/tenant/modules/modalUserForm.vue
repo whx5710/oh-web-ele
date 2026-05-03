@@ -70,6 +70,7 @@ const [Form, formApi] = useVbenForm({
       fieldName: 'keyWord',
       // 界面显示的label
       label: '关键字搜索',
+      labelWidth: 120, // label宽度
       help: '一般只添加初始的管理用户',
       renderComponentContent: () => {
         return {
