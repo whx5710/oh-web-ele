@@ -193,6 +193,11 @@ export function useErrorLogGridFormSchema(): VbenFormSchema[] {
         };
       },
     },
+    {
+      component: 'RangeTimePicker',
+      fieldName: 'createTime',
+      label: '报错时间',
+    },
   ];
 }
 // 登录日志

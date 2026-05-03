@@ -191,6 +191,7 @@ export type ComponentType =
   | 'InputNumber'
   | 'RadioGroup'
   | 'RangePicker'
+  | 'RangeTimePicker'
   | 'Rate'
   | 'Row'
   | 'Select'
@@ -353,6 +354,27 @@ async function initComponentAdapter() {
           type: 'daterange',
           ...props,
           ...attrs,
+          ...extraProps,
+        },
+        slots,
+      );
+    },
+    RangeTimePicker: (props, { attrs, slots }) => {
+      const { name, id } = props;
+      const extraProps: Recordable<any> = {};
+      if (name && !Array.isArray(name)) {
+        extraProps.name = [name, `${name}_end`];
+      }
+      if (id && !Array.isArray(id)) {
+        extraProps.id = [id, `${id}_end`];
+      }
+      return h(
+        ElDatePicker,
+        {
+          ...props,
+          ...attrs,
+          type: 'datetimerange',
+          valueFormat: 'YYYY-MM-DD HH:mm:ss',
           ...extraProps,
         },
         slots,

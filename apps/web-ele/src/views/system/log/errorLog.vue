@@ -74,6 +74,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
   gridEvents,
   showSearchForm: false,
   formOptions: {
+    fieldMappingTime: [['createTime', ['startErrTime', 'endErrTime'], 'YYYY-MM-DD HH:mm:ss']],
     schema: useErrorLogGridFormSchema(),
     submitOnChange: true,
     showCollapseButton: false,
@@ -85,14 +86,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
-          if (formValues.startTime) {
-            formValues.startTime = `${formValues.startTime} 00:00:00`;
-          }
-          if (formValues.endTime) {
-            formValues.endTime = `${formValues.endTime} 23:59:59`;
-          }
-          if (!formValues.startTime) delete formValues.startTime;
-          if (!formValues.endTime) delete formValues.endTime;
           return await getErrorLogPage({
             pageNum: page.currentPage,
             pageSize: page.pageSize,
@@ -119,14 +112,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 function batchExport() {
   gridApi.formApi.getValues().then((res) => {
-    const params = res;
-    if (res.startTime) {
-      params.startTime = `${res.startTime} 00:00:00`;
-    }
-    if (res.endTime) {
-      params.endTime = `${res.endTime} 23:59:59`;
-    }
-    errorLogExport(params).then((res) => {
+    errorLogExport(res).then((res) => {
       const disposition = res.headers['content-disposition'];
       const filename = disposition.replaceAll('attachment;filename=', '');
       downloadFileFromBlob({
