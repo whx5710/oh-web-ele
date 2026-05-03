@@ -78,12 +78,20 @@ setupVbenVxeTable({
 
     // 表格配置项可以用 cellRender: { name: 'CellLink' },
     vxeUI.renderer.add('CellLink', {
-      renderTableDefault(renderOpts) {
-        const { props } = renderOpts;
+      renderTableDefault({ attrs, props }, { column, row }) {
+        const value = get(row, column.field);
+        const onClick = attrs?.onClick;
         return h(
           ElButton,
-          { size: 'small', link: true },
-          { default: () => props?.text || '' },
+          {
+            size: 'small',
+            link: true,
+            type: 'primary',
+            onClick: onClick
+              ? () => onClick({ row, code: 'detail', column })
+              : undefined,
+          },
+          { default: () => props?.text !== undefined ? props.text : value },
         );
       },
     });

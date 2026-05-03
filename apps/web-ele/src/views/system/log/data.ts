@@ -1,6 +1,9 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { VxeTableGridOptions } from '#/adapter/vxe-table';
-// import type { SystemLogApi } from '#/api/system/log';
+import type {
+  OnActionClickFn,
+  VxeTableGridOptions,
+} from '#/adapter/vxe-table';
+import type { SystemLogApi } from '#/api/system/log';
 
 import { h, ref } from 'vue';
 
@@ -381,7 +384,9 @@ export function useOpColumns(): VxeTableGridOptions['columns'] {
 }
 
 // 错误日志
-export function useErrorLogColumns(): VxeTableGridOptions['columns'] {
+export function useErrorLogColumns<T = SystemLogApi.SysErrorLog>(
+  onActionClick: OnActionClickFn<T>,
+): VxeTableGridOptions['columns'] {
   return [
     { type: 'checkbox', width: 60 },
     { title: '序号', type: 'seq', width: 50 },
@@ -401,13 +406,18 @@ export function useErrorLogColumns(): VxeTableGridOptions['columns'] {
       title: '错误消息',
       minWidth: 150,
       showOverflow: true,
-      visible: false, // 是否可见-隐藏
+      visible: false,
     },
     {
       field: 'traceId',
       title: '跟踪ID',
       minWidth: 200,
-      showOverflow: true,
+      cellRender: {
+        attrs: {
+          onClick: onActionClick,
+        },
+        name: 'CellLink',
+      },
     },
     {
       field: 'tenantName',
@@ -419,7 +429,7 @@ export function useErrorLogColumns(): VxeTableGridOptions['columns'] {
       title: '错误栈信息',
       minWidth: 250,
       showOverflow: true,
-      visible: false, // 是否可见-隐藏
+      visible: false,
     },
     {
       field: 'score',
@@ -443,7 +453,7 @@ export function useErrorLogColumns(): VxeTableGridOptions['columns'] {
       field: 'createTime',
       width: 180,
       title: '创建时间',
-      visible: false, // 是否可见-隐藏
+      visible: false,
     },
     {
       field: 'note',

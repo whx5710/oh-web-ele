@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import type {
+  OnActionClickParams,
   VxeGridListeners,
   VxeTableGridOptions,
 } from '#/adapter/vxe-table';
 import type { SystemLogApi } from '#/api/system/log';
 
-import { Page } from '@vben/common-ui';
+import { Page, useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { downloadFileFromBlob } from '@vben/utils';
 
@@ -28,9 +29,24 @@ import {
   getErrorLogPage,
 } from '#/api/system/log';
 
+import Detail from './modules/detail.vue';
 import { useErrorLogColumns, useErrorLogGridFormSchema } from './data';
 
 const fileMap = new Map();
+
+const [DetailModal, detailModalApi] = useVbenModal({
+  connectedComponent: Detail,
+  destroyOnClose: true,
+});
+
+function onActionClick(e: OnActionClickParams<SystemLogApi.SysErrorLog>) {
+  switch (e.code) {
+    case 'detail': {
+      detailModalApi.setData(e.row).open();
+      break;
+    }
+  }
+}
 
 const gridEvents: VxeGridListeners<SystemLogApi.SysErrorLog> = {
   checkboxChange: ({ checked, row }) => {
@@ -63,7 +79,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     showCollapseButton: false,
   },
   gridOptions: {
-    columns: useErrorLogColumns(),
+    columns: useErrorLogColumns(onActionClick),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -178,6 +194,7 @@ function deleteLogs(command: string) {
 
 <template>
   <Page auto-content-height>
+    <DetailModal />
     <Grid table-title="日志列表">
       <template #toolbar-tools>
         <ElPopconfirm title="确定导出？" @confirm="batchExport">
