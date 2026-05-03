@@ -74,7 +74,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
   gridEvents,
   showSearchForm: false,
   formOptions: {
-    fieldMappingTime: [['createTime', ['startErrTime', 'endErrTime'], 'YYYY-MM-DD HH:mm:ss']],
+    fieldMappingTime: [['errTime', ['startErrTime', 'endErrTime'], 'YYYY-MM-DD HH:mm:ss']],
     schema: useErrorLogGridFormSchema(),
     submitOnChange: true,
     showCollapseButton: false,

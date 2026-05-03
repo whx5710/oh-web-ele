@@ -10,7 +10,7 @@ import { h, ref } from 'vue';
 import { useUserStore } from '@vben/stores';
 
 import { useDebounceFn } from '@vueuse/core';
-import { ElLoading } from 'element-plus';
+import dayjs from 'dayjs';
 
 import { getTenantPage } from '#/api/system/tenant';
 
@@ -195,8 +195,9 @@ export function useErrorLogGridFormSchema(): VbenFormSchema[] {
     },
     {
       component: 'RangeTimePicker',
-      fieldName: 'createTime',
+      fieldName: 'errTime',
       label: '报错时间',
+      defaultValue: [dayjs().startOf('day').format('YYYY-MM-DD HH:mm:ss'), dayjs().endOf('day').format('YYYY-MM-DD HH:mm:ss')],
     },
   ];
 }
