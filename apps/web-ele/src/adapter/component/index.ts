@@ -100,6 +100,12 @@ const ElRadioGroup = defineAsyncComponent(() =>
     import('element-plus/es/components/radio-group/style/css'),
   ]).then(([res]) => res.ElRadioGroup),
 );
+const ElRate = defineAsyncComponent(() =>
+  Promise.all([
+    import('element-plus/es/components/rate/index'),
+    import('element-plus/es/components/rate/style/css'),
+  ]).then(([res]) => res.ElRate),
+);
 const ElSelectV2 = defineAsyncComponent(() =>
   Promise.all([
     import('element-plus/es/components/select-v2/index'),
@@ -184,6 +190,7 @@ export type ComponentType =
   | 'Input'
   | 'InputNumber'
   | 'RadioGroup'
+  | 'Rate'
   | 'Row'
   | 'Select'
   | 'Space'
@@ -331,6 +338,7 @@ async function initComponentAdapter() {
       );
     },
     TreeSelect: withDefaultPlaceholder(ElTreeSelect, 'select'),
+    Rate: ElRate,
     Upload: ElUpload,
   };
 

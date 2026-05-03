@@ -18,6 +18,7 @@ import {
   ElButton,
   ElImage,
   ElPopconfirm,
+  ElRate,
   ElSwitch,
   ElTag,
 } from 'element-plus';
@@ -132,6 +133,17 @@ setupVbenVxeTable({
           }
         }
         return h(ElSwitch, finallyProps);
+      },
+    });
+
+    vxeUI.renderer.add('CellRate', {
+      renderTableDefault({ props }, { column, row }) {
+        const value = get(row, column.field);
+        return h(ElRate, {
+          ...props,
+          modelValue: value,
+          disabled: true,
+        });
       },
     });
 
