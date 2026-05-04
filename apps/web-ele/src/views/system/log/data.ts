@@ -410,9 +410,8 @@ export function useErrorLogColumns<T = SystemLogApi.SysErrorLog>(
     {
       field: 'msg',
       title: '错误消息',
-      minWidth: 150,
+      minWidth: 100,
       showOverflow: true,
-      visible: false,
     },
     {
       field: 'traceId',
@@ -469,7 +468,6 @@ export function useErrorLogColumns<T = SystemLogApi.SysErrorLog>(
     {
       field: 'note',
       title: '备注',
-      minWidth: 50,
       showOverflow: true,
     },
   ];

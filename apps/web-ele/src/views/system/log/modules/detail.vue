@@ -14,6 +14,8 @@ const getTitle = computed(() => {
 });
 
 const [Modal, modalApi] = useVbenModal({
+  showConfirmButton: false,
+  cancelText: '关闭',
   onOpenChange(isOpen) {
     if (isOpen) {
       const data = modalApi.getData<SystemLogApi.SysErrorLog>();
@@ -61,7 +63,7 @@ const [Modal, modalApi] = useVbenModal({
         </div>
       </div>
       <div class="flex gap-3">
-        <span class="w-24 text-right text-gray-500 flex-shrink-0">错误栈信息：</span>
+        <span class="w-24 text-right text-gray-500 flex-shrink-0">错误信息：</span>
         <pre class="flex-1 text-xs text-gray-600 h-60 overflow-y-auto bg-gray-50 p-3 rounded whitespace-pre-wrap break-all">{{ detailData.stackInfo }}</pre>
       </div>
       <div class="flex gap-3">
