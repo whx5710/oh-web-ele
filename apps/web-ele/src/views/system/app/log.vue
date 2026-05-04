@@ -144,6 +144,7 @@ function batchDelete() {
   });
   deleteLog(logIds)
     .then(() => {
+      hideLoading?.close();
       ElMessage.success({
         message: '批量删除成功',
       });

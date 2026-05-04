@@ -42,6 +42,7 @@ function onDataDelete(row: SystemUserApi.SystemUser) {
   });
   unBindTenantUser(row.tenantId, [row.id])
     .then(() => {
+      hideLoading?.close();
       ElMessage.success({
         message: `用户${row.realName}解绑成功`,
       });

@@ -118,6 +118,7 @@ function onDelete(row: SystemAttachApi.SysAttach) {
   });
   deleteAttach([row.id])
     .then(() => {
+      hideLoading?.close();
       ElMessage.success({
         message: $t('ui.actionMessage.deleteSuccess', [row.name]),
       });
@@ -146,6 +147,7 @@ function batchDelete() {
   });
   deleteAttach(attachIds)
     .then(() => {
+      hideLoading?.close();
       ElMessage.success({
         message: '批量删除成功',
       });

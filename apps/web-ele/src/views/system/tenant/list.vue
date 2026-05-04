@@ -90,21 +90,22 @@ function onEdit(row: SystemTenantApi.SystemTenant) {
 }
 
 function onDelete(row: SystemTenantApi.SystemTenant) {
-  const hideLoading = ElMessage.loading({
-    content: $t('ui.actionMessage.deleting', [row.name]),
+  const hideLoading = ElMessage.info({
+    message: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
     key: 'action_process_msg',
   });
   deleteTenant(row.id)
     .then(() => {
+      hideLoading?.close();
       ElMessage.success({
-        content: $t('ui.actionMessage.deleteSuccess', [row.name]),
+        message: $t('ui.actionMessage.deleteSuccess', [row.name]),
         key: 'action_process_msg',
       });
       onRefresh();
     })
     .catch(() => {
-      hideLoading();
+      hideLoading?.close();
     });
 }
 

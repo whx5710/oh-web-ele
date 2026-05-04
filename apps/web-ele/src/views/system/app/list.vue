@@ -108,6 +108,7 @@ function onDelete(row: SystemAppApi.App) {
   });
   deleteApp(row.id)
     .then(() => {
+      hideLoading?.close();
       ElMessage.success({
         message: $t('ui.actionMessage.deleteSuccess', [row.name]),
       });
