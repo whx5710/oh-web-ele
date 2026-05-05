@@ -25,6 +25,7 @@ export function useSchema(): VbenFormSchema[] {
         labelField: 'name',
         valueField: 'id',
         childrenField: 'children',
+        checkStrictly: true, // 点击父节点时只会展开/折叠子节点，不能直接选中父节点
       },
       fieldName: 'parentId',
       label: $t('system.dept.parentDept'),
