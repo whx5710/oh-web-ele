@@ -196,14 +196,14 @@ function deleteLogs(command: string) {
             <ElButton
               class="mr-2"
               type="danger"
-              v-access:code="['sys:log:error:delete']"
+              v-access:code="['sys:error:log:delete']"
             >
               <IconifyIcon icon="carbon:row-delete" class="mr-1" /> 删除
             </ElButton>
           </template>
         </ElPopconfirm>
         <ElDropdown class="mr-2" @command="deleteLogs">
-          <ElButton v-access:code="['sys:log:error:delete']">
+          <ElButton v-access:code="['sys:error:log:delete']">
             按时间删除
             <IconifyIcon icon="ant-design:down-outlined" class="ml-1" />
           </ElButton>
