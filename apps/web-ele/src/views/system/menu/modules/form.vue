@@ -324,6 +324,7 @@ const schema: VbenFormSchema[] = [
     component: 'InputNumber',
     fieldName: 'sort',
     label: '排序',
+    defaultValue: 1,
     componentProps: {
       style: 'width: 100%',
       min: 1,
