@@ -419,6 +419,10 @@ export function useLogColumns(): VxeTableGridOptions['columns'] {
       },
     },
     {
+      field: 'note',
+      title: '备注',
+    },
+    {
       field: 'createTime',
       width: 180,
       title: '创建时间',

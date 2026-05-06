@@ -39,6 +39,7 @@ export namespace SystemAppApi {
     resultMsg: string;
     state: string;
     createTime: string;
+    note: string;
   }
 }
 
