@@ -174,17 +174,17 @@ export function useColumns<T = SystemUserApi.SystemUser>(
     {
       field: 'deptName',
       title: '部门',
-      width: 120,
+      minWidth: 120,
     },
     {
       field: 'postName',
       title: '岗位',
-      width: 120,
+      minWidth: 120,
     },
     {
       field: 'tenantName',
       title: '租户',
-      width: 120,
+      minWidth: 120,
     },
     {
       field: 'status',
