@@ -175,3 +175,16 @@ export async function tokenList(userId: string) {
     `/${sysApi}/monitor/user/tokenList/${userId}`,
   );
 }
+
+/**
+ * 获取锁定用户分页列表
+ * @param params 查询参数
+ */
+export async function getClockUserPage(params: Recordable<any>) {
+  return requestClient.get<Array<SystemUserApi.SystemUser>>(
+    `/${sysApi}/sys/user/clockPage`,
+    {
+      params,
+    },
+  );
+}

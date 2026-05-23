@@ -140,6 +140,104 @@ export function useMonitorGridFormSchema(): VbenFormSchema[] {
   ];
 }
 
+// 锁定用户搜索表单
+export function useClockGridFormSchema(): VbenFormSchema[] {
+  return [
+    {
+      component: 'Input',
+      fieldName: 'username',
+      label: '用户名',
+      componentProps: {
+        clearable: true,
+        placeholder: '请输入用户名查询',
+      },
+    },
+  ];
+}
+
+// 锁定用户表格列
+export function useClockColumns<T = SystemUserApi.SystemUser>(
+  onActionClick: OnActionClickFn<T>,
+): VxeTableGridOptions['columns'] {
+  return [
+    { title: '序号', type: 'seq', width: 50 },
+    {
+      field: 'id',
+      title: 'ID',
+      width: 100,
+      visible: false,
+    },
+    {
+      field: 'username',
+      title: '用户名',
+      width: 120,
+    },
+    {
+      field: 'realName',
+      title: '真实姓名',
+      width: 120,
+    },
+    {
+      field: 'mobile',
+      title: '手机号',
+      width: 120,
+    },
+    {
+      field: 'email',
+      title: '邮箱',
+      width: 150,
+    },
+    {
+      field: 'deptName',
+      title: '部门',
+      minWidth: 120,
+    },
+    {
+      field: 'tenantName',
+      title: '租户',
+      minWidth: 120,
+    },
+    {
+      field: 'status',
+      title: '状态',
+      width: 80,
+      cellRender: {
+        name: 'CellTag',
+        options: [
+          { type: 'warning', label: '禁用', value: 0 },
+          { type: 'success', label: '启用', value: 1 },
+        ],
+      },
+    },
+    {
+      field: 'createTime',
+      title: '创建时间',
+      width: 160,
+    },
+    {
+      align: 'center',
+      cellRender: {
+        attrs: {
+          nameField: 'realName',
+          nameTitle: '用户',
+          onClick: onActionClick,
+        },
+        name: 'CellOperation',
+        options: [
+          {
+            code: 'unlock',
+            text: '解锁',
+          },
+        ],
+      },
+      field: 'operation',
+      fixed: 'right',
+      title: '操作',
+      width: 100,
+    },
+  ];
+}
+
 export function useColumns<T = SystemUserApi.SystemUser>(
   onActionClick: OnActionClickFn<T>,
 ): VxeTableGridOptions['columns'] {
