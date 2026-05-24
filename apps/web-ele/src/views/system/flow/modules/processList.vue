@@ -189,14 +189,6 @@ const [NodeGrid, nodeGridApi] = useVbenVxeGrid({
     submitOnChange: true,
     showCollapseButton: false, // 是否显示展开/折叠
   },
-  toolbarConfig: {
-    custom: true,
-    export: false,
-    refresh: true,
-    refreshOptions: { code: 'query' },
-    search: true,
-    zoom: true,
-  },
   // showSearchForm: false, // 默认隐藏搜索表单
 });
 

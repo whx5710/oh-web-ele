@@ -1,14 +1,13 @@
 <script lang="ts" setup>
 import type { SystemTenantApi } from '#/api/system/tenant';
 
-import { h, ref } from 'vue';
+import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 import { useDebounceFn } from '@vueuse/core';
 
 import { useVbenForm } from '#/adapter/form';
 import { bindTenantUser } from '#/api/system/user';
-import { ElLoading } from 'element-plus';
 import { getUserPage, type SystemUserApi } from '#/api/system/user';
 
 const emit = defineEmits(['success']);

@@ -148,8 +148,7 @@ export function useColumns<T = SystemRoleApi.SystemRole>(
 
 // 数据表格
 export function useUserColumns<T = SystemTenantApi.SystemTenant>(
-  onActionClick: OnActionClickFn<T>,
-  // onStatusChange?: (newStatus: any, row: T) => PromiseLike<boolean | undefined>,
+  _onActionClick: OnActionClickFn<T>,
 ): VxeTableGridOptions['columns'] {
   return [
     { title: '序号', type: 'seq', width: 50 },

@@ -66,7 +66,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
   } as VxeTableGridOptions<SystemUserApi.SystemUser>,
 });
 
-function onActionClick(e: OnActionClickParams<SystemUserApi.SystemUser>) {}
+function onActionClick(_e: OnActionClickParams<SystemUserApi.SystemUser>) {}
 const keyWord = ref('')
 watch(keyWord, () => {
   onSearch()

@@ -235,7 +235,7 @@ const CustomTranslateModule = {
   translate: ['value', function(template: string, replacements?: Record<string, string>) {
     replacements = replacements || {};
     const translated = combinedZhTranslations[template as keyof typeof combinedZhTranslations] || template;
-    return translated.replace(/{([^}]+)}/g, (_, key) => {
+    return translated.replace(/{([^}]+)}/g, (_: string, key: string) => {
       return replacements![key] || '{' + key + '}';
     });
   }]
@@ -269,9 +269,9 @@ const handleSelect = async (value: string) => {
     
     if (res.list && res.list.length > 0) {
       editFlag.value = 'edit';
-      const flow: BpmnFlowApi.BpmnFlow = res.list[0];
+      const flow = res.list[0] as BpmnFlowApi.BpmnFlow;
       // 加载流程 XML 到模型器中
-      flowId.value = flow.id;
+      flowId.value = flow.id || '';
       if (flow.xml) {
         importModel(flow.xml);
       } else {
@@ -382,10 +382,7 @@ const saveModel = async () => {
     const { xml } = await modeler.value.saveXML({ format: true });
     
     // 获取 SVG 内容
-    const { svg } = await modeler.value.saveSVG({
-      fit: true,
-      background: '#ffffff'
-    });
+    const { svg } = await modeler.value.saveSVG();
     
     // 获取流程信息
     let processId = 'process';
@@ -393,7 +390,7 @@ const saveModel = async () => {
     let processNote = '';
     
     // 获取流程元素
-    const elementRegistry = modeler.value.get('elementRegistry');
+    const elementRegistry = modeler.value.get('elementRegistry') as any;
     const processElements = elementRegistry.filter((element: any) => element.type === 'bpmn:Process');
     
     if (processElements.length > 0) {
@@ -431,8 +428,8 @@ const saveModel = async () => {
             id: flowId.value,
             keyCode: processId,
             name: processName,
-            xml: xml,
-            svgStr: svg,
+            xml: xml || '',
+            svgStr: svg || '',
             versionTag: '1.0.0',
             note: processNote || '流程设计器创建'
           };
@@ -447,8 +444,9 @@ const saveModel = async () => {
             id: flowId.value,
             keyCode: processId,
             name: processName,
-            xml: xml,
-            svgStr: svg,
+            xml: xml || '',
+            svgStr: svg || '',
+            versionTag: '1.0.0',
             note: processNote || '流程设计器创建'
           };
           updateFlow(params).then(() => {
@@ -466,7 +464,7 @@ const exportAsImage = async () => {
   if (!modeler.value) return;
 
   let processId = 'process';
-  const elementRegistry = modeler.value.get('elementRegistry');
+  const elementRegistry = modeler.value.get('elementRegistry') as any;
   const processElements = elementRegistry.filter((element: any) => element.type === 'bpmn:Process');
   if (processElements.length > 0) {
     processId = processElements[0].id;
@@ -474,12 +472,7 @@ const exportAsImage = async () => {
 
   try {
     // 导出为 SVG，使用 fit: true 确保导出整个流程图
-    const { svg } = await modeler.value.saveSVG({
-      fit: true,  // 适应整个流程图
-      width: 1200,  // 设置宽度
-      height: 800,  // 设置高度
-      background: '#ffffff'  // 设置背景色
-    });
+    const { svg } = await modeler.value.saveSVG();
     
     // 直接下载 SVG 文件
     downloadFile(svg, `${processId}.svg`, 'image/svg+xml');
@@ -529,7 +522,9 @@ const handleFileUpload = (event: Event) => {
     const content = e.target?.result as string;
     importModel(content);
   };
-  reader.readAsText(file);
+  if (file) {
+    reader.readAsText(file);
+  }
 };
 
 // 打开流程文件
@@ -565,7 +560,7 @@ const handleCopyXML = async () => {
     const { xml } = await modeler.value.saveXML({ format: true });
     
     // 使用 Clipboard API 复制到粘贴板
-    await navigator.clipboard.writeText(xml);
+    await navigator.clipboard.writeText(xml || '');
     ElMessage.success('XML 已复制到粘贴板');
   } catch (error) {
     console.error('复制 XML 失败:', error);
@@ -576,7 +571,7 @@ const handleCopyXML = async () => {
 // 放大流程
 const zoomIn = () => {
   if (!modeler.value) return;
-  const canvas = modeler.value.get('canvas');
+  const canvas = modeler.value.get('canvas') as any;
   const viewbox = canvas.viewbox();
   const newScale = viewbox.scale * 1.1;
   canvas.viewbox({ x: viewbox.x, y: viewbox.y, width: viewbox.width / 1.1, height: viewbox.height / 1.1, scale: newScale });
@@ -585,7 +580,7 @@ const zoomIn = () => {
 // 缩小流程
 const zoomOut = () => {
   if (!modeler.value) return;
-  const canvas = modeler.value.get('canvas');
+  const canvas = modeler.value.get('canvas') as any;
   const viewbox = canvas.viewbox();
   const newScale = viewbox.scale * 0.9;
   canvas.viewbox({ x: viewbox.x, y: viewbox.y, width: viewbox.width / 0.9, height: viewbox.height / 0.9, scale: newScale });
@@ -594,7 +589,7 @@ const zoomOut = () => {
 // 重置缩放
 const zoomReset = () => {
   if (!modeler.value) return;
-  const canvas = modeler.value.get('canvas');
+  const canvas = modeler.value.get('canvas') as any;
   canvas.viewbox({ x: 0, y: 0, width: 1000, height: 800, scale: 1 });
 };
 

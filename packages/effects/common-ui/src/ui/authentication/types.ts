@@ -1,5 +1,21 @@
 interface AuthenticationProps {
   /**
+   * @zh_CN 验证码key
+   */
+  captchaKey?: string;
+  /**
+   * @zh_CN 验证码Base64
+   */
+  captchaBase64?: string;
+  /**
+   * @zh_CN 验证码长度
+   */
+  captchaLength?: number;
+  /**
+   * @zh_CN 是否显示验证码
+   */
+  showCaptcha?: boolean;
+  /**
    * @zh_CN 验证码登录路径
    */
   codeLoginPath?: string;

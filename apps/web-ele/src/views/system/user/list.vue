@@ -171,7 +171,6 @@ const getDeptTree = (params: Recordable<any>) => {
       children: data,
     });
     treeData.value = tmpData;
-    treeData.value = tmpData;
     generateList(treeData.value);
     setTimeout(() => {
       if(expandedFlag.value){
@@ -223,7 +222,6 @@ watch(searchValue, (value) => {
       getParentKey(item.id);
     }
   });
-  searchValue.value = value;
   const params = [...new Set(expandedKeys)];
   getDeptTree({ deptIds: params });
   expandedParams.value = params.map((item) => item.toString());

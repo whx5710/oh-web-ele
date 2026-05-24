@@ -2,12 +2,11 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemAttachApi } from '#/api/system/attachment';
 
-import { h, ref } from 'vue';
+import { ref } from 'vue';
 
 import { useUserStore } from '@vben/stores';
 
 import { useDebounceFn } from '@vueuse/core';
-import { ElLoading } from 'element-plus';
 
 import { getTenantPage } from '#/api/system/tenant';
 

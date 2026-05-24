@@ -5,7 +5,7 @@ import type {
 } from '#/adapter/vxe-table';
 import type { SystemLogApi } from '#/api/system/log';
 
-import { h, ref } from 'vue';
+import { ref } from 'vue';
 
 import { useUserStore } from '@vben/stores';
 

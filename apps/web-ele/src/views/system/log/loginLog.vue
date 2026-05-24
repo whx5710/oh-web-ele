@@ -145,7 +145,7 @@ function batchDelete() {
     type: 'loading',
     message: '批量删除',
     duration: 0,
-  });
+  } as any);
   deleteLoginLog(logIds)
     .then(() => {
       hideLoading.close();
