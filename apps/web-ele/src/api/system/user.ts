@@ -188,3 +188,13 @@ export async function getClockUserPage(params: Recordable<any>) {
     },
   );
 }
+
+/**
+ * 解锁用户
+ * @param userName 用户名
+ */
+export async function unlockUser(userName: string) {
+  return requestClient.get(
+    `/${sysApi}/sys/user/unlock/${userName}`,
+  );
+}

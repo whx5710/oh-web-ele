@@ -7,8 +7,10 @@ import type { SystemUserApi } from '#/api/system/user';
 
 import { Page } from '@vben/common-ui';
 
+import { ElMessage, ElMessageBox } from 'element-plus';
+
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getClockUserPage } from '#/api/system/user';
+import { getClockUserPage, unlockUser } from '#/api/system/user';
 
 import { useClockColumns, useClockGridFormSchema } from './data';
 
@@ -54,10 +56,31 @@ function onActionClick({
 }: OnActionClickParams<SystemUserApi.SystemUser>) {
   switch (code) {
     case 'unlock': {
-      console.warn('解锁', row);
+      handleUnlock(row);
       break;
     }
   }
+}
+
+function handleUnlock(row: SystemUserApi.SystemUser) {
+  ElMessageBox.confirm(
+    `是否解锁用户 ${row.realName}(${row.username})？`,
+    '解锁确认',
+    {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning',
+    },
+  )
+    .then(() => {
+      unlockUser(row.username).then(() => {
+        ElMessage.success('解锁成功');
+        onRefresh();
+      });
+    })
+    .catch(() => {
+      console.warn('已取消解锁');
+    });
 }
 
 function onRefresh() {
