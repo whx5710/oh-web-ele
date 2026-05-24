@@ -145,11 +145,12 @@ export function useClockGridFormSchema(): VbenFormSchema[] {
   return [
     {
       component: 'Input',
-      fieldName: 'username',
-      label: '用户名',
+      fieldName: 'keyWord',
+      label: '关键字',
       componentProps: {
         clearable: true,
-        placeholder: '请输入用户名查询',
+        placeholder: '请输入关键字搜索',
+        autocomplete: 'new-keyWord',
       },
     },
   ];
