@@ -77,22 +77,25 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 // 下线
-function forceLogout(userId: string, userName: string) {
-  ElMessageBox.confirm(
-    `是否下线 ${userName}`,
-    '是否下线',
-    {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning',
+async function forceLogout(userId: string, userName: string) {
+  try {
+    await ElMessageBox.confirm(
+      `是否下线 ${userName}`,
+      '是否下线',
+      {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      }
+    );
+    await forceLogoutAll(userId);
+    ElMessage.success('下线成功');
+    onRefresh();
+  } catch (error: any) {
+    if (error !== 'cancel') {
+      ElMessage.error('下线失败');
     }
-  ).then(() => {
-    forceLogoutAll(userId).then(() => {
-      onRefresh();
-    });
-  }).catch(() => {
-    console.warn('已取消');
-  });
+  }
 }
 // 刷新列表
 function onRefresh() {

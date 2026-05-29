@@ -43,10 +43,8 @@ const [FormModal, formModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
-// const showLine = ref<boolean>(true);
-const queryParam = ref();
+const queryParam = ref<Recordable<any>>({});
 const searchValue = ref<string>('');
-// const autoExpandParent = ref<boolean>(true);
 /**
  * 编辑用户
  * @param row
@@ -68,17 +66,16 @@ function onCreate() {
  * 删除用户
  * @param row
  */
-function onDelete(row: SystemUserApi.SystemUser) {
-  deleteUser(row.id)
-    .then(() => {
-      ElMessage.success({
-        message: $t('ui.actionMessage.deleteSuccess', [row.realName]),
-      });
-      refreshGrid();
-    })
-    .catch(() => {
-      console.log('删除失败');
+async function onDelete(row: SystemUserApi.SystemUser) {
+  try {
+    await deleteUser(row.id);
+    ElMessage.success({
+      message: $t('ui.actionMessage.deleteSuccess', [row.realName]),
     });
+    refreshGrid();
+  } catch (error) {
+    ElMessage.error($t('ui.actionMessage.deleteFailed', [row.realName]));
+  }
 }
 
 /**
@@ -162,14 +159,14 @@ const treeData = ref([]);
 const expandedParams = ref<string[]>([]) // 受控展开状态
 const expandedFlag = ref(true)
 // 加载树形单位信息
-const getDeptTree = (params: Recordable<any>) => {
-  getDeptTreeList(params).then((data) => {
-    const tmpData = reactive([] as any);
-    tmpData.push({
+const getDeptTree = async (params: Recordable<any>) => {
+  try {
+    const data = await getDeptTreeList(params);
+    const tmpData = [{
       id: '0',
       name: '全部',
       children: data,
-    });
+    }];
     treeData.value = tmpData;
     generateList(treeData.value);
     setTimeout(() => {
@@ -178,7 +175,9 @@ const getDeptTree = (params: Recordable<any>) => {
         expandedParams.value = ['0']
       }
     }, 100);
-  });
+  } catch (error) {
+    ElMessage.error('加载部门树失败');
+  }
 };
 getDeptTree({});
 
@@ -216,6 +215,12 @@ const generateList = (data: any[]) => {
   }
 };
 watch(searchValue, (value) => {
+  if (!value) {
+    expandedKeys = [];
+    expandedParams.value = [];
+    getDeptTree({});
+    return;
+  }
   expandedKeys = [];
   dataList.forEach((item) => {
     if (item.title.includes(value)) {
@@ -225,27 +230,22 @@ watch(searchValue, (value) => {
   const params = [...new Set(expandedKeys)];
   getDeptTree({ deptIds: params });
   expandedParams.value = params.map((item) => item.toString());
-  expandedFlag.value = false
+  expandedFlag.value = false;
 });
 // 批量导出
-function batchExport() {
-  gridApi.formApi.getValues().then((res) => {
-    const params = res;
-    // if (res.startTime) {
-    //   params.startTime = `${res.startTime} 00:00:00`;
-    // }
-    // if (res.endTime) {
-    //   params.endTime = `${res.endTime} 23:59:59`;
-    // }
-    userExport(params).then((res) => {
-      const disposition = res.headers['content-disposition'];
-      const filename = disposition.replaceAll('attachment;filename=', '');
-      downloadFileFromBlob({
-        source: res.data,
-        fileName: decodeURI(filename),
-      });
+async function batchExport() {
+  try {
+    const params = await gridApi.formApi.getValues();
+    const res = await userExport(params);
+    const disposition = res.headers['content-disposition'];
+    const filename = disposition?.replaceAll('attachment;filename=', '') || 'export.xlsx';
+    downloadFileFromBlob({
+      source: res.data,
+      fileName: decodeURI(filename),
     });
-  });
+  } catch (error) {
+    ElMessage.error('导出失败');
+  }
 }
 </script>
 <template>

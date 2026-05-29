@@ -33,17 +33,16 @@ export const useAuthStore = defineStore('auth', () => {
     // 异步处理用户登录操作并获取 accessToken
     try {
       loginLoading.value = true;
-      loginApi(params).then((res) => {
-        if (res.success && res.code === 0) {
-          return userByToken(
-            res.data.accessToken,
-            res.data.refreshToken,
-            onSuccess,
-          );
-        } else {
-          ElMessage.error(res.msg);
-        }
-      });
+      const res = await loginApi(params);
+      if (res.success && res.code === 0) {
+        await userByToken(
+          res.data.accessToken,
+          res.data.refreshToken,
+          onSuccess,
+        );
+      } else {
+        ElMessage.error(res.msg);
+      }
     } finally {
       loginLoading.value = false;
     }

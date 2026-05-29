@@ -14,7 +14,6 @@ import { $t } from '#/locales';
 import { z } from '#/adapter/form';
 
 const keyWord = ref('');
-
 const fetching = ref(false);
 const userStore = useUserStore();
 
@@ -28,116 +27,59 @@ function fetchRemoteOptions(keyWord: Record<string, any>) {
   });
 }
 
+// 创建租户选择表单项
+function createTenantSelectSchema(): VbenFormSchema {
+  return {
+    component: 'ApiSelect',
+    componentProps: () => ({
+      afterFetch: (res: { list: Array<{ tenantId: string; tenantName: string }> }) => {
+        fetching.value = false;
+        return res.list.map((item) => ({
+          label: item.tenantName,
+          value: item.tenantId,
+        }));
+      },
+      api: fetchRemoteOptions,
+      clearable: true,
+      disabled: userStore.userInfo?.superAdmin !== 1,
+      filterable: true,
+      remote: true,
+      remoteMethod: useDebounceFn((value: string) => {
+        keyWord.value = value;
+      }, 300),
+      params: {
+        keyWord: keyWord.value || undefined,
+      },
+    }),
+    fieldName: 'tenantId',
+    label: '租户',
+    renderComponentContent: () => ({
+      loading: fetching.value,
+    }),
+  };
+}
+
+// 创建关键字输入表单项
+function createKeywordInputSchema(): VbenFormSchema {
+  return {
+    component: 'Input',
+    fieldName: 'keyWord',
+    label: '关键字',
+    componentProps: {
+      clearable: true,
+      placeholder: '请输入关键字搜索',
+    },
+  };
+}
+
 // 搜索表单
 export function useGridFormSchema(): VbenFormSchema[] {
-  return [
-    {
-      component: 'Input',
-      fieldName: 'keyWord',
-      label: '关键字',
-      componentProps: {
-        clearable: true,
-        placeholder: '请输入关键字搜索',
-      },
-    },
-    {
-      component: 'ApiSelect',
-      // 对应组件的参数
-      componentProps: () => {
-        return {
-          // 接口转options格式 { tenantId: string; tenantName: string }[]
-          afterFetch: (res: any) => {
-            fetching.value = false;
-            const data: { name: string; path: string }[] = res.list;
-            return data.map((item: any) => ({
-              label: item.tenantName,
-              value: item.tenantId,
-            }));
-          },
-          api: fetchRemoteOptions,
-          clearable: true,
-          disabled: userStore.userInfo?.superAdmin !== 1,
-          // 禁止本地过滤
-          filterable: true,
-          remote: true,
-          // 搜索词变化时记录下来， 使用useDebounceFn防抖。
-          remoteMethod: useDebounceFn((value: string) => {
-            keyWord.value = value;
-          }, 300),
-          // 远程搜索参数。当搜索词变化时，params也会更新
-          params: {
-            keyWord: keyWord.value || undefined,
-          },
-        };
-      },
-      // 字段名
-      fieldName: 'tenantId',
-      // 界面显示的label
-      label: '租户',
-      renderComponentContent: () => {
-        return {
-          loading: fetching.value,
-        };
-      },
-      // rules: 'selectRequired',
-    },
-  ];
+  return [createKeywordInputSchema(), createTenantSelectSchema()];
 }
 
 // 在线用户搜索表单
 export function useMonitorGridFormSchema(): VbenFormSchema[] {
-  return [
-    {
-      component: 'Input',
-      fieldName: 'keyWord',
-      label: '关键字',
-      componentProps: {
-        clearable: true,
-        placeholder: '请输入关键字搜索',
-      },
-    },
-    {
-      component: 'ApiSelect',
-      // 对应组件的参数
-      componentProps: () => {
-        return {
-          // 接口转options格式 { tenantId: string; tenantName: string }[]
-          afterFetch: (res: any) => {
-            fetching.value = false;
-            const data: { name: string; path: string }[] = res.list;
-            return data.map((item: any) => ({
-              label: item.tenantName,
-              value: item.tenantId,
-            }));
-          },
-          api: fetchRemoteOptions,
-          clearable: true,
-          disabled: userStore.userInfo?.superAdmin !== 1,
-          // 禁止本地过滤
-          filterable: true,
-          remote: true,
-          // 搜索词变化时记录下来， 使用useDebounceFn防抖。
-          remoteMethod: useDebounceFn((value: string) => {
-            keyWord.value = value;
-          }, 300),
-          // 远程搜索参数。当搜索词变化时，params也会更新
-          params: {
-            keyWord: keyWord.value || undefined,
-          },
-        };
-      },
-      // 字段名
-      fieldName: 'tenantId',
-      // 界面显示的label
-      label: '租户',
-      renderComponentContent: () => {
-        return {
-          loading: fetching.value,
-        };
-      },
-      // rules: 'selectRequired',
-    },
-  ];
+  return [createKeywordInputSchema(), createTenantSelectSchema()];
 }
 
 // 锁定用户搜索表单

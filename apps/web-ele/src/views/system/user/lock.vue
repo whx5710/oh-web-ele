@@ -63,25 +63,25 @@ function onActionClick({
   }
 }
 
-function handleUnlock(row: SystemUserApi.SystemUser) {
-  ElMessageBox.confirm(
-    `是否解锁用户 ${row.realName}(${row.username})？`,
-    '解锁确认',
-    {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning',
-    },
-  )
-    .then(() => {
-      unlockUser(row.username).then(() => {
-        ElMessage.success('解锁成功');
-        onRefresh();
-      });
-    })
-    .catch(() => {
-      console.warn('已取消解锁');
-    });
+async function handleUnlock(row: SystemUserApi.SystemUser) {
+  try {
+    await ElMessageBox.confirm(
+      `是否解锁用户 ${row.realName}(${row.username})？`,
+      '解锁确认',
+      {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      },
+    );
+    await unlockUser(row.username);
+    ElMessage.success('解锁成功');
+    onRefresh();
+  } catch (error: any) {
+    if (error !== 'cancel') {
+      ElMessage.error('解锁失败');
+    }
+  }
 }
 
 function onRefresh() {
