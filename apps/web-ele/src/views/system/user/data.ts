@@ -280,18 +280,18 @@ export function useMonitorColumns<T = SystemUserApi.SystemUser>(
     {
       field: 'id',
       title: 'ID',
-      width: 100,
+      width: 110,
       visible: false,
     },
     {
       field: 'username',
       title: '用户名',
-      width: 120,
+      minWidth: 100,
     },
     {
       field: 'realName',
       title: '真实姓名',
-      width: 120,
+      minWidth: 100,
     },
     {
       field: 'tenantName',
@@ -300,23 +300,22 @@ export function useMonitorColumns<T = SystemUserApi.SystemUser>(
     },
     {
       field: 'ip',
-      title: 'IP',
-      width: 120,
+      title: 'IP'
     },
     {
       field: 'address',
       title: '登录地址',
-      width: 150,
+      minWidth: 120,
     },
     {
       field: 'userAgent',
       title: 'User Agent',
-      width: 200,
+      minWidth: 180,
     },
     {
       field: 'loginTime',
       title: '登录时间',
-      width: 160,
+      minWidth: 160,
     },
     {
       align: 'center',
