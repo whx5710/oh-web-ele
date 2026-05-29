@@ -40,8 +40,12 @@ const componentKeys: string[] = Object.keys(
 )
   .filter((item) => !item.includes('/modules/'))
   .map((v) => {
-    const path = v.replace('../../views/', '/');
-    return path.endsWith('.vue') ? path.slice(0, -4) : path;
+    const normalizedPath = v
+      .replace(/^\.\.\/\.\.\/views\//, '/')
+      .replace(/^views\//, '/');
+    return normalizedPath.endsWith('.vue')
+      ? normalizedPath.slice(0, -4)
+      : normalizedPath;
   });
 
 export { accessRoutes, componentKeys, coreRouteNames, routes };
