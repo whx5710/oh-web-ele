@@ -35,8 +35,10 @@ export async function loginApi(data: AuthApi.LoginParams) {
  * 验证码
  */
 export async function getCaptcha() {
-  const platformKey = 'PC'
-  return requestClient.get(`/${sysApi}/sys/auth/captcha?platformKey=${platformKey}`);
+  const platformKey = 'PC';
+  return requestClient.get(
+    `/${sysApi}/sys/auth/captcha?platformKey=${platformKey}`,
+  );
 }
 
 /**

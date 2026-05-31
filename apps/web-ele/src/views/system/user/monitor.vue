@@ -7,7 +7,7 @@ import type { SystemUserApi } from '#/api/system/user';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
-import { ElMessageBox } from 'element-plus';
+import { ElMessage, ElMessageBox } from 'element-plus';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { forceLogoutAll, onlineUserPage } from '#/api/system/user';
@@ -79,15 +79,11 @@ const [FormModal, formModalApi] = useVbenModal({
 // 下线
 async function forceLogout(userId: string, userName: string) {
   try {
-    await ElMessageBox.confirm(
-      `是否下线 ${userName}`,
-      '是否下线',
-      {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
-      }
-    );
+    await ElMessageBox.confirm(`是否下线 ${userName}`, '是否下线', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning',
+    });
     await forceLogoutAll(userId);
     ElMessage.success('下线成功');
     onRefresh();

@@ -7,7 +7,7 @@ import type {
 } from '#/adapter/vxe-table';
 import type { SystemUserApi } from '#/api/system/user';
 
-import { reactive, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
 
 import { Page, Tree, useVbenModal } from '@vben/common-ui';
 import { IconifyIcon, Plus } from '@vben/icons';
@@ -73,7 +73,7 @@ async function onDelete(row: SystemUserApi.SystemUser) {
       message: $t('ui.actionMessage.deleteSuccess', [row.realName]),
     });
     refreshGrid();
-  } catch (error) {
+  } catch {
     ElMessage.error($t('ui.actionMessage.deleteFailed', [row.realName]));
   }
 }
@@ -155,27 +155,34 @@ function refreshGrid() {
   getDeptTree({});
 }
 // 部门树
-const treeData = ref([]);
-const expandedParams = ref<string[]>([]) // 受控展开状态
-const expandedFlag = ref(true)
+interface TreeNode {
+  id: string;
+  name: string;
+  children?: TreeNode[];
+}
+const treeData = ref<TreeNode[]>([]);
+const expandedParams = ref<string[]>([]); // 受控展开状态
+const expandedFlag = ref(true);
 // 加载树形单位信息
 const getDeptTree = async (params: Recordable<any>) => {
   try {
     const data = await getDeptTreeList(params);
-    const tmpData = [{
-      id: '0',
-      name: '全部',
-      children: data,
-    }];
+    const tmpData = [
+      {
+        id: '0',
+        name: '全部',
+        children: data,
+      },
+    ];
     treeData.value = tmpData;
     generateList(treeData.value);
     setTimeout(() => {
-      if(expandedFlag.value){
+      if (expandedFlag.value) {
         // 展开-延迟执行
-        expandedParams.value = ['0']
+        expandedParams.value = ['0'];
       }
     }, 100);
-  } catch (error) {
+  } catch {
     ElMessage.error('加载部门树失败');
   }
 };
@@ -238,12 +245,13 @@ async function batchExport() {
     const params = await gridApi.formApi.getValues();
     const res = await userExport(params);
     const disposition = res.headers['content-disposition'];
-    const filename = disposition?.replaceAll('attachment;filename=', '') || 'export.xlsx';
+    const filename =
+      disposition?.replaceAll('attachment;filename=', '') || 'export.xlsx';
     downloadFileFromBlob({
       source: res.data,
       fileName: decodeURI(filename),
     });
-  } catch (error) {
+  } catch {
     ElMessage.error('导出失败');
   }
 }
@@ -260,7 +268,6 @@ async function batchExport() {
             clearable
           />
           <Tree
-            ref="deptTreeRef"
             :tree-data="treeData"
             bordered
             :transition="false"
@@ -321,7 +328,8 @@ async function batchExport() {
 .messageIndex {
   z-index: 99 !important;
 }
+
 .contentPage {
-  padding-left: 0rem !important;
+  padding-left: 0 !important;
 }
 </style>

@@ -134,7 +134,7 @@ export function useColumns<T = SystemRoleApi.SystemRole>(
           },
           {
             text: '查看用户',
-            code: 'viewUser' // 查看用户
+            code: 'viewUser', // 查看用户
           },
         ],
       },

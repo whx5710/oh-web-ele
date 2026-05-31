@@ -10,6 +10,7 @@ import { Page, useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { downloadFileFromBlob } from '@vben/utils';
 
+import dayjs from 'dayjs';
 import {
   ElButton,
   ElDropdown,
@@ -19,7 +20,6 @@ import {
   ElMessageBox,
   ElPopconfirm,
 } from 'element-plus';
-import dayjs from 'dayjs';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -29,8 +29,8 @@ import {
   getErrorLogPage,
 } from '#/api/system/log';
 
-import Detail from './modules/detail.vue';
 import { useErrorLogColumns, useErrorLogGridFormSchema } from './data';
+import Detail from './modules/detail.vue';
 
 const fileMap = new Map();
 
@@ -74,7 +74,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
   gridEvents,
   showSearchForm: false,
   formOptions: {
-    fieldMappingTime: [['errTime', ['startErrTime', 'endErrTime'], 'YYYY-MM-DD HH:mm:ss']],
+    fieldMappingTime: [
+      ['errTime', ['startErrTime', 'endErrTime'], 'YYYY-MM-DD HH:mm:ss'],
+    ],
     schema: useErrorLogGridFormSchema(),
     submitOnChange: true,
     showCollapseButton: false,

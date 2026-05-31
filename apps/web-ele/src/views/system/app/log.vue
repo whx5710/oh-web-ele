@@ -9,16 +9,16 @@ import { Page } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { downloadFileFromBlob } from '@vben/utils';
 
+import dayjs from 'dayjs';
 import {
   ElButton,
   ElDropdown,
-  ElDropdownMenu,
   ElDropdownItem,
+  ElDropdownMenu,
   ElMessage,
   ElMessageBox,
   ElPopconfirm,
 } from 'element-plus';
-import dayjs from 'dayjs';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -171,19 +171,21 @@ function deleteLogs(command: string) {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
       type: 'warning',
-    }).then(() => {
-      const date = new Date();
-      date.setDate(date.getDate() - Number(command));
-      const formattedDate = dayjs(date).format('YYYY-MM-DD HH:mm:ss');
-      deleteByDate(formattedDate).then(() => {
-        ElMessage.success({
-          message: '删除成功',
+    })
+      .then(() => {
+        const date = new Date();
+        date.setDate(date.getDate() - Number(command));
+        const formattedDate = dayjs(date).format('YYYY-MM-DD HH:mm:ss');
+        deleteByDate(formattedDate).then(() => {
+          ElMessage.success({
+            message: '删除成功',
+          });
+          onRefresh();
         });
-        onRefresh();
+      })
+      .catch(() => {
+        console.warn('已取消');
       });
-    }).catch(() => {
-      console.warn('已取消');
-    });
   }
 }
 </script>

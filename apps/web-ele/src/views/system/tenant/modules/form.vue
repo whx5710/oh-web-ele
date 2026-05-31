@@ -22,7 +22,7 @@ const getTitle = computed(() => {
     : $t('ui.actionTitle.create', ['租户']);
 });
 
-const schemaData: VbenFormSchema[] =  useSchema();
+const schemaData: VbenFormSchema[] = useSchema();
 
 const [Form, formApi] = useVbenForm({
   // 垂直布局，label和input在不同行，值为vertical
@@ -63,13 +63,13 @@ const [Modal, modalApi] = useVbenModal({
           data.parentId = undefined;
         }
         formData.value = data;
-        if(formData.value?.id){
+        if (formData.value?.id) {
           schemaData[0] = {
             component: 'Input',
             fieldName: 'tenantId',
             label: '租户编码',
-            disabled: true
-          }
+            disabled: true,
+          };
         }
         formApi.setValues(formData.value);
       }

@@ -11,11 +11,7 @@ import { useRouter } from 'vue-router';
 import { $t } from '@vben/locales';
 
 import { useVbenForm } from '@vben-core/form-ui';
-import {
-  VbenButton,
-  VbenCheckbox,
-  Input as VbenInput,
-} from '@vben-core/shadcn-ui';
+import { VbenButton, VbenCheckbox } from '@vben-core/shadcn-ui';
 
 import Title from './auth-title.vue';
 import ThirdPartyLogin from './third-party-login.vue';
@@ -35,10 +31,6 @@ const props = withDefaults(defineProps<Props>(), {
   loading: false,
   qrCodeLoginPath: '/auth/qrcode-login',
   registerPath: '/auth/register',
-  showCaptcha: false, // 是否显示验证码
-  captchaLength: 5, // 验证码长度
-  captchaBase64: '', // 验证码
-  captchaKey: '', // 验证码key
   showCodeLogin: true,
   showForgetPassword: true,
   showQrcodeLogin: true,
@@ -51,11 +43,9 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<{
-  onCaptcha: any;
   submit: [Recordable<any>];
 }>();
 
-const captchaNum = ref();
 const [Form, formApi] = useVbenForm(
   reactive({
     commonConfig: {
@@ -73,12 +63,10 @@ const REMEMBER_ME_KEY = `REMEMBER_ME_USERNAME_${location.hostname}`;
 const localUsername = localStorage.getItem(REMEMBER_ME_KEY) || '';
 
 const rememberMe = ref(!!localUsername);
-// 登录提交
+
 async function handleSubmit() {
   const { valid } = await formApi.validate();
   const values = await formApi.getValues();
-  values.captcha = captchaNum.value;
-  values.key = props.captchaKey;
   if (valid) {
     localStorage.setItem(
       REMEMBER_ME_KEY,
@@ -86,10 +74,6 @@ async function handleSubmit() {
     );
     emit('submit', values);
   }
-}
-// 刷新验证码
-function getCaptcha() {
-  emit('onCaptcha');
 }
 
 function handleGo(path: string) {
@@ -123,17 +107,9 @@ defineExpose({
         </template>
       </Title>
     </slot>
-    <!--账号 密码-->
+
     <Form />
-    <!--验证码-->
-    <div v-if="props.showCaptcha" class="mb-6 flex justify-between">
-      <div class="flex-center">
-        <VbenInput v-model:model-value="captchaNum" placeholder="验证码" />
-      </div>
-      <div class="flex-center">
-        <img :src="props.captchaBase64" @click="getCaptcha" />
-      </div>
-    </div>
+
     <div
       v-if="showRememberMe || showForgetPassword"
       class="mb-6 flex justify-between"
@@ -141,7 +117,7 @@ defineExpose({
       <div class="flex-center">
         <VbenCheckbox
           v-if="showRememberMe"
-          v-model:checked="rememberMe"
+          v-model="rememberMe"
           name="rememberMe"
         >
           {{ $t('authentication.rememberMe') }}
@@ -170,7 +146,7 @@ defineExpose({
 
     <div
       v-if="showCodeLogin || showQrcodeLogin"
-      class="mb-2 mt-4 flex items-center justify-between"
+      class="mt-4 mb-2 flex items-center justify-between"
     >
       <VbenButton
         v-if="showCodeLogin"

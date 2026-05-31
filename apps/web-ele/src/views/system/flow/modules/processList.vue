@@ -1,17 +1,27 @@
 <script lang="ts" setup>
 import type {
   OnActionClickParams,
-  VxeTableGridOptions,
-  VxeGridProps,
   VxeGridListeners,
+  VxeGridProps,
+  VxeTableGridOptions,
 } from '#/adapter/vxe-table';
-import { ref } from 'vue';
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { listProcessByKey as listProcessByKeyApi, getNodeList, updateNode, updateNodeBatch } from '#/api/system/flow';
-import { ElButton, ElMessage, ElMessageBox } from 'element-plus';
-import { useVbenDrawer, useVbenModal, JsonViewer, Page } from '@vben/common-ui';
-import { useProcessHistoryColumns, useGridFormSchema } from '../data';
 import type { BpmnFlowApi } from '#/api/system/flow';
+
+import { ref } from 'vue';
+
+import { JsonViewer, Page, useVbenDrawer, useVbenModal } from '@vben/common-ui';
+
+import { ElButton, ElMessage, ElMessageBox } from 'element-plus';
+
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import {
+  getNodeList,
+  listProcessByKey as listProcessByKeyApi,
+  updateNode,
+  updateNodeBatch,
+} from '#/api/system/flow';
+
+import { useGridFormSchema, useProcessHistoryColumns } from '../data';
 
 const keyCode = ref('');
 const drawerTitle = ref('流程实例列表');
@@ -23,7 +33,7 @@ const jsonParams = ref({});
 const [Drawer, drawerApi] = useVbenDrawer({
   showConfirmButton: false,
   onOpenChange() {
-    const data = drawerApi.getData<{ keyCode: string, name: string }>();
+    const data = drawerApi.getData<{ keyCode: string; name: string }>();
     keyCode.value = data.keyCode;
     drawerTitle.value = `流程发布记录 - ${data.name} - ${data.keyCode}`;
   },
@@ -87,25 +97,25 @@ const [Modal, modalApi] = useVbenModal({
     if (!data) {
       return;
     }
-    ElMessageBox.confirm(
-      '是否全部保存？',
-      '是否保存当前页',
-      {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
-      }
-    ).then(() => {
-      updateNodeBatch(data).then(() => {
-        ElMessage.success('保存成功');
-        nodeGridApi.query();
-      }).catch(() => {
-        console.error('保存节点失败');
-        ElMessage.error('保存节点失败');
+    ElMessageBox.confirm('是否全部保存？', '是否保存当前页', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning',
+    })
+      .then(() => {
+        updateNodeBatch(data)
+          .then(() => {
+            ElMessage.success('保存成功');
+            nodeGridApi.query();
+          })
+          .catch(() => {
+            console.error('保存节点失败');
+            ElMessage.error('保存节点失败');
+          });
+      })
+      .catch(() => {
+        console.warn('已取消');
       });
-    }).catch(() => {
-      console.warn('已取消');
-    });
   },
   onOpenChange(isOpen) {
     if (isOpen) {
@@ -122,14 +132,18 @@ const gridOptions: VxeGridProps<BpmnFlowApi.Node> = {
     { title: '序号', type: 'seq', width: 50 },
     { field: 'actDefId', title: '环节ID', align: 'left' },
     { field: 'nodeName', title: '名称', align: 'left' },
-    { 
+    {
       cellRender: {
         name: 'CellTag',
         options: [
           { type: 'primary', label: 'StartEvent', value: 'StartEvent' },
           { type: 'danger', label: 'EndEvent', value: 'EndEvent' },
           { type: 'success', label: 'UserTask', value: 'UserTask' },
-          { type: 'info', label: 'ExclusiveGateway', value: 'ExclusiveGateway' },
+          {
+            type: 'info',
+            label: 'ExclusiveGateway',
+            value: 'ExclusiveGateway',
+          },
           { type: 'success', label: 'ManualTask', value: 'ManualTask' },
           { type: 'success', label: 'ReceiveTask', value: 'ReceiveTask' },
           { type: 'warning', label: 'SequenceFlow', value: 'SequenceFlow' },
@@ -137,12 +151,31 @@ const gridOptions: VxeGridProps<BpmnFlowApi.Node> = {
       },
       field: 'elementType',
       title: '类型',
-      width: 125
+      width: 125,
     },
     { field: 'conditionExpression', title: '条件表达式', width: 160 },
-    { editRender: { name: 'input', placeholder: '请输入json格式参数' }, field: 'jsonParams', title: '自定义json参数', minWidth: 140 },
-    { editRender: { name: 'input', placeholder: '请输入备注' }, field: 'note', title: '备注', minWidth: 160 },
-    { editRender: { name: 'input', placeholder: '请输入排序', attrs: { type: 'number' } }, field: 'sort', title: '排序', width: 80 },
+    {
+      editRender: { name: 'input', placeholder: '请输入json格式参数' },
+      field: 'jsonParams',
+      title: '自定义json参数',
+      minWidth: 140,
+    },
+    {
+      editRender: { name: 'input', placeholder: '请输入备注' },
+      field: 'note',
+      title: '备注',
+      minWidth: 160,
+    },
+    {
+      editRender: {
+        name: 'input',
+        placeholder: '请输入排序',
+        attrs: { type: 'number' },
+      },
+      field: 'sort',
+      title: '排序',
+      width: 80,
+    },
     { slots: { default: 'action' }, title: '操作', width: 140 },
   ],
   editConfig: {
@@ -169,7 +202,7 @@ const gridOptions: VxeGridProps<BpmnFlowApi.Node> = {
   rowConfig: {
     keyField: 'id',
     isCurrent: true, // 高亮选中行
-  }
+  },
 } as VxeTableGridOptions<BpmnFlowApi.Node>;
 
 // 点击事件
@@ -180,7 +213,7 @@ const gridEvents: VxeGridListeners<BpmnFlowApi.Node> = {
 };
 
 // 流程实例环节详情列表
-const [NodeGrid, nodeGridApi] = useVbenVxeGrid({ 
+const [NodeGrid, nodeGridApi] = useVbenVxeGrid({
   gridOptions,
   gridEvents,
   // 搜索表单
@@ -204,14 +237,20 @@ const cancelRowEvent = (_row: BpmnFlowApi.Node) => {
 async function saveRowEvent(row: BpmnFlowApi.Node) {
   await nodeGridApi.grid?.clearEdit();
   nodeGridApi.setLoading(true);
-  await updateNode(row).then(() => {
-    nodeGridApi.setLoading(false);
-    ElMessage.success({ message: `保存成功！nodeName=${row.nodeName || row.actDefId || ''}` });
-    nodeGridApi.query();
-  }).catch(() => {
-    nodeGridApi.setLoading(false);
-    ElMessage.error({ message: `保存失败！nodeName=${row.nodeName || row.actDefId || ''}` }); 
-  });
+  await updateNode(row)
+    .then(() => {
+      nodeGridApi.setLoading(false);
+      ElMessage.success({
+        message: `保存成功！nodeName=${row.nodeName || row.actDefId || ''}`,
+      });
+      nodeGridApi.query();
+    })
+    .catch(() => {
+      nodeGridApi.setLoading(false);
+      ElMessage.error({
+        message: `保存失败！nodeName=${row.nodeName || row.actDefId || ''}`,
+      });
+    });
 }
 // 编辑
 function editRowEvent(row: BpmnFlowApi.Node) {
@@ -222,14 +261,16 @@ function editRowEvent(row: BpmnFlowApi.Node) {
 <template>
   <Drawer class="w-full max-w-[65%]" :title="drawerTitle">
     <Grid table-title="">
-      <template #toolbar-tools>
-      </template>
+      <template #toolbar-tools> </template>
     </Grid>
   </Drawer>
   <Modal :title="nodeTitle" class="min-w-[80%]">
     <div class="flex flex-col h-full">
       <div class="flex-1 overflow-y-auto">
-        <Page auto-content-height style="height: calc(var(--vben-content-height) - 200px);">
+        <Page
+          auto-content-height
+          style="height: calc(var(--vben-content-height) - 200px)"
+        >
           <NodeGrid table-title="" auto-content-height class="min-h-[550px]">
             <!-- <template #toolbar-tools>
             </template> -->
@@ -245,14 +286,15 @@ function editRowEvent(row: BpmnFlowApi.Node) {
           </NodeGrid>
         </Page>
       </div>
-      <div style="padding: 8px 8px;">
+      <div style="padding: 8px">
         <JsonViewer
-          style="min-height: 145px;"
+          style="min-height: 145px"
           :value="jsonParams"
           copyable
           preview-mode
-          :showDoubleQuotes="true"
-          :show-array-index="false" />
+          :show-double-quotes="true"
+          :show-array-index="false"
+        />
       </div>
     </div>
   </Modal>

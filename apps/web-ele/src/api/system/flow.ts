@@ -53,12 +53,9 @@ export namespace BpmnFlowApi {
  * 获取流程列表数据
  */
 async function getFlowList(params: Recordable<any>) {
-  return requestClient.get<BpmnFlowApi.BpmnFlowPage>(
-    `/${sysApi}/flow/page`,
-    {
-      params,
-    },
-  );
+  return requestClient.get<BpmnFlowApi.BpmnFlowPage>(`/${sysApi}/flow/page`, {
+    params,
+  });
 }
 
 /**
@@ -71,7 +68,7 @@ async function createFlow(params: BpmnFlowApi.BpmnFlow) {
 /**
  * 更新流程
  * @param params 参数
- * @returns 
+ * @returns
  */
 async function updateFlow(params: BpmnFlowApi.BpmnFlow) {
   return requestClient.post(`/${sysApi}/flow/update`, params);
@@ -79,7 +76,7 @@ async function updateFlow(params: BpmnFlowApi.BpmnFlow) {
 /**
  * 删除流程
  * @param params 参数
- * @returns 
+ * @returns
  */
 async function deleteFlow(params: Array<string>) {
   return requestClient.post(`/${sysApi}/flow/del`, params);
@@ -88,7 +85,7 @@ async function deleteFlow(params: Array<string>) {
 /**
  * 发布流程
  * @param keyCode 流程key
- * @returns 
+ * @returns
  */
 async function publishFlow(keyCode: string) {
   return requestClient.get(`/${sysApi}/task/deployByKey/${keyCode}`);
@@ -101,7 +98,7 @@ async function publishFlow(keyCode: string) {
  */
 async function listProcessByKey(keyCode: string) {
   return requestClient.get<BpmnFlowApi.ProcessHistory[]>(
-    `/${sysApi}/flow/listProcessByKey/${keyCode}`
+    `/${sysApi}/flow/listProcessByKey/${keyCode}`,
   );
 }
 /**
@@ -110,18 +107,15 @@ async function listProcessByKey(keyCode: string) {
  * @returns 节点列表数据
  */
 async function getNodeList(params: Recordable<any>) {
-  return requestClient.get<BpmnFlowApi.NodePage>(
-    `/${sysApi}/flow/node/page`,
-    {
-      params,
-    },
-  );
+  return requestClient.get<BpmnFlowApi.NodePage>(`/${sysApi}/flow/node/page`, {
+    params,
+  });
 }
 
 /**
  * 更新节点
  * @param params 参数
- * @returns 
+ * @returns
  */
 async function updateNode(params: BpmnFlowApi.Node) {
   return requestClient.post(`/${sysApi}/flow/node/update`, params);
@@ -130,10 +124,20 @@ async function updateNode(params: BpmnFlowApi.Node) {
 /**
  * 批量更新节点排序
  * @param params 参数
- * @returns 
+ * @returns
  */
 async function updateNodeBatch(params: BpmnFlowApi.Node[]) {
   return requestClient.post(`/${sysApi}/flow/node/updateBatch`, params);
 }
 
-export { getFlowList, createFlow, updateFlow, deleteFlow, publishFlow, listProcessByKey, getNodeList, updateNode, updateNodeBatch };
+export {
+  createFlow,
+  deleteFlow,
+  getFlowList,
+  getNodeList,
+  listProcessByKey,
+  publishFlow,
+  updateFlow,
+  updateNode,
+  updateNodeBatch,
+};

@@ -5,12 +5,7 @@ import { computed, reactive, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import {
-  ElButton,
-  ElForm,
-  ElFormItem,
-  ElInput,
-} from 'element-plus';
+import { ElButton, ElForm, ElFormItem, ElInput } from 'element-plus';
 
 import { createApp, updateApp } from '#/api/system/app';
 

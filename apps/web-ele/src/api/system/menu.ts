@@ -7,7 +7,14 @@ export namespace SystemMenuApi {
   /** 徽标颜色集合
    * 'default' | 'primary' | 'success' | 'warning' | 'danger' | 'info'
    */
-  export const BadgeVariants = ['default' , 'primary' , 'success' , 'warning' , 'danger' , 'info'] as const;
+  export const BadgeVariants = [
+    'default',
+    'primary',
+    'success',
+    'warning',
+    'danger',
+    'info',
+  ] as const;
   /** 徽标类型集合 */
   export const BadgeTypes = ['dot', 'normal'] as const;
   /** 菜单类型集合 */

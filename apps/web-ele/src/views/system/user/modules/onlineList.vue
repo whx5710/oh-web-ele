@@ -68,21 +68,19 @@ function onRefresh() {
 }
 // 退出登录
 function handleForceLogout(token: string) {
-  ElMessageBox.confirm(
-    '是否下线',
-    '请确认',
-    {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning',
-    }
-  ).then(() => {
-    forceLogout(token).then(() => {
-      onRefresh();
+  ElMessageBox.confirm('是否下线', '请确认', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
+  })
+    .then(() => {
+      forceLogout(token).then(() => {
+        onRefresh();
+      });
+    })
+    .catch(() => {
+      console.warn('已取消');
     });
-  }).catch(() => {
-    console.warn('已取消');
-  });
 }
 function onActionClick({
   code,

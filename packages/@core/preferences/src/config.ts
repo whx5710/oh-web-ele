@@ -20,6 +20,7 @@ const defaultPreferences: Preferences = {
     defaultHomePath: '/workspace',
     dynamicTitle: true,
     enableCheckUpdates: true,
+    enableCopyPreferences: true,
     enablePreferences: true,
     enableRefreshToken: true, // 是否开启刷新token
     enableStickyPreferencesNavigationBar: true,
@@ -29,6 +30,7 @@ const defaultPreferences: Preferences = {
     loginExpiredMode: 'page',
     name: 'Vben Admin',
     preferencesButtonPosition: 'auto',
+    timezone: 'Asia/Shanghai',
     watermark: false,
     watermarkContent: '',
     zIndex: 200,
@@ -41,7 +43,7 @@ const defaultPreferences: Preferences = {
     styleType: 'normal',
   },
   copyright: {
-    companyName: '',
+    companyName: 'Oh Web Ele',
     companySiteLink: '',
     date: '2026',
     enable: true,
@@ -85,6 +87,7 @@ const defaultPreferences: Preferences = {
     collapsedButton: true,
     collapsedShowTitle: false,
     collapseWidth: 60,
+    draggable: true,
     enable: true,
     expandOnHover: true,
     extraCollapse: false,
@@ -105,6 +108,7 @@ const defaultPreferences: Preferences = {
     showIcon: true,
     showMaximize: true,
     showMore: true,
+    showRefresh: true,
     styleType: 'chrome',
     visitHistory: true,
     wheelable: true,
@@ -120,6 +124,7 @@ const defaultPreferences: Preferences = {
     fontSize: 16,
     semiDarkHeader: false,
     semiDarkSidebar: false,
+    semiDarkSidebarSub: false,
   },
   transition: {
     enable: true,

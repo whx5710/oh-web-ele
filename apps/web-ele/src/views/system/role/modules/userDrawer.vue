@@ -3,8 +3,8 @@ import type {
   OnActionClickParams,
   VxeTableGridOptions,
 } from '#/adapter/vxe-table';
-import type { SystemUserApi } from '#/api/system/user';
 import type { SystemRoleApi } from '#/api/system/role';
+import type { SystemUserApi } from '#/api/system/user';
 
 import { ref, watch } from 'vue';
 
@@ -18,7 +18,7 @@ import { pageByRole } from '#/api/system/user';
 import { useUserColumns } from '../data';
 
 const roleId = ref();
-const title = ref('')
+const title = ref('');
 // drawerApi
 const [Drawer, drawerApi] = useVbenDrawer({
   showConfirmButton: false,
@@ -67,22 +67,27 @@ const [Grid, gridApi] = useVbenVxeGrid({
 });
 
 function onActionClick(_e: OnActionClickParams<SystemUserApi.SystemUser>) {}
-const keyWord = ref('')
+const keyWord = ref('');
 watch(keyWord, () => {
-  onSearch()
+  onSearch();
 });
 const onSearch = () => {
-  gridApi.query({keyWord: keyWord.value})
+  gridApi.query({ keyWord: keyWord.value });
   // useDebounceFn(() => {
   //   console.warn('---vvvv-----', keyWord.value)
   // } , 300)
-}
+};
 </script>
 <template>
-  <Drawer class="w-full max-w-[1000px]" :title="title" >
+  <Drawer class="w-full max-w-[1000px]" :title="title">
     <Grid>
       <template #toolbar-tools>
-        <ElInput style="width: 200px;" v-model="keyWord" placeholder="关键字搜索" clearable/>
+        <ElInput
+          style="width: 200px"
+          v-model="keyWord"
+          placeholder="关键字搜索"
+          clearable
+        />
       </template>
     </Grid>
   </Drawer>

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import type { VbenFormSchema } from '#/adapter/form';
 import type { Recordable } from '@vben/types';
 
+import type { VbenFormSchema } from '#/adapter/form';
 import type { SystemRoleApi } from '#/api/system/role';
 
 import { computed, ref } from 'vue';
@@ -18,7 +18,7 @@ import { useFormSchema } from '../data';
 
 // 定义树节点类型（替代 ant-design-vue 的 DataNode）
 interface TreeNode {
-  key?: string | number;
+  key?: number | string;
   title?: string;
   children?: TreeNode[];
   [key: string]: any;
@@ -28,7 +28,7 @@ const emits = defineEmits(['success']);
 
 const formData = ref<SystemRoleApi.SystemRole>();
 
-const schemaData: VbenFormSchema[] =  useFormSchema();
+const schemaData: VbenFormSchema[] = useFormSchema();
 
 const [Form, formApi] = useVbenForm({
   schema: schemaData,
@@ -59,14 +59,14 @@ const [Drawer, drawerApi] = useVbenDrawer({
       const data = drawerApi.getData<SystemRoleApi.SystemRole>();
       formApi.resetForm();
       if (data) {
-        if(data.isSystem === 1){
+        if (data.isSystem === 1) {
           schemaData[1] = {
             component: 'Input',
             fieldName: 'code',
             label: $t('system.role.roleCode'),
             rules: 'required',
-            disabled: true
-          }
+            disabled: true,
+          };
         }
         formData.value = data;
         id.value = data.id;
@@ -122,7 +122,7 @@ function getNodeClass(node: Recordable<any>) {
             multiple
             bordered
             :get-node-class="getNodeClass"
-            :default-expanded-level="2" 
+            :default-expanded-level="2"
             v-bind="slotProps"
             value-field="id"
             label-field="meta.title"

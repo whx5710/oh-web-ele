@@ -207,10 +207,15 @@ const schema: VbenFormSchema[] = [
     componentProps: {
       allowClear: true,
       class: 'w-full',
-      fetchSuggestions(queryString: string, cb: (results: Array<{ value: string }>) => void) {
+      fetchSuggestions(
+        queryString: string,
+        cb: (results: Array<{ value: string }>) => void,
+      ) {
         const results = queryString
           ? componentKeys
-              .filter((v) => v.toLowerCase().includes(queryString.toLowerCase()))
+              .filter((v) =>
+                v.toLowerCase().includes(queryString.toLowerCase()),
+              )
               .map((v) => ({ value: v }))
           : componentKeys.map((v) => ({ value: v }));
         cb(results);

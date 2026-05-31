@@ -3,9 +3,29 @@
  * 可用于 vben-form、vben-modal、vben-drawer 等组件使用,
  */
 
+import type {
+  CheckboxGroupProps,
+  CheckboxProps,
+  DatePickerProps,
+  DividerProps,
+  ElTimePicker as ElTimePickerType,
+  ElTreeSelect as ElTreeSelectType,
+  InputNumberProps,
+  InputProps,
+  RadioGroupProps,
+  SelectV2Props,
+  SpaceProps,
+  SwitchProps,
+  UploadProps,
+} from 'element-plus';
+
 import type { Component } from 'vue';
 
-import type { BaseFormComponentType } from '@vben/common-ui';
+import type {
+  ApiComponentSharedProps,
+  BaseFormComponentType,
+  IconPickerProps,
+} from '@vben/common-ui';
 import type { Recordable } from '@vben/types';
 
 import { defineAsyncComponent, defineComponent, h, ref } from 'vue';
@@ -15,24 +35,8 @@ import { $t } from '@vben/locales';
 
 import { ElNotification } from 'element-plus';
 
-const ElAutocomplete = defineAsyncComponent(() =>
-  Promise.all([
-    import('element-plus/es/components/autocomplete/index'),
-    import('element-plus/es/components/autocomplete/style/css'),
-  ]).then(([res]) => res.ElAutocomplete),
-);
-const ElCol = defineAsyncComponent(() =>
-  Promise.all([
-    import('element-plus/es/components/col/index'),
-    import('element-plus/es/components/col/style/css'),
-  ]).then(([res]) => res.ElCol),
-);
-const ElRow = defineAsyncComponent(() =>
-  Promise.all([
-    import('element-plus/es/components/row/index'),
-    import('element-plus/es/components/row/style/css'),
-  ]).then(([res]) => res.ElRow),
-);
+type ElTreeSelectSchemaProps = InstanceType<typeof ElTreeSelectType>['$props'];
+type ElTimePickerSchemaProps = InstanceType<typeof ElTimePickerType>['$props'];
 
 const ElButton = defineAsyncComponent(() =>
   Promise.all([
@@ -100,12 +104,6 @@ const ElRadioGroup = defineAsyncComponent(() =>
     import('element-plus/es/components/radio-group/style/css'),
   ]).then(([res]) => res.ElRadioGroup),
 );
-const ElRate = defineAsyncComponent(() =>
-  Promise.all([
-    import('element-plus/es/components/rate/index'),
-    import('element-plus/es/components/rate/style/css'),
-  ]).then(([res]) => res.ElRate),
-);
 const ElSelectV2 = defineAsyncComponent(() =>
   Promise.all([
     import('element-plus/es/components/select-v2/index'),
@@ -143,8 +141,8 @@ const ElUpload = defineAsyncComponent(() =>
   ]).then(([res]) => res.ElUpload),
 );
 
-const withDefaultPlaceholder = <T extends Component>(
-  component: T,
+const withDefaultPlaceholder = (
+  component: Component,
   type: 'input' | 'select',
   componentProps: Recordable<any> = {},
 ) => {
@@ -183,17 +181,12 @@ export type ComponentType =
   | 'ApiTreeSelect'
   | 'Checkbox'
   | 'CheckboxGroup'
-  | 'Col'
   | 'DatePicker'
   | 'Divider'
   | 'IconPicker'
   | 'Input'
   | 'InputNumber'
   | 'RadioGroup'
-  | 'RangePicker'
-  | 'RangeTimePicker'
-  | 'Rate'
-  | 'Row'
   | 'Select'
   | 'Space'
   | 'Switch'
@@ -201,6 +194,28 @@ export type ComponentType =
   | 'TreeSelect'
   | 'Upload'
   | BaseFormComponentType;
+
+/**
+ * 与 {@link ComponentType} 中注册的组件名一一对应，便于 Schema 上 `component` + `componentProps` 联动提示
+ */
+export interface ComponentPropsMap {
+  ApiSelect: ApiComponentSharedProps & SelectV2Props;
+  ApiTreeSelect: ApiComponentSharedProps & ElTreeSelectSchemaProps;
+  Checkbox: CheckboxProps;
+  CheckboxGroup: CheckboxGroupProps;
+  DatePicker: DatePickerProps;
+  Divider: DividerProps;
+  IconPicker: IconPickerProps;
+  Input: InputProps;
+  InputNumber: InputNumberProps;
+  RadioGroup: RadioGroupProps;
+  Select: SelectV2Props;
+  Space: SpaceProps;
+  Switch: SwitchProps;
+  TimePicker: ElTimePickerSchemaProps;
+  TreeSelect: ElTreeSelectSchemaProps;
+  Upload: UploadProps;
+}
 
 async function initComponentAdapter() {
   const components: Partial<Record<ComponentType, Component>> = {
@@ -234,7 +249,6 @@ async function initComponentAdapter() {
         visibleEvent: 'onVisibleChange',
       },
     ),
-    AutoComplete: ElAutocomplete,
     Checkbox: ElCheckbox,
     CheckboxGroup: (props, { attrs, slots }) => {
       let defaultSlot;
@@ -255,7 +269,6 @@ async function initComponentAdapter() {
         { ...slots, default: defaultSlot },
       );
     },
-    Col: ElCol,
     // 自定义默认按钮
     DefaultButton: (props, { attrs, slots }) => {
       return h(ElButton, { ...props, attrs, type: 'info' }, slots);
@@ -271,7 +284,9 @@ async function initComponentAdapter() {
       inputComponent: ElInput,
     }),
     Input: withDefaultPlaceholder(ElInput, 'input'),
-    InputNumber: withDefaultPlaceholder(ElInputNumber, 'input'),
+    InputNumber: withDefaultPlaceholder(ElInputNumber, 'input', {
+      style: { width: '100%' },
+    }),
     RadioGroup: (props, { attrs, slots }) => {
       let defaultSlot;
       if (Reflect.has(slots, 'default')) {
@@ -291,7 +306,6 @@ async function initComponentAdapter() {
         { ...slots, default: defaultSlot },
       );
     },
-    Row: ElRow,
     Select: (props, { attrs, slots }) => {
       return h(ElSelectV2, { ...props, attrs }, slots);
     },
@@ -339,49 +353,7 @@ async function initComponentAdapter() {
         slots,
       );
     },
-    RangePicker: (props, { attrs, slots }) => {
-      const { name, id } = props;
-      const extraProps: Recordable<any> = {};
-      if (name && !Array.isArray(name)) {
-        extraProps.name = [name, `${name}_end`];
-      }
-      if (id && !Array.isArray(id)) {
-        extraProps.id = [id, `${id}_end`];
-      }
-      return h(
-        ElDatePicker,
-        {
-          type: 'daterange',
-          ...props,
-          ...attrs,
-          ...extraProps,
-        },
-        slots,
-      );
-    },
-    RangeTimePicker: (props, { attrs, slots }) => {
-      const { name, id } = props;
-      const extraProps: Recordable<any> = {};
-      if (name && !Array.isArray(name)) {
-        extraProps.name = [name, `${name}_end`];
-      }
-      if (id && !Array.isArray(id)) {
-        extraProps.id = [id, `${id}_end`];
-      }
-      return h(
-        ElDatePicker,
-        {
-          ...props,
-          ...attrs,
-          type: 'datetimerange',
-          valueFormat: 'YYYY-MM-DD HH:mm:ss',
-          ...extraProps,
-        },
-        slots,
-      );
-    },
     TreeSelect: withDefaultPlaceholder(ElTreeSelect, 'select'),
-    Rate: ElRate,
     Upload: ElUpload,
   };
 

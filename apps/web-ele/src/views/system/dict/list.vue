@@ -101,8 +101,8 @@ function onDelete(row: SystemDictApi.SystemType) {
         key: 'action_process_msg',
       });
       onRefresh();
-    }).catch(() => {
-      console.log('删除失败');
+    })
+    .catch(() => {
       onRefresh();
     });
 }

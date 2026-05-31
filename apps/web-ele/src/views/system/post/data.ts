@@ -118,7 +118,9 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '租户',
       renderComponentContent: () => {
         return {
-          notFoundContent: fetching.value ? h(ElLoading, { loading: true }) : undefined,
+          notFoundContent: fetching.value
+            ? h(ElLoading, { loading: true })
+            : undefined,
         };
       },
       // rules: 'selectRequired',

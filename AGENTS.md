@@ -65,6 +65,7 @@ oh-web-ele/
 ### 1. 命名规范
 
 #### 文件命名
+
 - **页面组件**: 小写，语义化命名
   - 列表页: `list.vue`
   - 详情/表单页: `modules/form.vue`
@@ -74,10 +75,12 @@ oh-web-ele/
 - **配置文件**: `data.ts`（存放表格列配置和表单 schema）
 
 #### 组件命名
+
 - Vue 单文件组件使用大驼峰导入，如 `import Form from './modules/form.vue'`
 - 组件引用使用语义化名称，如 `FormModal`、`Grid`
 
 #### 变量与函数命名
+
 - **接口命名空间**: `SystemUserApi`、`SystemDeptApi`
 - **接口类型**: `SystemUser`、`SystemDept`
 - **API 函数**: 动词 + 名词，如 `getUserPage`、`createUser`、`deleteDept`
@@ -87,6 +90,7 @@ oh-web-ele/
 ### 2. 类文件命名约定
 
 #### API 文件结构
+
 ```typescript
 // 1. 定义命名空间接口
 export namespace SystemUserApi {
@@ -101,15 +105,19 @@ export namespace SystemUserApi {
 export async function getUserPage(params: Recordable<any>) {
   return requestClient.get<Array<SystemUserApi.SystemUser>>(
     `/${sysApi}/sys/user/page`,
-    { params }
+    { params },
   );
 }
 ```
 
 #### 页面文件结构
+
 ```typescript
 // 1. 类型导入
-import type { OnActionClickParams, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type {
+  OnActionClickParams,
+  VxeTableGridOptions,
+} from '#/adapter/vxe-table';
 import type { SystemUserApi } from '#/api/system/user';
 
 // 2. Vue / 框架导入
@@ -144,7 +152,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
 });
 
 // 5. 操作回调
-function onActionClick({ code, row }: OnActionClickParams<SystemUserApi.SystemUser>) {
+function onActionClick({
+  code,
+  row,
+}: OnActionClickParams<SystemUserApi.SystemUser>) {
   switch (code) {
     case 'unlock': {
       // 处理解锁逻辑
@@ -155,6 +166,7 @@ function onActionClick({ code, row }: OnActionClickParams<SystemUserApi.SystemUs
 ```
 
 #### data.ts 配置结构
+
 ```typescript
 // 搜索表单配置
 export function useClockGridFormSchema(): VbenFormSchema[] {
@@ -198,9 +210,10 @@ export function useClockColumns<T = SystemUserApi.SystemUser>(
 ### 3. Import 顺序规范
 
 按以下顺序组织导入：
+
 1. `type` 类型导入
 2. Vue / 框架核心导入
-3. 第三方库导入（@vben/*、element-plus）
+3. 第三方库导入（@vben/\*、element-plus）
 4. 本地绝对路径导入（`#/api/*`、`#/locales`、`#/adapter/*`）
 5. 本地相对路径导入（`./data`、`./modules/form`）
 
@@ -236,7 +249,7 @@ export function useClockColumns<T = SystemUserApi.SystemUser>(
 1. **Token 处理**: 由 `@vben/request` 自动在请求头中添加 `Authorization: Bearer {token}`
 2. **Token 刷新**: 在 `request.ts` 中配置自动刷新逻辑
 3. **登录过期**: 支持模态框提示和自动跳转登录页两种模式
-4. **权限控制**: 
+4. **权限控制**:
    - 使用 `registerAccessDirective` 注册权限指令
    - 菜单权限由后端返回的 `authCode` 控制
    - 路由访问权限通过 `generateAccessible` 动态生成
@@ -246,13 +259,15 @@ export function useClockColumns<T = SystemUserApi.SystemUser>(
 ## 配置文件规范
 
 ### env.ts
+
 ```typescript
-const sysApi = 'sysApi';     // 系统管理接口前缀
+const sysApi = 'sysApi'; // 系统管理接口前缀
 const externalApi = 'externalApi'; // 扩展系统接口前缀
 export { externalApi, sysApi };
 ```
 
 ### request.ts 关键配置
+
 - `responseReturn: 'data'`：直接返回响应数据
 - `codeField: 'code'`：响应状态码字段
 - `dataField: 'data'`：响应数据字段
@@ -260,17 +275,17 @@ export { externalApi, sysApi };
 
 ## 常用组件速查
 
-| 功能 | 组件/函数 | 来源 |
-|------|----------|------|
-| 表格 | `useVbenVxeGrid` | `#/adapter/vxe-table` |
-| 表单 | `useVbenForm` | `#/adapter/form` |
-| 弹窗 | `useVbenModal` | `@vben/common-ui` |
-| 页面容器 | `Page` | `@vben/common-ui` |
-| 树形组件 | `Tree` | `@vben/common-ui` |
-| 请求客户端 | `requestClient` | `#/api/request` |
-| 多语言 | `$t` | `#/locales` |
-| 图标 | `IconifyIcon` | `@vben/icons` |
-| 状态管理 | `useUserStore` | `@vben/stores` |
+| 功能       | 组件/函数        | 来源                  |
+| ---------- | ---------------- | --------------------- |
+| 表格       | `useVbenVxeGrid` | `#/adapter/vxe-table` |
+| 表单       | `useVbenForm`    | `#/adapter/form`      |
+| 弹窗       | `useVbenModal`   | `@vben/common-ui`     |
+| 页面容器   | `Page`           | `@vben/common-ui`     |
+| 树形组件   | `Tree`           | `@vben/common-ui`     |
+| 请求客户端 | `requestClient`  | `#/api/request`       |
+| 多语言     | `$t`             | `#/locales`           |
+| 图标       | `IconifyIcon`    | `@vben/icons`         |
+| 状态管理   | `useUserStore`   | `@vben/stores`        |
 
 ## 开发命令
 

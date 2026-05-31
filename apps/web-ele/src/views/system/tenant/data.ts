@@ -1,6 +1,7 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemTenantApi } from '#/api/system/tenant';
+
 import { getDeptTreeList } from '#/api/system/dept';
 
 /**
@@ -105,7 +106,7 @@ export function userSchema(): VbenFormSchema[] {
       componentProps: {
         clearable: true,
       },
-    }
+    },
   ];
 }
 

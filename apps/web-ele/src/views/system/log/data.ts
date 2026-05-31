@@ -1,8 +1,5 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type {
-  OnActionClickFn,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemLogApi } from '#/api/system/log';
 
 import { ref } from 'vue';
@@ -197,7 +194,10 @@ export function useErrorLogGridFormSchema(): VbenFormSchema[] {
       component: 'RangeTimePicker',
       fieldName: 'errTime',
       label: '报错时间',
-      defaultValue: [dayjs().startOf('day').format('YYYY-MM-DD HH:mm:ss'), dayjs().endOf('day').format('YYYY-MM-DD HH:mm:ss')],
+      defaultValue: [
+        dayjs().startOf('day').format('YYYY-MM-DD HH:mm:ss'),
+        dayjs().endOf('day').format('YYYY-MM-DD HH:mm:ss'),
+      ],
     },
   ];
 }

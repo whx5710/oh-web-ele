@@ -1,9 +1,28 @@
 <script lang="ts" setup>
 import type { BpmnFlowApi } from '#/api/system/flow';
-import { getFlowList, deleteFlow as deleteFlowApi, publishFlow as publishFlowApi } from '#/api/system/flow';
+
+import { onMounted, ref } from 'vue';
+
 import { Page, useVbenDrawer } from '@vben/common-ui';
-import { ElButton, ElCard, ElSpace, ElTag, ElMessage, ElInput, ElPagination, ElEmpty, ElPopconfirm, ElDialog } from 'element-plus';
-import { ref, onMounted } from 'vue';
+
+import {
+  ElButton,
+  ElCard,
+  ElDialog,
+  ElEmpty,
+  ElInput,
+  ElMessage,
+  ElPagination,
+  ElPopconfirm,
+  ElSpace,
+  ElTag,
+} from 'element-plus';
+
+import {
+  deleteFlow as deleteFlowApi,
+  getFlowList,
+  publishFlow as publishFlowApi,
+} from '#/api/system/flow';
 
 // 导入流程实例列表组件
 import ProcessList from './modules/processList.vue';
@@ -75,13 +94,15 @@ const viewFlow = (row: BpmnFlowApi.BpmnFlow) => {
 const deleteFlow = (row: BpmnFlowApi.BpmnFlow) => {
   // ElMessage.info(`删除流程: ${row.name}`);
   // 这里可以添加删除流程的逻辑
-  deleteFlowApi([row.id || '']).then(() => {
-    ElMessage.success('删除成功');
-    loadFlowList();
-  }).catch((error) => {
-    console.error('删除流程失败:', error);
-    // ElMessage.error('删除流程失败');
-  });
+  deleteFlowApi([row.id || ''])
+    .then(() => {
+      ElMessage.success('删除成功');
+      loadFlowList();
+    })
+    .catch((error) => {
+      console.error('删除流程失败:', error);
+      // ElMessage.error('删除流程失败');
+    });
 };
 
 /**
@@ -91,13 +112,15 @@ const deleteFlow = (row: BpmnFlowApi.BpmnFlow) => {
 const publishFlow = (row: BpmnFlowApi.BpmnFlow) => {
   // ElMessage.info(`发布流程: ${row.name}`);
   // 这里可以添加发布流程的逻辑
-  publishFlowApi(row.keyCode || '').then(() => {
-    ElMessage.success('发布成功');
-    loadFlowList();
-  }).catch((error) => {
-    console.error('发布流程失败:', error);
-    // ElMessage.error('发布流程失败');
-  });
+  publishFlowApi(row.keyCode || '')
+    .then(() => {
+      ElMessage.success('发布成功');
+      loadFlowList();
+    })
+    .catch((error) => {
+      console.error('发布流程失败:', error);
+      // ElMessage.error('发布流程失败');
+    });
 };
 
 // 初始化加载
@@ -117,17 +140,21 @@ onMounted(() => {
           clearable
           @keyup.enter="handleSearch"
         />
-        <ElButton type="primary" style="margin-left: 10px" @click="handleSearch">
+        <ElButton
+          type="primary"
+          style="margin-left: 10px"
+          @click="handleSearch"
+        >
           搜索
         </ElButton>
       </div>
 
       <!-- 流程卡片列表 -->
       <div class="flow-card-list" v-if="flowList.length > 0">
-        <ElCard 
-          v-for="flow in flowList" 
+        <ElCard
+          v-for="flow in flowList"
           :key="flow.id"
-          style="margin-bottom: 16px;"
+          style="margin-bottom: 16px"
           :header="flow.name"
         >
           <template #header>
@@ -156,9 +183,7 @@ onMounted(() => {
                     <ElButton link type="danger">删除</ElButton>
                   </template>
                 </ElPopconfirm>
-                <ElButton link @click="viewFlow(flow)">
-                  查看
-                </ElButton>
+                <ElButton link @click="viewFlow(flow)"> 查看 </ElButton>
               </ElSpace>
             </div>
           </template>
@@ -177,8 +202,17 @@ onMounted(() => {
                 <span class="value">{{ flow.note || '无' }}</span>
               </div>
             </div>
-            <div class="flow-svg" v-if="flow.svgStr" @click="handleImageClick(flow.svgStr)">
-              <div v-html="flow.svgStr" class="svg-content" style="cursor: pointer;"></div>
+            <div
+              class="flow-svg"
+              v-if="flow.svgStr"
+              @click="handleImageClick(flow.svgStr)"
+            >
+              <!-- eslint-disable-next-line vue/no-v-html -->
+              <div
+                v-html="flow.svgStr"
+                class="svg-content"
+                style="cursor: pointer"
+              ></div>
             </div>
             <div class="flow-svg" v-else>
               <div class="no-svg">无流程图</div>
@@ -205,15 +239,12 @@ onMounted(() => {
       </div>
 
       <!-- 图片预览模态框 -->
-      <ElDialog
-        v-model="previewVisible"
-        title="流程图预览"
-        width="80%"
-      >
+      <ElDialog v-model="previewVisible" title="流程图预览" width="80%">
+        <!-- eslint-disable-next-line vue/no-v-html -->
         <div class="preview-svg" v-html="previewSvg"></div>
       </ElDialog>
     </div>
-    
+
     <!-- 流程实例列表抽屉 -->
     <FormDrawer />
   </Page>
@@ -225,16 +256,16 @@ onMounted(() => {
 }
 
 .search-bar {
-  margin-bottom: 16px;
   display: flex;
   align-items: center;
+  margin-bottom: 16px;
 }
 
 .flow-card-list {
-  margin-bottom: 16px;
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
+  margin-bottom: 16px;
 }
 
 .flow-card-list :deep(.el-card) {
@@ -244,8 +275,8 @@ onMounted(() => {
 
 .card-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
 }
 
 .flow-card-content {
@@ -263,29 +294,29 @@ onMounted(() => {
 
 .flow-info-item {
   display: flex;
-  align-items: center;
   gap: 8px;
+  align-items: center;
 }
 
 .label {
-  font-weight: 500;
-  color: rgba(0, 0, 0, 0.65);
   min-width: 50px;
+  font-weight: 500;
+  color: rgb(0 0 0 / 65%);
 }
 
 .value {
-  color: rgba(0, 0, 0, 0.85);
+  color: rgb(0 0 0 / 85%);
 }
 
 .flow-svg {
-  border: 1px solid #e8e8e8;
-  border-radius: 4px;
-  padding: 16px;
-  background: #fafafa;
-  min-height: 200px;
   display: flex;
   align-items: center;
   justify-content: center;
+  min-height: 200px;
+  padding: 16px;
+  background: #fafafa;
+  border: 1px solid #e8e8e8;
+  border-radius: 4px;
 }
 
 .svg-content {
@@ -300,8 +331,8 @@ onMounted(() => {
 }
 
 .no-svg {
-  color: rgba(0, 0, 0, 0.45);
   font-size: 14px;
+  color: rgb(0 0 0 / 45%);
 }
 
 .empty-container {
@@ -316,12 +347,12 @@ onMounted(() => {
 }
 
 .preview-svg {
-  width: 100%;
-  height: 600px;
-  overflow: auto;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
+  height: 600px;
+  overflow: auto;
   background: #fafafa;
 }
 

@@ -1,9 +1,10 @@
 import type { VxeTableGridOptions } from '@vben/plugins/vxe-table';
 import type { Recordable } from '@vben/types';
 
-import type { ComponentType } from './component';
+import type { ComponentPropsMap, ComponentType } from './component';
 
 import { h } from 'vue';
+
 import { $te } from '@vben/locales';
 import {
   setupVbenVxeTable,
@@ -89,7 +90,7 @@ setupVbenVxeTable({
               ? () => onClick({ row, code: 'detail', column })
               : undefined,
           },
-          { default: () => props?.text !== undefined ? props.text : value },
+          { default: () => (props?.text === undefined ? value : props.text) },
         );
       },
     });
@@ -159,21 +160,20 @@ setupVbenVxeTable({
     vxeUI.renderer.add('CellOperation', {
       renderTableDefault({ attrs, options, props }, { column, row }) {
         const defaultProps = { size: 'small', link: true, ...props };
-        let align = 'end';
-        switch (column.align) {
-          case 'center': {
-            align = 'center';
-            break;
+        const getAlign = (): 'center' | 'end' | 'start' => {
+          switch (column.align) {
+            case 'center': {
+              return 'center';
+            }
+            case 'left': {
+              return 'start';
+            }
+            default: {
+              return 'end';
+            }
           }
-          case 'left': {
-            align = 'start';
-            break;
-          }
-          default: {
-            align = 'end';
-            break;
-          }
-        }
+        };
+        const align = getAlign();
         const presets: Recordable<Recordable<any>> = {
           delete: {
             type: 'danger',
@@ -257,8 +257,8 @@ setupVbenVxeTable({
               },
               placement: 'top-start',
               title: $t('ui.actionMessage.deleteConfirm', [
-                    row[attrs?.nameField || 'name'],
-                  ]),
+                row[attrs?.nameField || 'name'],
+              ]),
               ...props,
               ...opt,
               icon: undefined,
@@ -312,8 +312,8 @@ setupVbenVxeTable({
 });
 
 export const useVbenVxeGrid = <T extends Record<string, any>>(
-  ...rest: Parameters<typeof useGrid<T, ComponentType>>
-) => useGrid<T, ComponentType>(...rest);
+  ...rest: Parameters<typeof useGrid<T, ComponentType, ComponentPropsMap>>
+) => useGrid<T, ComponentType, ComponentPropsMap>(...rest);
 
 export type OnActionClickParams<T = Recordable<any>> = {
   code: string;

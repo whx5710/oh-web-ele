@@ -5,13 +5,15 @@ import type { SystemUserApi } from '#/api/system/user';
 import { ref } from 'vue';
 
 import { useUserStore } from '@vben/stores';
+
 import { useDebounceFn } from '@vueuse/core';
-import { getTenantPage } from '#/api/system/tenant';
-import { getDeptTreeList } from '#/api/system/dept';
-import { getRoleList } from '#/api/system/role';
-import { getPostList } from '#/api/system/post';
-import { $t } from '#/locales';
+
 import { z } from '#/adapter/form';
+import { getDeptTreeList } from '#/api/system/dept';
+import { getPostList } from '#/api/system/post';
+import { getRoleList } from '#/api/system/role';
+import { getTenantPage } from '#/api/system/tenant';
+import { $t } from '#/locales';
 
 const keyWord = ref('');
 const fetching = ref(false);
@@ -32,7 +34,9 @@ function createTenantSelectSchema(): VbenFormSchema {
   return {
     component: 'ApiSelect',
     componentProps: () => ({
-      afterFetch: (res: { list: Array<{ tenantId: string; tenantName: string }> }) => {
+      afterFetch: (res: {
+        list: Array<{ tenantId: string; tenantName: string }>;
+      }) => {
         fetching.value = false;
         return res.list.map((item) => ({
           label: item.tenantName,
@@ -300,7 +304,7 @@ export function useMonitorColumns<T = SystemUserApi.SystemUser>(
     },
     {
       field: 'ip',
-      title: 'IP'
+      title: 'IP',
     },
     {
       field: 'address',

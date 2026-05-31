@@ -1,42 +1,46 @@
 <script lang="ts" setup>
 import type { SystemTenantApi } from '#/api/system/tenant';
+import type { SystemUserApi } from '#/api/system/user';
 
 import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+
 import { useDebounceFn } from '@vueuse/core';
 
 import { useVbenForm } from '#/adapter/form';
-import { bindTenantUser } from '#/api/system/user';
-import { getUserPage, type SystemUserApi } from '#/api/system/user';
+import { bindTenantUser, getUserPage } from '#/api/system/user';
 
 const emit = defineEmits(['success']);
 // const formData = ref<SystemTenantApi.SystemTenant>();
 
 const keyword = ref('');
 const fetching = ref(false);
-const tenantId = ref('')
+const tenantId = ref('');
 
 // afterFetch 钩子：接收原始数据，返回转换后的数据
 const transformData = (rawData: any) => {
-  if(rawData && rawData.total && rawData.total > 0){
+  if (rawData && rawData.total && rawData.total > 0) {
     // 递归地将后端数据映射为组件所需的格式
     const formatData = (items: SystemUserApi.SystemUser[]) => {
-      return items.map(item => ({
-        label: item.realName + ' | ' + item.deptName + ' | ' + item.mobile + ' | ' + item.email,          // 将后端的 'name' 映射为组件的 'label'
-        value: item.id,            // 将后端的 'id' 映射为组件的 'value'
+      return items.map((item) => ({
+        label: `${item.realName} | ${item.deptName} | ${item.mobile} | ${
+          item.email
+        }`, // 将后端的 'name' 映射为组件的 'label'
+        value: item.id, // 将后端的 'id' 映射为组件的 'value'
       }));
     };
-    return formatData(rawData.list)
+    return formatData(rawData.list);
   }
-}
+};
 
 const [Form, formApi] = useVbenForm({
   // 垂直布局，label和input在不同行，值为vertical
   // 水平布局，label和input在同一行
   layout: 'horizontal',
   // layout: 'vertical',
-  schema: [{
+  schema: [
+    {
       component: 'ApiSelect',
       // 对应组件的参数
       componentProps: () => {
@@ -57,7 +61,7 @@ const [Form, formApi] = useVbenForm({
             pageSize: 20,
             keyWord: keyword.value || undefined,
             tenantRole: true, // 有租户角色的
-            tenantFlag: 0 // 未绑定租户的用户
+            tenantFlag: 0, // 未绑定租户的用户
           },
           style: 'width: 100%;',
           // resultField: 'list',
@@ -77,7 +81,8 @@ const [Form, formApi] = useVbenForm({
         };
       },
       rules: 'selectRequired',
-    }],
+    },
+  ],
   showDefaultActions: false,
 });
 
@@ -88,9 +93,9 @@ const [Modal, modalApi] = useVbenModal({
       modalApi.lock();
       const data = await formApi.getValues();
       try {
-        bindTenantUser(tenantId.value, [data.keyWord]).then(()=>{
+        bindTenantUser(tenantId.value, [data.keyWord]).then(() => {
           emit('success');
-        })
+        });
         modalApi.close();
       } finally {
         modalApi.lock(false);
@@ -101,7 +106,7 @@ const [Modal, modalApi] = useVbenModal({
     if (isOpen) {
       const data = modalApi.getData<SystemTenantApi.SystemTenant>();
       if (data) {
-        tenantId.value = data.tenantId
+        tenantId.value = data.tenantId;
       }
     }
   },

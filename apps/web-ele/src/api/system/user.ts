@@ -107,7 +107,7 @@ export async function pageByRole(params: Recordable<any>) {
 export async function bindTenantUser(tenantId: string, userIdList: string[]) {
   return requestClient.post(
     `/${sysApi}/sys/user/bindTenantUser/${tenantId}`,
-    userIdList
+    userIdList,
   );
 }
 
@@ -118,7 +118,7 @@ export async function bindTenantUser(tenantId: string, userIdList: string[]) {
 export async function unBindTenantUser(tenantId: string, userIdList: string[]) {
   return requestClient.post(
     `/${sysApi}/sys/user/unBindTenantUser/${tenantId}`,
-    userIdList
+    userIdList,
   );
 }
 
@@ -194,7 +194,5 @@ export async function getClockUserPage(params: Recordable<any>) {
  * @param userName 用户名
  */
 export async function unlockUser(userName: string) {
-  return requestClient.get(
-    `/${sysApi}/sys/user/unlock/${userName}`,
-  );
+  return requestClient.get(`/${sysApi}/sys/user/unlock/${userName}`);
 }

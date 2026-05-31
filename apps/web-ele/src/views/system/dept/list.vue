@@ -12,7 +12,14 @@ import { reactive, ref, watch } from 'vue';
 import { Page, Tree, useVbenModal } from '@vben/common-ui';
 import { Plus } from '@vben/icons';
 
-import { ElButton, ElCard, ElCol, ElInput, ElMessage, ElRow } from 'element-plus';
+import {
+  ElButton,
+  ElCard,
+  ElCol,
+  ElInput,
+  ElMessage,
+  ElRow,
+} from 'element-plus';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteDept, getDeptPage, getDeptTreeList } from '#/api/system/dept';
@@ -65,7 +72,7 @@ function onDelete(row: SystemDeptApi.SystemDept) {
       refreshGrid();
     })
     .catch(() => {
-      console.log('删除失败');
+      // 取消删除
     });
 }
 
@@ -151,13 +158,13 @@ function refreshGrid() {
 }
 
 const treeData = ref([]);
-const expandedParams = ref<string[]>([]) // 受控展开状态
-const expandedFlag = ref(true)
+const expandedParams = ref<string[]>([]); // 受控展开状态
+const expandedFlag = ref(true);
 // 加载树形单位信息
 const getDeptTree = (params: Recordable<any>) => {
   getDeptTreeList(params).then((data) => {
     const tmpData = reactive([] as any);
-    if(data.length === 0){
+    if (data.length === 0) {
       treeData.value = tmpData;
     } else {
       tmpData.push({
@@ -169,9 +176,9 @@ const getDeptTree = (params: Recordable<any>) => {
     }
     generateList(treeData.value);
     setTimeout(() => {
-      if(expandedFlag.value){
+      if (expandedFlag.value) {
         // 展开-延迟执行
-        expandedParams.value = ['0']
+        expandedParams.value = ['0'];
       }
     }, 100);
   });
@@ -198,7 +205,7 @@ const generateList = (data: any[]) => {
 };
 // 获取上级部门ID
 let expandedKeys: Array<string> = [];
-const getParentKey = (id:  string):  string | undefined => {
+const getParentKey = (id: string): string | undefined => {
   let parentId;
   if (id) {
     expandedKeys.push(id);
@@ -224,8 +231,8 @@ watch(searchValue, (value) => {
   searchValue.value = value;
   const params = [...new Set(expandedKeys)];
   getDeptTree({ deptIds: params });
-  expandedParams.value = params
-  expandedFlag.value = false
+  expandedParams.value = params;
+  expandedFlag.value = false;
 });
 </script>
 <template>
@@ -239,7 +246,6 @@ watch(searchValue, (value) => {
             placeholder="请输入部门名称"
           />
           <Tree
-            ref="deptTreeRef"
             :tree-data="treeData"
             bordered
             :transition="false"

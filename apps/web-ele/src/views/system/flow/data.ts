@@ -1,6 +1,6 @@
+import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { BpmnFlowApi } from '#/api/system/flow';
-import type { VbenFormSchema } from '#/adapter/form';
 
 // 流程发布历史表格
 export function useProcessHistoryColumns<T = BpmnFlowApi.ProcessHistory>(

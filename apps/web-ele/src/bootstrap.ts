@@ -10,6 +10,13 @@ import '@vben/styles/ele';
 import { useTitle } from '@vueuse/core';
 import { ElLoading } from 'element-plus';
 
+import { $t, setupI18n } from '#/locales';
+
+import { initComponentAdapter } from './adapter/component';
+import { initSetupVbenForm } from './adapter/form';
+import App from './app.vue';
+import { router } from './router';
+
 /** 全局导入 Element Plus 基础组件样式
  * 需要单独导入样式是因为：
  * 1. 它们是在页面中直接导入使用的，而不是通过 adapter/component/index.ts 注册的
@@ -19,13 +26,6 @@ import { ElLoading } from 'element-plus';
 import 'element-plus/dist/index.css';
 // Element Plus 黑暗模式样式
 import 'element-plus/theme-chalk/dark/css-vars.css';
-
-import { $t, setupI18n } from '#/locales';
-
-import { initComponentAdapter } from './adapter/component';
-import { initSetupVbenForm } from './adapter/form';
-import App from './app.vue';
-import { router } from './router';
 
 async function bootstrap(namespace: string) {
   // 初始化组件适配器

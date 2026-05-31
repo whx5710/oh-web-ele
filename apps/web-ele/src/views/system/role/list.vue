@@ -106,11 +106,7 @@ function onDelete(row: SystemRoleApi.SystemRole) {
       onRefresh();
     })
     .catch(() => {
-      console.log('删除失败');
-      ElMessage.error({
-        message: '删除失败',
-        key: 'action_process_msg',
-      });
+      // 取消删除
     });
 }
 

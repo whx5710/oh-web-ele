@@ -3,8 +3,8 @@ import type {
   OnActionClickParams,
   VxeTableGridOptions,
 } from '#/adapter/vxe-table';
-import type { SystemUserApi } from '#/api/system/user';
 import type { SystemTenantApi } from '#/api/system/tenant';
+import type { SystemUserApi } from '#/api/system/user';
 
 import { ref, watch } from 'vue';
 
@@ -17,11 +17,11 @@ import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getUserPage, unBindTenantUser } from '#/api/system/user';
 import { $t } from '#/locales';
 
-import { useUserColumns, userSchema } from '../data';
+import { userSchema, useUserColumns } from '../data';
 import ModalUserForm from './modalUserForm.vue';
 
 const tenantId = ref();
-const title = ref('')
+const title = ref('');
 // drawerApi
 const [Drawer, drawerApi] = useVbenDrawer({
   showConfirmButton: false,
@@ -31,7 +31,7 @@ const [Drawer, drawerApi] = useVbenDrawer({
   onOpenChange() {
     const data = drawerApi.getData<SystemTenantApi.SystemTenant>();
     tenantId.value = data.tenantId;
-    title.value = '租户用户-' + data.tenantName;
+    title.value = `租户用户-${data.tenantName}`;
   },
 });
 // 删除数据
@@ -104,17 +104,17 @@ function onActionClick(e: OnActionClickParams<SystemUserApi.SystemUser>) {
     }
   }
 }
-const keyWord = ref('')
+const keyWord = ref('');
 watch(keyWord, () => {
-  onSearch()
+  onSearch();
   // useDebounceFn(onSearch , 3)
 });
 const onSearch = () => {
-  gridApi.query({keyWord: keyWord.value})
+  gridApi.query({ keyWord: keyWord.value });
   // useDebounceFn(() => {
   //   console.warn('---vvvv-----', keyWord.value)
   // } , 300)
-}
+};
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: ModalUserForm,
@@ -124,18 +124,20 @@ const [FormModal, formModalApi] = useVbenModal({
 function onAdd() {
   formModalApi.setData({ tenantId: tenantId.value }).open();
 }
-
 </script>
 <template>
-  <Drawer class="w-full max-w-[1000px]" :title="title" >
+  <Drawer class="w-full max-w-[1000px]" :title="title">
     <FormModal @success="onRefresh" />
     <Grid>
       <template #toolbar-tools>
-        <ElButton type="primary" @click="onAdd">
-          添加
-        </ElButton>
+        <ElButton type="primary" @click="onAdd"> 添加 </ElButton>
         <ElDivider direction="vertical" />
-        <ElInput style="width: 200px;" v-model="keyWord" placeholder="关键字搜索" clearable/>
+        <ElInput
+          style="width: 200px"
+          v-model="keyWord"
+          placeholder="关键字搜索"
+          clearable
+        />
       </template>
     </Grid>
   </Drawer>

@@ -1,11 +1,12 @@
+import type { Options as HtmlMinifierOptions } from 'html-minifier-terser';
 import type { PluginVisualizerOptions } from 'rollup-plugin-visualizer';
+import type { PluginOptions } from 'unplugin-dts';
 import type {
   ConfigEnv,
   PluginOption,
   UserConfig,
   UserConfigFnPromise,
 } from 'vite';
-import type { PluginOptions } from 'vite-plugin-dts';
 import type { Options as PwaPluginOptions } from 'vite-plugin-pwa';
 
 /**
@@ -54,6 +55,30 @@ interface PrintPluginOptions {
 }
 
 /**
+ * Nitro Mock 插件配置选项
+ * @description 用于配置 Nitro Mock 服务器的行为
+ */
+interface NitroMockPluginOptions {
+  /**
+   * Mock 服务器包名
+   * @default '@vbenjs/nitro-mock'
+   */
+  mockServerPackage?: string;
+
+  /**
+   * Mock 服务端口
+   * @default 3000
+   */
+  port?: number;
+
+  /**
+   * 是否打印 Mock 日志
+   * @default false
+   */
+  verbose?: boolean;
+}
+
+/**
  * 归档插件配置选项
  * @description 用于配置构建产物的压缩归档
  */
@@ -69,6 +94,12 @@ interface ArchiverPluginOptions {
    */
   outputDir?: string;
 }
+
+/**
+ * HTML 插件配置
+ * @description 用于配置基于 transformIndexHtml 的 HTML 压缩行为
+ */
+type HtmlPluginOptions = HtmlMinifierOptions;
 
 /**
  * ImportMap 插件配置
@@ -184,6 +215,11 @@ interface ApplicationPluginOptions extends CommonPluginOptions {
    */
   compressTypes?: ('brotli' | 'gzip')[];
   /**
+   * 是否开启 dayjs 插件
+   * @default true
+   */
+  dayjs?: boolean;
+  /**
    * 是否抽离配置文件
    * @default false
    * @description 在构建时抽离配置文件
@@ -193,7 +229,7 @@ interface ApplicationPluginOptions extends CommonPluginOptions {
    * 是否开启 HTML 插件
    * @default true
    */
-  html?: boolean;
+  html?: boolean | HtmlPluginOptions;
   /**
    * 是否开启国际化
    * @default false
@@ -223,6 +259,15 @@ interface ApplicationPluginOptions extends CommonPluginOptions {
    * @default true
    */
   license?: boolean;
+  /**
+   * 是否开启 Nitro Mock
+   * @default false
+   */
+  nitroMock?: boolean;
+  /**
+   * Nitro Mock 插件配置
+   */
+  nitroMockOptions?: NitroMockPluginOptions;
   /**
    * 是否开启控制台打印
    * @default false
@@ -309,9 +354,11 @@ export type {
   DefineApplicationOptions,
   DefineConfig,
   DefineLibraryOptions,
+  HtmlPluginOptions,
   IImportMap,
   ImportmapPluginOptions,
   LibraryPluginOptions,
+  NitroMockPluginOptions,
   PrintPluginOptions,
   VbenViteConfig,
 };

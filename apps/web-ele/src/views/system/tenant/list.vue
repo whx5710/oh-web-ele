@@ -118,7 +118,7 @@ function onCreate() {
 }
 </script>
 <template>
-  <Page auto-content-height >
+  <Page auto-content-height>
     <FormModal @success="onRefresh" />
     <!-- 抽屉-->
     <FormDrawer @success="onRefresh" />
