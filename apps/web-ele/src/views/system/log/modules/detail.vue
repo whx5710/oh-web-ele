@@ -5,7 +5,12 @@ import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { ElTag } from 'element-plus';
+import {
+  ElCard,
+  ElDescriptions,
+  ElDescriptionsItem,
+  ElTag,
+} from 'element-plus';
 
 const detailData = ref<SystemLogApi.SysErrorLog>();
 
@@ -28,48 +33,69 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal :title="getTitle" class="w-[800px]">
+  <Modal :title="getTitle" class="w-[900px]">
     <div v-if="detailData" class="space-y-4">
-      <div class="flex items-center gap-3">
-        <span class="w-24 text-right text-gray-500">错误代码：</span>
-        <ElTag type="danger">{{ detailData.errCode }}</ElTag>
-      </div>
-      <div class="flex gap-3">
-        <span class="w-24 text-right text-gray-500 flex-shrink-0">错误消息：</span>
-        <div class="flex-1 whitespace-pre-wrap">{{ detailData.msg }}</div>
-      </div>
-      <div class="flex gap-3">
-        <span class="w-24 text-right text-gray-500 flex-shrink-0">跟踪ID：</span>
-        <div class="flex-1 font-mono text-sm">{{ detailData.traceId }}</div>
-      </div>
-      <div class="grid grid-cols-2 gap-4">
-        <div class="flex gap-3">
-          <span class="w-24 text-right text-gray-500 flex-shrink-0">租户：</span>
-          <div class="flex-1 text-left">{{ detailData.tenantName || '-' }}</div>
+      <!-- 基本信息 -->
+      <ElCard shadow="never">
+        <template #header>
+          <div class="font-medium">基本信息</div>
+        </template>
+        <ElDescriptions :column="2" border>
+          <ElDescriptionsItem label="错误代码">
+            <ElTag type="danger" size="small">{{ detailData.errCode }}</ElTag>
+          </ElDescriptionsItem>
+          <ElDescriptionsItem label="跟踪ID">
+            <span class="font-mono text-xs">{{ detailData.traceId }}</span>
+          </ElDescriptionsItem>
+          <ElDescriptionsItem label="租户">
+            {{ detailData.tenantName || '-' }}
+          </ElDescriptionsItem>
+          <ElDescriptionsItem label="队列拥挤度">
+            <ElTag
+              :type="detailData.score >= 4 ? 'danger' : detailData.score >= 2 ? 'warning' : 'success'"
+              size="small"
+            >
+              {{ detailData.score }} / 5
+            </ElTag>
+          </ElDescriptionsItem>
+          <ElDescriptionsItem label="报错时间">
+            {{ detailData.errTime }}
+          </ElDescriptionsItem>
+          <ElDescriptionsItem label="创建时间">
+            {{ detailData.createTime }}
+          </ElDescriptionsItem>
+        </ElDescriptions>
+      </ElCard>
+
+      <!-- 错误消息 -->
+      <ElCard shadow="never">
+        <template #header>
+          <div class="font-medium">错误消息</div>
+        </template>
+        <div class="text-sm text-gray-700 whitespace-pre-wrap">
+          {{ detailData.msg }}
         </div>
-        <div class="flex gap-3">
-          <span class="w-24 text-right text-gray-500 flex-shrink-0">报错时间：</span>
-          <div class="flex-1 text-left">{{ detailData.errTime }}</div>
+      </ElCard>
+
+      <!-- 错误堆栈 -->
+      <ElCard shadow="never">
+        <template #header>
+          <div class="font-medium">错误堆栈</div>
+        </template>
+        <pre
+          class="text-xs text-gray-600 h-48 overflow-y-auto bg-gray-50 p-3 rounded whitespace-pre-wrap break-all"
+        >{{ detailData.stackInfo }}</pre>
+      </ElCard>
+
+      <!-- 备注 -->
+      <ElCard v-if="detailData.note" shadow="never">
+        <template #header>
+          <div class="font-medium">备注</div>
+        </template>
+        <div class="text-sm text-gray-700">
+          {{ detailData.note }}
         </div>
-      </div>
-      <div class="grid grid-cols-2 gap-4">
-        <div class="flex gap-3">
-          <span class="w-24 text-right text-gray-500 flex-shrink-0">队列拥挤度：</span>
-          <div class="flex-1 text-left">{{ detailData.score }} / 5</div>
-        </div>
-        <div class="flex gap-3">
-          <span class="w-24 text-right text-gray-500 flex-shrink-0">创建时间：</span>
-          <div class="flex-1 text-left">{{ detailData.createTime }}</div>
-        </div>
-      </div>
-      <div class="flex gap-3">
-        <span class="w-24 text-right text-gray-500 flex-shrink-0">错误信息：</span>
-        <pre class="flex-1 text-xs text-gray-600 h-60 overflow-y-auto bg-gray-50 p-3 rounded whitespace-pre-wrap break-all">{{ detailData.stackInfo }}</pre>
-      </div>
-      <div class="flex gap-3">
-        <span class="w-24 text-right text-gray-500 flex-shrink-0">备注：</span>
-        <div class="flex-1">{{ detailData.note || '-' }}</div>
-      </div>
+      </ElCard>
     </div>
   </Modal>
 </template>

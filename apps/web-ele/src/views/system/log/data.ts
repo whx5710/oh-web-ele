@@ -191,9 +191,16 @@ export function useErrorLogGridFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      component: 'RangeTimePicker',
+      component: 'DatePicker',
       fieldName: 'errTime',
       label: '报错时间',
+      componentProps: {
+        type: 'datetimerange',
+        valueFormat: 'YYYY-MM-DD HH:mm:ss',
+        startPlaceholder: '开始时间',
+        endPlaceholder: '结束时间',
+        style: { width: '100%' },
+      },
       defaultValue: [
         dayjs().startOf('day').format('YYYY-MM-DD HH:mm:ss'),
         dayjs().endOf('day').format('YYYY-MM-DD HH:mm:ss'),
