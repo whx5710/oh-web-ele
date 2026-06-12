@@ -79,5 +79,5 @@ export async function handleLogoutApi() {
  * 获取用户权限码
  */
 export async function getAccessCodesApi() {
-  return requestClient.get<string[]>(`/${sysApi}/sys/menu/authority`);
+  return requestClient.get<string[]>(`/${sysApi}/sys/auth/authority`);
 }

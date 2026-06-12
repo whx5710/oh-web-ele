@@ -45,7 +45,7 @@ pre-commit:
   parallel: true
   commands:
     lint:
-      run: pnpm lint
+      run: pnpm exec oxlint --threads=2 {staged_files}
     checkType:
       run: pnpm check:type
 
