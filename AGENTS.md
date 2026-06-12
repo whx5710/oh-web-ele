@@ -2,15 +2,15 @@
 
 ## 技术栈
 
-- **框架**: Vue 3.4+ + Vite 5 + TypeScript
-- **UI 组件库**: Element Plus
-- **表格组件**: vxe-table（通过 @vben/plugins 封装）
+- **框架**: Vue 3.5.34 + Vite 8 + TypeScript 6
+- **UI 组件库**: Element Plus 2.14.0
+- **表格组件**: vxe-table 4.18.13（通过 @vben/plugins 封装）
 - **表单组件**: @vben/common-ui 的 vben-form
-- **状态管理**: Pinia
-- **路由**: Vue Router（后端动态路由）
-- **HTTP 客户端**: Axios（通过 @vben/request 封装）
-- **构建工具**: pnpm + Turbo
-- **项目结构**: Monorepo（vben-admin-monorepo v5.5.9）
+- **状态管理**: Pinia 3.0.4
+- **路由**: Vue Router 5.0.7（后端动态路由）
+- **HTTP 客户端**: Axios 1.16.1（通过 @vben/request 封装）
+- **构建工具**: pnpm 10.33.4 + Turbo 2.9.14
+- **项目结构**: Monorepo（vben-admin-monorepo v5.7.0）
 
 ## 项目结构
 
@@ -256,6 +256,27 @@ export function useClockColumns<T = SystemUserApi.SystemUser>(
 5. **API 前缀**: 通过 `sysApi` 变量统一管理（当前值为 `sysApi`）
 6. **禁止在代码中硬编码**: 敏感信息（如密钥、密码）禁止写死在代码中
 
+## Git 提交规范
+
+项目使用 lefthook + commitlint 进行提交前检查：
+
+- **pre-commit**: 自动运行代码格式检查和类型检查
+- **commit-msg**: 使用 conventional commits 规范检查提交信息
+
+提交信息格式：`type(scope): description`
+
+常用 type:
+- `feat`: 新功能
+- `fix`: 修复缺陷
+- `docs`: 文档变更
+- `style`: 代码格式
+- `refactor`: 代码重构
+- `perf`: 性能优化
+- `test`: 测试相关
+- `build`: 构建流程、依赖变更
+- `ci`: CI 配置变更
+- `chore`: 其他杂项
+
 ## 配置文件规范
 
 ### env.ts
@@ -287,6 +308,11 @@ export { externalApi, sysApi };
 | 图标       | `IconifyIcon`    | `@vben/icons`         |
 | 状态管理   | `useUserStore`   | `@vben/stores`        |
 
+## 开发环境要求
+
+- **Node.js**: ^22.18.0 || ^24.0.0
+- **pnpm**: >=10.0.0
+
 ## 开发命令
 
 ```bash
@@ -307,4 +333,7 @@ pnpm lint
 
 # 格式化
 pnpm format
+
+# 提交代码（使用 cz-git 交互式提交）
+pnpm commit
 ```
