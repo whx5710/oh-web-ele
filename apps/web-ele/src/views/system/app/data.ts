@@ -86,9 +86,16 @@ export function useLogGridFormSchema(): VbenFormSchema[] {
       label: '处理状态',
     },
     {
-      component: 'RangePicker',
+      component: 'DatePicker',
       fieldName: 'createTime',
       label: '创建时间',
+      componentProps: {
+        type: 'daterange',
+        valueFormat: 'YYYY-MM-DD',
+        startPlaceholder: '开始日期',
+        endPlaceholder: '结束日期',
+        style: { width: '100%' },
+      },
     },
   ];
 }

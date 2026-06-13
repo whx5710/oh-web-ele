@@ -44,8 +44,6 @@ export namespace SystemLogApi {
     errTime: string; // 报错时间
     traceId: string; // 跟踪ID
     createTime: string; // 创建时间
-    tenantId: string; // 租户ID
-    tenantName: string; // 租户名称
     note: string; // 备注
     score: number; // 队列拥挤程度0-5
     queueSize: number; // 错误队列大小

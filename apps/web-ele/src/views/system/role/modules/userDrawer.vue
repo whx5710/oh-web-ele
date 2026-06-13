@@ -32,7 +32,7 @@ const [Drawer, drawerApi] = useVbenDrawer({
   },
 });
 
-// gridApi 租户用户
+// gridApi
 const [Grid, gridApi] = useVbenVxeGrid({
   showSearchForm: false, // 默认隐藏搜索表单
   gridOptions: {

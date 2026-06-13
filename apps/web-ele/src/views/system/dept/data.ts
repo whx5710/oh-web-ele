@@ -81,14 +81,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
         clearable: true,
       },
     },
-    {
-      component: 'Input',
-      fieldName: 'tenantName',
-      label: '租户名',
-      componentProps: {
-        clearable: true,
-      },
-    },
   ];
 }
 
@@ -112,12 +104,6 @@ export function useColumns(
       align: 'left',
       field: 'parentName',
       title: '上级部门',
-      width: 150,
-    },
-    {
-      align: 'left',
-      field: 'tenantName',
-      title: '租户',
       width: 150,
     },
     // {

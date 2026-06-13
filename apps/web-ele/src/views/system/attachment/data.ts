@@ -2,29 +2,6 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemAttachApi } from '#/api/system/attachment';
 
-import { ref } from 'vue';
-
-import { useUserStore } from '@vben/stores';
-
-import { useDebounceFn } from '@vueuse/core';
-
-import { getTenantPage } from '#/api/system/tenant';
-
-const keyWord = ref('');
-
-const fetching = ref(false);
-const userStore = useUserStore();
-
-// 远程获取数据
-function fetchRemoteOptions(keyWord: Record<string, any>) {
-  fetching.value = true;
-  return getTenantPage({
-    pageNum: 1,
-    pageSize: 10,
-    ...keyWord,
-  });
-}
-
 // 搜索表单
 export function useGridFormSchema(): VbenFormSchema[] {
   return [
@@ -35,47 +12,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         clearable: true,
       },
-    },
-    {
-      component: 'ApiSelect',
-      // 对应组件的参数
-      componentProps: () => {
-        return {
-          // 接口转options格式 { tenantId: string; tenantName: string }[]
-          afterFetch: (res: any) => {
-            fetching.value = false;
-            const data: { name: string; path: string }[] = res.list;
-            return data.map((item: any) => ({
-              label: item.tenantName,
-              value: item.tenantId,
-            }));
-          },
-          api: fetchRemoteOptions,
-          clearable: true,
-          disabled: userStore.userInfo?.superAdmin !== 1,
-          // 禁止本地过滤
-          filterable: true,
-          remote: true,
-          // 搜索词变化时记录下来， 使用useDebounceFn防抖。
-          remoteMethod: useDebounceFn((value: string) => {
-            keyWord.value = value;
-          }, 300),
-          // 远程搜索参数。当搜索词变化时，params也会更新
-          params: {
-            keyWord: keyWord.value || undefined,
-          },
-        };
-      },
-      // 字段名
-      fieldName: 'tenantId',
-      // 界面显示的label
-      label: '租户',
-      renderComponentContent: () => {
-        return {
-          loading: fetching.value,
-        };
-      },
-      // rules: 'selectRequired',
     },
   ];
 }
@@ -112,11 +48,6 @@ export function useColumns<T = SystemAttachApi.SysAttach>(
       field: 'platform',
       width: 120,
       title: '存储平台',
-    },
-    {
-      field: 'tenantName',
-      minWidth: 120,
-      title: '租户',
     },
     {
       field: 'createTime',

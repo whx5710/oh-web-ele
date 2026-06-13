@@ -2,29 +2,7 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemLogApi } from '#/api/system/log';
 
-import { ref } from 'vue';
-
-import { useUserStore } from '@vben/stores';
-
-import { useDebounceFn } from '@vueuse/core';
 import dayjs from 'dayjs';
-
-import { getTenantPage } from '#/api/system/tenant';
-
-const keyWord = ref('');
-
-const fetching = ref(false);
-const userStore = useUserStore();
-
-// 远程获取数据
-function fetchRemoteOptions(keyWord: Record<string, any>) {
-  fetching.value = true;
-  return getTenantPage({
-    pageNum: 1,
-    pageSize: 10,
-    ...keyWord,
-  });
-}
 
 // 搜索表单
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -36,47 +14,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         clearable: true,
       },
-    },
-    {
-      component: 'ApiSelect',
-      // 对应组件的参数
-      componentProps: () => {
-        return {
-          // 接口转options格式 { tenantId: string; tenantName: string }[]
-          afterFetch: (res: any) => {
-            fetching.value = false;
-            const data: { name: string; path: string }[] = res.list;
-            return data.map((item: any) => ({
-              label: item.tenantName,
-              value: item.tenantId,
-            }));
-          },
-          api: fetchRemoteOptions,
-          clearable: true,
-          disabled: userStore.userInfo?.superAdmin !== 1,
-          // 禁止本地过滤
-          filterable: true,
-          remote: true,
-          // 搜索词变化时记录下来， 使用useDebounceFn防抖。
-          remoteMethod: useDebounceFn((value: string) => {
-            keyWord.value = value;
-          }, 300),
-          // 远程搜索参数。当搜索词变化时，params也会更新
-          params: {
-            keyWord: keyWord.value || undefined,
-          },
-        };
-      },
-      // 字段名
-      fieldName: 'tenantId',
-      // 界面显示的label
-      label: '租户',
-      renderComponentContent: () => {
-        return {
-          loading: fetching.value,
-        };
-      },
-      // rules: 'selectRequired',
     },
     // 暂时移除日期选择器，避免 Element Plus 日期组件错误
     // {
@@ -110,39 +47,6 @@ export function useOpGridFormSchema(): VbenFormSchema[] {
         clearable: true,
       },
     },
-    {
-      component: 'ApiSelect',
-      componentProps: () => {
-        return {
-          afterFetch: (res: any) => {
-            fetching.value = false;
-            const data: { name: string; path: string }[] = res.list;
-            return data.map((item: any) => ({
-              label: item.tenantName,
-              value: item.tenantId,
-            }));
-          },
-          api: fetchRemoteOptions,
-          clearable: true,
-          disabled: userStore.userInfo?.superAdmin !== 1,
-          filterable: true,
-          remote: true,
-          remoteMethod: useDebounceFn((value: string) => {
-            keyWord.value = value;
-          }, 300),
-          params: {
-            keyWord: keyWord.value || undefined,
-          },
-        };
-      },
-      fieldName: 'tenantId',
-      label: '租户',
-      renderComponentContent: () => {
-        return {
-          loading: fetching.value,
-        };
-      },
-    },
   ];
 }
 
@@ -155,39 +59,6 @@ export function useErrorLogGridFormSchema(): VbenFormSchema[] {
       label: '关键字',
       componentProps: {
         clearable: true,
-      },
-    },
-    {
-      component: 'ApiSelect',
-      componentProps: () => {
-        return {
-          afterFetch: (res: any) => {
-            fetching.value = false;
-            const data: { name: string; path: string }[] = res.list;
-            return data.map((item: any) => ({
-              label: item.tenantName,
-              value: item.tenantId,
-            }));
-          },
-          api: fetchRemoteOptions,
-          clearable: true,
-          disabled: userStore.userInfo?.superAdmin !== 1,
-          filterable: true,
-          remote: true,
-          remoteMethod: useDebounceFn((value: string) => {
-            keyWord.value = value;
-          }, 300),
-          params: {
-            keyWord: keyWord.value || undefined,
-          },
-        };
-      },
-      fieldName: 'tenantId',
-      label: '租户',
-      renderComponentContent: () => {
-        return {
-          loading: fetching.value,
-        };
       },
     },
     {
@@ -223,11 +94,6 @@ export function useLoginColumns(): VxeTableGridOptions['columns'] {
       field: 'username',
       title: '用户名',
       width: 200,
-    },
-    {
-      field: 'tenantName',
-      title: '租户',
-      minWidth: 150,
     },
     {
       field: 'address',
@@ -320,11 +186,6 @@ export function useOpColumns(): VxeTableGridOptions['columns'] {
       field: 'reqUri',
       width: 120,
       title: '请求URI',
-    },
-    {
-      field: 'tenantName',
-      title: '租户',
-      minWidth: 150,
     },
     {
       field: 'realName',
@@ -430,11 +291,6 @@ export function useErrorLogColumns<T = SystemLogApi.SysErrorLog>(
         },
         name: 'CellLink',
       },
-    },
-    {
-      field: 'tenantName',
-      title: '租户',
-      minWidth: 100,
     },
     {
       field: 'queueSize',

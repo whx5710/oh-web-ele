@@ -2,66 +2,11 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemUserApi } from '#/api/system/user';
 
-import { ref } from 'vue';
-
-import { useUserStore } from '@vben/stores';
-
-import { useDebounceFn } from '@vueuse/core';
-
 import { z } from '#/adapter/form';
 import { getDeptTreeList } from '#/api/system/dept';
 import { getPostList } from '#/api/system/post';
 import { getRoleList } from '#/api/system/role';
-import { getTenantPage } from '#/api/system/tenant';
 import { $t } from '#/locales';
-
-const keyWord = ref('');
-const fetching = ref(false);
-const userStore = useUserStore();
-
-// 远程获取数据
-function fetchRemoteOptions(keyWord: Record<string, any>) {
-  fetching.value = true;
-  return getTenantPage({
-    pageNum: 1,
-    pageSize: 10,
-    ...keyWord,
-  });
-}
-
-// 创建租户选择表单项
-function createTenantSelectSchema(): VbenFormSchema {
-  return {
-    component: 'ApiSelect',
-    componentProps: () => ({
-      afterFetch: (res: {
-        list: Array<{ tenantId: string; tenantName: string }>;
-      }) => {
-        fetching.value = false;
-        return res.list.map((item) => ({
-          label: item.tenantName,
-          value: item.tenantId,
-        }));
-      },
-      api: fetchRemoteOptions,
-      clearable: true,
-      disabled: userStore.userInfo?.superAdmin !== 1,
-      filterable: true,
-      remote: true,
-      remoteMethod: useDebounceFn((value: string) => {
-        keyWord.value = value;
-      }, 300),
-      params: {
-        keyWord: keyWord.value || undefined,
-      },
-    }),
-    fieldName: 'tenantId',
-    label: '租户',
-    renderComponentContent: () => ({
-      loading: fetching.value,
-    }),
-  };
-}
 
 // 创建关键字输入表单项
 function createKeywordInputSchema(): VbenFormSchema {
@@ -78,12 +23,12 @@ function createKeywordInputSchema(): VbenFormSchema {
 
 // 搜索表单
 export function useGridFormSchema(): VbenFormSchema[] {
-  return [createKeywordInputSchema(), createTenantSelectSchema()];
+  return [createKeywordInputSchema()];
 }
 
 // 在线用户搜索表单
 export function useMonitorGridFormSchema(): VbenFormSchema[] {
-  return [createKeywordInputSchema(), createTenantSelectSchema()];
+  return [createKeywordInputSchema()];
 }
 
 // 锁定用户搜索表单
@@ -137,11 +82,6 @@ export function useClockColumns<T = SystemUserApi.SystemUser>(
     {
       field: 'deptName',
       title: '部门',
-      minWidth: 120,
-    },
-    {
-      field: 'tenantName',
-      title: '租户',
       minWidth: 120,
     },
     {
@@ -227,11 +167,6 @@ export function useColumns<T = SystemUserApi.SystemUser>(
       minWidth: 120,
     },
     {
-      field: 'tenantName',
-      title: '租户',
-      minWidth: 120,
-    },
-    {
       field: 'status',
       title: '状态',
       width: 80,
@@ -296,11 +231,6 @@ export function useMonitorColumns<T = SystemUserApi.SystemUser>(
       field: 'realName',
       title: '真实姓名',
       minWidth: 100,
-    },
-    {
-      field: 'tenantName',
-      title: '租户',
-      width: 120,
     },
     {
       field: 'ip',

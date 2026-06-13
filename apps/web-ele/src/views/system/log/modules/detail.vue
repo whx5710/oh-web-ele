@@ -47,9 +47,6 @@ const [Modal, modalApi] = useVbenModal({
           <ElDescriptionsItem label="跟踪ID">
             <span class="font-mono text-xs">{{ detailData.traceId }}</span>
           </ElDescriptionsItem>
-          <ElDescriptionsItem label="租户">
-            {{ detailData.tenantName || '-' }}
-          </ElDescriptionsItem>
           <ElDescriptionsItem label="队列拥挤度">
             <ElTag
               :type="detailData.score >= 4 ? 'danger' : detailData.score >= 2 ? 'warning' : 'success'"

@@ -16,7 +16,6 @@ export namespace SystemUserApi {
     deptName: string;
     realName: string;
     superAdmin: 0 | 1;
-    tenantId: string;
     userKey: string;
     username: string;
     isSystem: 0 | 1;
@@ -97,28 +96,6 @@ export async function pageByRole(params: Recordable<any>) {
     {
       params,
     },
-  );
-}
-
-/**
- * 绑定租户的管理用户
- * @param tenantId 租户ID
- */
-export async function bindTenantUser(tenantId: string, userIdList: string[]) {
-  return requestClient.post(
-    `/${sysApi}/sys/user/bindTenantUser/${tenantId}`,
-    userIdList,
-  );
-}
-
-/**
- * 解绑租户的管理用户
- * @param tenantId 租户ID
- */
-export async function unBindTenantUser(tenantId: string, userIdList: string[]) {
-  return requestClient.post(
-    `/${sysApi}/sys/user/unBindTenantUser/${tenantId}`,
-    userIdList,
   );
 }
 

@@ -1,7 +1,7 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemRoleApi } from '#/api/system/role';
-import type { SystemTenantApi } from '#/api/system/tenant';
+import type { SystemUserApi } from '#/api/system/user';
 
 import { $t } from '#/locales';
 
@@ -47,14 +47,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
         clearable: true,
       },
     },
-    {
-      component: 'Input',
-      fieldName: 'tenantName',
-      label: '租户名',
-      componentProps: {
-        clearable: true,
-      },
-    },
   ];
 }
 
@@ -91,16 +83,6 @@ export function useColumns<T = SystemRoleApi.SystemRole>(
       field: 'isSystem',
       width: 80,
       title: '内置角色',
-    },
-    {
-      field: 'tenantId',
-      minWidth: 100,
-      title: '租户ID',
-    },
-    {
-      field: 'tenantName',
-      minWidth: 100,
-      title: '租户名称',
     },
     {
       field: 'remark',
@@ -147,7 +129,7 @@ export function useColumns<T = SystemRoleApi.SystemRole>(
 }
 
 // 数据表格
-export function useUserColumns<T = SystemTenantApi.SystemTenant>(
+export function useUserColumns<T = SystemUserApi.SystemUser>(
   _onActionClick: OnActionClickFn<T>,
 ): VxeTableGridOptions['columns'] {
   return [
@@ -202,11 +184,6 @@ export function useUserColumns<T = SystemTenantApi.SystemTenant>(
           { type: 'success', label: '正常', value: 1 },
         ],
       },
-    },
-    {
-      align: 'left',
-      field: 'tenantName',
-      title: '租户',
     },
   ];
 }

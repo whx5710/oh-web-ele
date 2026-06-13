@@ -11,8 +11,6 @@ export namespace SystemPostApi {
     postName: string;
     sort: number;
     menuIdList: string[];
-    tenantId: string;
-    tenantName: string;
     createTime: string;
     status: 0 | 1;
   }
