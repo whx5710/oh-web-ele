@@ -49,7 +49,13 @@ const [Modal, modalApi] = useVbenModal({
           </ElDescriptionsItem>
           <ElDescriptionsItem label="队列拥挤度">
             <ElTag
-              :type="detailData.score >= 4 ? 'danger' : detailData.score >= 2 ? 'warning' : 'success'"
+              :type="
+                detailData.score >= 4
+                  ? 'danger'
+                  : detailData.score >= 2
+                    ? 'warning'
+                    : 'success'
+              "
               size="small"
             >
               {{ detailData.score }} / 5
@@ -81,7 +87,7 @@ const [Modal, modalApi] = useVbenModal({
         </template>
         <pre
           class="text-xs text-gray-600 h-48 overflow-y-auto bg-gray-50 p-3 rounded whitespace-pre-wrap break-all"
-        >{{ detailData.stackInfo }}</pre>
+          >{{ detailData.stackInfo }}</pre>
       </ElCard>
 
       <!-- 备注 -->

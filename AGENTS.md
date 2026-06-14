@@ -266,6 +266,7 @@ export function useClockColumns<T = SystemUserApi.SystemUser>(
 提交信息格式：`type(scope): description`
 
 常用 type:
+
 - `feat`: 新功能
 - `fix`: 修复缺陷
 - `docs`: 文档变更

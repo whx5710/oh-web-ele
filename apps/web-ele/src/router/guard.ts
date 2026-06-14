@@ -59,7 +59,18 @@ function setupAccessGuard(router: Router) {
             preferences.app.defaultHomePath,
         );
       }
-      return true;
+
+      // 未登录时直接放行基本路由
+      if (!accessStore.accessToken) {
+        return true;
+      }
+
+      // 已登录且权限已生成时，直接放行基本路由
+      if (accessStore.isAccessChecked) {
+        return true;
+      }
+
+      // 已登录但权限未生成时，继续往下执行生成逻辑（为了加载菜单）
     }
 
     // accessToken 检查

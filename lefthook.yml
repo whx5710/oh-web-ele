@@ -45,7 +45,7 @@ pre-commit:
   parallel: true
   commands:
     lint:
-      glob: "*.{js,ts,jsx,tsx,vue}"
+      glob: '*.{js,ts,jsx,tsx,vue}'
       run: pnpm exec oxlint --threads=2 {staged_files}
     checkType:
       run: pnpm check:type
