@@ -47,10 +47,6 @@ const [Drawer, drawerApi] = useVbenDrawer({
       } else {
         id.value = undefined;
       }
-
-      // if (menuIdList.value.length === 0) {
-      //   loadPermissions();
-      // }
     }
   },
 });

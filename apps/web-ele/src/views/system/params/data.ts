@@ -15,6 +15,11 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'paramKey',
       label: '参数KEY',
       rules: 'required',
+      componentProps: (values) => {
+        return {
+          disabled: values.paramType === 1,
+        };
+      },
     },
     {
       component: 'Input',
@@ -57,11 +62,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
         clearable: true,
       },
     },
-    // {
-    //   component: 'RangePicker',
-    //   fieldName: 'createTime',
-    //   label: $t('system.role.createTime'),
-    // },
   ];
 }
 
@@ -83,15 +83,6 @@ export function useColumns<T = SystemParamsApi.SystemParam>(
       title: '参数名称',
       width: 200,
     },
-    // {
-    //   cellRender: {
-    //     attrs: { beforeChange: onStatusChange },
-    //     name: onStatusChange ? 'CellSwitch' : 'CellTag',
-    //   },
-    //   field: 'status',
-    //   title: $t('system.role.status'),
-    //   width: 100,
-    // },
     {
       cellRender: {
         name: 'CellTag',

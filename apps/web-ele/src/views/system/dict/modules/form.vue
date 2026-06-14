@@ -36,7 +36,7 @@ function resetForm() {
   formApi.resetForm();
   formApi.setValues(formData.value || {});
 }
-
+const id = ref();
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     const { valid } = await formApi.validate();
@@ -44,8 +44,8 @@ const [Modal, modalApi] = useVbenModal({
       modalApi.lock();
       const data = await formApi.getValues();
       try {
-        await (formData.value?.id
-          ? updateDictType(formData.value.id, data)
+        await (id.value
+          ? updateDictType(id.value, data)
           : createDictType(data));
         modalApi.close();
         emit('success');
@@ -58,8 +58,11 @@ const [Modal, modalApi] = useVbenModal({
     if (isOpen) {
       const data = modalApi.getData<SystemDictApi.SystemType>();
       if (data) {
+        id.value = data.id;
         formData.value = data;
         formApi.setValues(formData.value);
+      }else{
+        id.value = undefined;
       }
     }
   },

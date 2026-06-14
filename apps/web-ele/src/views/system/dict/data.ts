@@ -21,13 +21,13 @@ export function getDictClassOptions() {
  */
 export function useSchema(): VbenFormSchema[] {
   return [
-    {
-      component: 'Input',
-      fieldName: 'id',
-      componentProps: () => {
-        return { class: 'hidden' };
-      },
-    },
+    // {
+    //   component: 'Input',
+    //   fieldName: 'id',
+    //   componentProps: () => {
+    //     return { class: 'hidden' };
+    //   },
+    // },
     {
       component: 'Input',
       fieldName: 'dictType',
