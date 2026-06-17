@@ -19,7 +19,7 @@ export default defineConfig(async () => {
             secure: false, // 如果是https接口，需要配置这个参数
             rewrite: (path) => path.replace(/^\/api\/sysApi/, ''),
             // 代理目标地址
-            target: 'http://localhost:8080',
+            target: 'http://localhost:5710',
             ws: true,
           },
           // 扩展接口地址代理
@@ -28,7 +28,7 @@ export default defineConfig(async () => {
             secure: false, // 如果是https接口，需要配置这个参数
             rewrite: (path) => path.replace(/^\/api\/externalApi/, ''),
             // 代理目标地址
-            target: 'http://localhost:8080',
+            target: 'http://localhost:5710',
             ws: true,
           },
         },
