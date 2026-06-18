@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onBeforeUnmount, onMounted, ref } from 'vue';
+import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
 
@@ -24,6 +24,7 @@ let currentX = 0;
 let currentY = 0;
 let mouseVelocity = 0;
 let rafId: null | number = null;
+let resizeObserver: ResizeObserver | null = null;
 
 /* ───────── 主题色工具 ───────── */
 function getCssVar(varName: string) {
@@ -308,9 +309,21 @@ function resize() {
   const canvas = canvasRef.value;
   if (!canvas || !ctx) return;
   const rect = canvas.getBoundingClientRect();
-  dpr = window.devicePixelRatio || 1;
-  canvasWidth = rect.width;
-  canvasHeight = rect.height;
+  // 避免布局未完成时获取到 0 尺寸导致 canvas 初始化异常
+  if (rect.width === 0 || rect.height === 0) return;
+
+  const newDpr = window.devicePixelRatio || 1;
+  const newWidth = rect.width;
+  const newHeight = rect.height;
+
+  // 尺寸无实质变化时不重新初始化粒子，防止刷新时反复重置
+  if (newWidth === canvasWidth && newHeight === canvasHeight && newDpr === dpr) {
+    return;
+  }
+
+  dpr = newDpr;
+  canvasWidth = newWidth;
+  canvasHeight = newHeight;
   canvas.width = canvasWidth * dpr;
   canvas.height = canvasHeight * dpr;
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -332,16 +345,21 @@ onMounted(() => {
   const canvas = canvasRef.value;
   if (!canvas) return;
   ctx = canvas.getContext('2d');
-  resize();
 
-  const handleResize = () => resize();
-  window.addEventListener('resize', handleResize);
+  // 使用 ResizeObserver 监听容器尺寸变化，比 window.resize 更可靠
+  resizeObserver = new ResizeObserver(() => resize());
+  resizeObserver.observe(canvas);
 
-  const rect = canvas.getBoundingClientRect();
-  currentX = rect.width / 2;
-  currentY = rect.height / 2;
-  mouseX = currentX;
-  mouseY = currentY;
+  // 延迟到 DOM 布局稳定后再初始化
+  nextTick(() => {
+    resize();
+
+    const rect = canvas.getBoundingClientRect();
+    currentX = rect.width / 2;
+    currentY = rect.height / 2;
+    mouseX = currentX;
+    mouseY = currentY;
+  });
 
   const handleMouseMove = (e: MouseEvent) => {
     const rect = canvasRef.value?.getBoundingClientRect();
@@ -355,7 +373,8 @@ onMounted(() => {
   rafId = requestAnimationFrame(drawFrame);
 
   onBeforeUnmount(() => {
-    window.removeEventListener('resize', handleResize);
+    resizeObserver?.disconnect();
+    resizeObserver = null;
     window.removeEventListener('mousemove', handleMouseMove);
     if (rafId !== null) cancelAnimationFrame(rafId);
   });

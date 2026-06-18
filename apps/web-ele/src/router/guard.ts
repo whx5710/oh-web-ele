@@ -52,6 +52,14 @@ function setupAccessGuard(router: Router) {
 
     // 基本路由，这些路由不需要进入权限拦截
     if (coreRouteNames.includes(to.name as string)) {
+      // 未登录时访问首页，重定向到登录页
+      if (
+        to.path === preferences.app.defaultHomePath &&
+        !accessStore.accessToken
+      ) {
+        return { path: LOGIN_PATH, replace: true };
+      }
+
       if (to.path === LOGIN_PATH && accessStore.accessToken) {
         return decodeURIComponent(
           (to.query?.redirect as string) ||
