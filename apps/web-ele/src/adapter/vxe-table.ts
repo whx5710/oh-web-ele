@@ -99,6 +99,10 @@ setupVbenVxeTable({
     vxeUI.renderer.add('CellTag', {
       renderTableDefault({ options, props }, { column, row }) {
         const value = get(row, column.field);
+        // 值为空时不渲染标签，避免显示空白灰色标签块
+        if (value === '' || value === null || value === undefined) {
+          return '';
+        }
         const tagElOptions = options ?? [
           { type: 'success', label: $t('common.enabled'), value: 1 },
           { type: 'warning', label: $t('common.disabled'), value: 0 },
