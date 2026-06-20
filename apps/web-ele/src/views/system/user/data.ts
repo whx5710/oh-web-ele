@@ -7,6 +7,9 @@ import { getDeptTreeList } from '#/api/system/dept';
 import { getPostList } from '#/api/system/post';
 import { getRoleList } from '#/api/system/role';
 import { $t } from '#/locales';
+import { useUserStore } from '@vben/stores';
+
+const userStore = useUserStore();
 
 // 创建关键字输入表单项
 function createKeywordInputSchema(): VbenFormSchema {
@@ -268,6 +271,9 @@ export function useMonitorColumns<T = SystemUserApi.SystemUser>(
           {
             code: 'exit',
             text: '下线',
+            disabled: (row: SystemUserApi.SystemUser) => {
+              return !!(row.id === userStore.userInfo?.id);
+            },
           },
         ],
       },
