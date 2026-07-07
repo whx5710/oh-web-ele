@@ -106,9 +106,15 @@ function onActionClick(e: OnActionClickParams<SystemAttachApi.SysAttach>) {
 
 // 下载
 function download(row: SystemAttachApi.SysAttach) {
-  downloadFileFromUrl({
-    source: row.url,
-  });
+  if (row.platform === 'SeaweedFS') {
+    downloadFileFromUrl({
+      source: `${apiURL}/${sysApi}/file/download/${encodeURIComponent(row.url)}`,
+    });
+  } else {
+    downloadFileFromUrl({
+      source: row.url,
+    });
+  }
 }
 // 删除
 function onDelete(row: SystemAttachApi.SysAttach) {
