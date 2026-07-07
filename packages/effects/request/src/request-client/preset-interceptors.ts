@@ -60,13 +60,24 @@ export const authenticateResponseInterceptor = ({
   return {
     rejected: async (error) => {
       const { config, response } = error;
-      // 如果不是 401 错误，直接抛出异常
-      if (response?.status !== 401) {
+      const responseData = response?.data ?? error;
+      const status = response?.status;
+      const code = responseData?.code;
+
+      // 如果不是 401 错误（HTTP 状态码或业务 code），直接抛出异常
+      if (status !== 401 && code !== 401) {
         throw error;
       }
+
+      // 如果当前请求是刷新 token 接口本身，说明 refresh token 也已失效，直接重新认证
+      if (config?.url?.includes('/sys/auth/refresh')) {
+        await doReAuthenticate();
+        throw error;
+      }
+
       // 判断是否启用了 refreshToken 功能
-      // 如果没有启用或者已经是重试请求了，直接跳转到重新登录
-      if (!enableRefreshToken || config.__isRetryRequest) {
+      // 如果没有启用、已经是重试请求或缺少请求配置，直接跳转到重新登录
+      if (!enableRefreshToken || config?.__isRetryRequest || !config) {
         await doReAuthenticate();
         throw error;
       }
