@@ -154,7 +154,8 @@ export const errorMessageResponseInterceptor = (
           break;
         }
         case 403: {
-          errorMessage = $t('ui.fallback.http.forbidden');
+          errorMessage =
+            error?.response?.data?.msg || $t('ui.fallback.http.forbidden');
           break;
         }
         case 404: {
