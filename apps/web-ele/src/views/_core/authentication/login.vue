@@ -109,6 +109,7 @@ const formSchema = computed((): VbenFormSchema[] => {
 
 <template>
   <AuthenticationLogin
+    v-bind="$attrs"
     :captcha-base64="captchaBase64"
     :captcha-key="captchaKey"
     :show-captcha="showCaptcha"
