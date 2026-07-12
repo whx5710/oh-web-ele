@@ -119,7 +119,7 @@ const defaultPreferences: Preferences = {
     colorPrimary: 'hsl(212 100% 45%)',
     colorSuccess: 'hsl(144 57% 58%)',
     colorWarning: 'hsl(42 84% 61%)',
-    mode: 'dark',
+    mode: 'auto', // auto | dark | light
     radius: '0.5',
     fontSize: 16,
     semiDarkHeader: false,
@@ -135,13 +135,13 @@ const defaultPreferences: Preferences = {
   widget: {
     fullscreen: true,
     globalSearch: true,
-    languageToggle: true,
+    languageToggle: false,
     lockScreen: true,
     notification: true,
     refresh: true,
     sidebarToggle: true,
     themeToggle: true,
-    timezone: true,
+    timezone: false,
   },
 };
 
