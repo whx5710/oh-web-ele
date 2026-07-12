@@ -46,6 +46,15 @@ const coreRoutes: RouteRecordRaw[] = [
           title: '首页',
         },
       },
+      {
+        name: 'Profile',
+        path: '/profile',
+        component: () => import('#/views/_core/profile/index.vue'),
+        meta: {
+          icon: 'lucide:user',
+          title: '个人中心',
+        },
+      },
     ],
   },
   {
