@@ -109,10 +109,26 @@ function formatValue(value: any) {
           加载中...
         </div>
         <div
-          v-else-if="!licenseInfo.subject && !licenseInfo.signature"
-          class="text-muted-foreground text-sm"
+          v-else-if="!licenseInfo.subject && !licenseInfo.signature && !licenseInfo.graceExpireAt"
+          class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm"
         >
-          暂无 License 信息
+          <div class="space-y-1">
+            <span class="font-medium text-yellow-500">暂无 License 信息</span>
+          </div>
+          <div class="col-span-2 space-y-1">
+            <span class="text-muted-foreground">机器码：</span>
+            <span class="break-all font-medium">{{ formatValue(licenseInfo.machineCode) }}</span>
+          </div>
+        </div>
+        <div v-else-if="licenseInfo.graceExpireAt" class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+          <div class="space-y-1">
+            <span class="text-muted-foreground">宽限期到期时间：</span>
+            <span class="font-medium">{{ formatValue(licenseInfo.graceExpireAt) }}</span>
+          </div>
+          <div class="col-span-2 space-y-1">
+            <span class="text-muted-foreground">绑定机器码：</span>
+            <span class="break-all font-medium">{{ formatValue(licenseInfo.machineCode) }}</span>
+          </div>
         </div>
         <div v-else class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
           <div class="space-y-1">

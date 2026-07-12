@@ -17,6 +17,9 @@ export namespace LicenseApi {
     signature?: string;
     /** 授权主体（客户标识） */
     subject?: string;
+
+    /** 宽限期到期时间 */
+    graceExpireAt?: string;
   }
 
   export interface InstallResult {
