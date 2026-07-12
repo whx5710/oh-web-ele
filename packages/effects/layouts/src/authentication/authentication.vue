@@ -7,7 +7,6 @@ import { preferences, usePreferences } from '@vben/preferences';
 
 import { Copyright } from '../basic/copyright';
 import AuthenticationFormView from './form.vue';
-import SloganIcon from './icons/slogan.vue';
 import Toolbar from './toolbar.vue';
 
 interface Props {
@@ -79,9 +78,9 @@ const logoSrc = computed(() => {
     </AuthenticationFormView>
 
     <slot name="logo">
-      <!-- 头部 Logo 和应用名称 -->
+      <!-- 头部 Logo 和应用名称（居中布局时显示在顶部） -->
       <div
-        v-if="logoSrc || appName"
+        v-if="authPanelCenter && (logoSrc || appName)"
         class="absolute top-0 left-0 z-10 flex flex-1"
         @click="clickLogo"
       >
@@ -105,32 +104,33 @@ const logoSrc = computed(() => {
 
     <!-- 系统介绍 -->
     <div v-if="!authPanelCenter" class="relative hidden w-0 flex-1 lg:block">
-      <div
-        class="absolute inset-0 size-full bg-background-deep dark:bg-[#070709]"
-      >
-        <div class="login-background absolute top-0 left-0 size-full"></div>
+      <div class="absolute inset-0 size-full bg-background">
         <div
           :key="authPanelLeft ? 'left' : authPanelRight ? 'right' : 'center'"
-          class="mr-20 flex-col-center h-full"
+          class="flex-col-center h-full px-12"
           :class="{
             'enter-x': authPanelLeft,
             '-enter-x': authPanelRight,
           }"
         >
-          <template v-if="sloganImage">
-            <img
-              :alt="appName"
-              :src="sloganImage"
-              class="h-64 w-2/5 animate-float"
-            />
-          </template>
-          <SloganIcon v-else :alt="appName" class="h-64 w-2/5 animate-float" />
-          <div class="text-1xl mt-6 font-sans text-foreground lg:text-2xl">
+          <img
+            v-if="logoSrc"
+            :alt="appName"
+            :src="logoSrc"
+            class="mb-6 h-32 w-32 cursor-pointer object-contain"
+            @click="clickLogo"
+          />
+          <h1
+            class="text-center text-4xl font-light tracking-tight text-foreground sm:text-5xl"
+          >
+            {{ appName }}
+          </h1>
+          <p
+            v-if="pageTitle"
+            class="mt-4 max-w-md text-center text-lg text-muted-foreground"
+          >
             {{ pageTitle }}
-          </div>
-          <div class="mt-2 dark:text-muted-foreground">
-            {{ pageDescription }}
-          </div>
+          </p>
         </div>
       </div>
     </div>
