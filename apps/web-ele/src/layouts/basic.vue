@@ -4,10 +4,9 @@ import type { NotificationItem } from '@vben/layouts';
 import { computed, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { AuthenticationLoginExpiredModal } from '@vben/common-ui';
-import { VBEN_DOC_URL, VBEN_GITHUB_URL } from '@vben/constants';
+import { AuthenticationLoginExpiredModal, useVbenModal } from '@vben/common-ui';
 import { useWatermark } from '@vben/hooks';
-import { BookOpenText, CircleHelp, SvgGithubIcon } from '@vben/icons';
+import { LockKeyhole, CircleHelp } from '@vben/icons';
 import {
   BasicLayout,
   LockScreen,
@@ -16,11 +15,13 @@ import {
 } from '@vben/layouts';
 import { preferences, usePreferences } from '@vben/preferences';
 import { useAccessStore, useUserStore } from '@vben/stores';
-import { openWindow } from '@vben/utils';
+import { VBEN_GITHUB_URL } from '@vben/constants';
 
 import { $t } from '#/locales';
 import { useAuthStore } from '#/store';
 import LoginForm from '#/views/_core/authentication/login.vue';
+import LicenseInstall from '#/views/_core/authentication/modules/license-install.vue';
+import { openWindow } from '@vben/utils';
 
 const notifications = ref<NotificationItem[]>([
   {
@@ -85,6 +86,14 @@ const showDot = computed(() =>
   notifications.value.some((item) => !item.isRead),
 );
 
+// License 授权管理弹窗
+const [LicenseModal, licenseModalApi] = useVbenModal({
+  connectedComponent: LicenseInstall,
+  destroyOnClose: true,
+});
+
+const isSuperAdmin = computed(() => userStore.userInfo?.superAdmin === 1);
+
 const menus = computed(() => [
   {
     handler: () => {
@@ -93,24 +102,17 @@ const menus = computed(() => [
     icon: 'lucide:user',
     text: $t('page.auth.profile'),
   },
-  {
-    handler: () => {
-      openWindow(VBEN_DOC_URL, {
-        target: '_blank',
-      });
-    },
-    icon: BookOpenText,
-    text: $t('ui.widgets.document'),
-  },
-  {
-    handler: () => {
-      openWindow(VBEN_GITHUB_URL, {
-        target: '_blank',
-      });
-    },
-    icon: SvgGithubIcon,
-    text: 'GitHub',
-  },
+  ...(isSuperAdmin.value
+    ? [
+        {
+          handler: () => {
+            licenseModalApi.open();
+          },
+          icon: LockKeyhole,
+          text: 'License 授权管理',
+        },
+      ]
+    : []),
   {
     handler: () => {
       openWindow(`${VBEN_GITHUB_URL}/issues`, {
@@ -119,7 +121,7 @@ const menus = computed(() => [
     },
     icon: CircleHelp,
     text: $t('ui.widgets.qa'),
-  },
+  }
 ]);
 
 const avatar = computed(() => {
@@ -253,4 +255,5 @@ watch(
       <LockScreen :avatar @to-login="handleLogout" />
     </template>
   </BasicLayout>
+  <LicenseModal />
 </template>
