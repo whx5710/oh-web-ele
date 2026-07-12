@@ -138,37 +138,22 @@ defineExpose({
       }"
       :loading="loading"
       aria-label="login"
-      class="w-full"
+      class="w-full rounded-full shadow-md"
+      size="lg"
       @click="handleSubmit"
     >
       {{ submitButtonText || $t('common.login') }}
     </VbenButton>
 
-    <div
-      v-if="showCodeLogin || showQrcodeLogin"
-      class="mt-4 mb-2 flex items-center justify-between"
-    >
-      <VbenButton
-        v-if="showCodeLogin"
-        class="w-1/2"
-        variant="outline"
-        @click="handleGo(codeLoginPath)"
-      >
-        {{ $t('authentication.mobileLogin') }}
-      </VbenButton>
-      <VbenButton
-        v-if="showQrcodeLogin"
-        class="ml-4 w-1/2"
-        variant="outline"
-        @click="handleGo(qrCodeLoginPath)"
-      >
-        {{ $t('authentication.qrcodeLogin') }}
-      </VbenButton>
-    </div>
-
-    <!-- 第三方登录 -->
+    <!-- 其他登录方式 -->
     <slot name="third-party-login">
-      <ThirdPartyLogin v-if="showThirdPartyLogin" />
+      <ThirdPartyLogin
+        v-if="showThirdPartyLogin"
+        :code-login-path="codeLoginPath"
+        :qr-code-login-path="qrCodeLoginPath"
+        :show-code-login="showCodeLogin"
+        :show-qrcode-login="showQrcodeLogin"
+      />
     </slot>
 
     <slot name="to-register">
