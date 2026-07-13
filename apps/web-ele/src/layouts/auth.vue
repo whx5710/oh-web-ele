@@ -3,7 +3,7 @@ import { computed, onMounted, onUnmounted, ref } from 'vue';
 
 import { AuthPageLayout } from '@vben/layouts';
 import { useVbenModal } from '@vben/common-ui';
-import { preferences } from '@vben/preferences';
+import { preferences, usePreferences } from '@vben/preferences';
 
 import { $t } from '#/locales';
 
@@ -12,6 +12,8 @@ import LicenseInstall from '#/views/_core/authentication/modules/license-install
 const appName = computed(() => preferences.app.name);
 const logo = computed(() => preferences.logo.source);
 const logoDark = computed(() => preferences.logo.sourceDark);
+
+const { authPanelCenter } = usePreferences();
 
 // License 安装弹窗
 const [LicenseModal, licenseModalApi] = useVbenModal({
@@ -28,6 +30,10 @@ function openLicenseInstall() {
 }
 
 function onLogoClick() {
+  // 仅在居中布局下通过点击 logo 触发授权弹窗
+  if (!authPanelCenter.value) {
+    return;
+  }
   clickCount.value++;
   if (clickCount.value >= 5) {
     openLicenseInstall();

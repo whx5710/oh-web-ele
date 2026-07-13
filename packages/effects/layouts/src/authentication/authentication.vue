@@ -136,10 +136,12 @@ const logoSrc = computed(() => {
     </div>
 
     <!-- 中心认证面板 -->
-    <div v-if="authPanelCenter" class="relative flex-center w-full">
-      <div class="login-background absolute top-0 left-0 size-full"></div>
+    <div
+      v-if="authPanelCenter"
+      class="relative flex-center w-full bg-background"
+    >
       <AuthenticationFormView
-        class="w-full rounded-3xl pb-20 shadow-float shadow-primary/5 md:w-2/3 md:bg-background lg:w-1/2 xl:w-[36%]"
+        class="w-full bg-transparent pb-20 md:w-2/3 lg:w-1/2 xl:w-[36%]"
         data-side="bottom"
       >
         <template v-if="copyright" #copyright>
@@ -170,27 +172,3 @@ const logoSrc = computed(() => {
     </AuthenticationFormView>
   </div>
 </template>
-
-<style scoped>
-.login-background {
-  background: linear-gradient(
-    154deg,
-    #07070915 30%,
-    hsl(var(--primary) / 30%) 48%,
-    #07070915 64%
-  );
-  filter: blur(100px);
-}
-
-.dark {
-  .login-background {
-    background: linear-gradient(
-      154deg,
-      #07070915 30%,
-      hsl(var(--primary) / 20%) 48%,
-      #07070915 64%
-    );
-    filter: blur(100px);
-  }
-}
-</style>
