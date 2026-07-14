@@ -3,37 +3,22 @@ import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { ElMessage } from 'element-plus';
+import { ElButton, ElInput, ElMessage } from 'element-plus';
 
-import { useVbenForm, z } from '#/adapter/form';
-import { getLicenseInfo, installLicense } from '#/api/system/license';
 import type { LicenseApi } from '#/api/system/license';
+
+import { getLicenseInfo, installLicense } from '#/api/system/license';
 
 defineOptions({ name: 'LicenseInstall' });
 
 const licenseInfo = ref<LicenseApi.LicenseInfo>({});
 const infoLoading = ref(false);
+const licenseJson = ref('');
+const showInput = ref(false);
 
-const [Form, formApi] = useVbenForm({
-  commonConfig: {
-    hideLabel: true,
-    hideRequiredMark: true,
-  },
-  schema: [
-    {
-      component: 'Input',
-      componentProps: {
-        placeholder: '请输入 License JSON 字符串',
-        rows: 8,
-        type: 'textarea',
-      },
-      fieldName: 'licenseJson',
-      label: 'License',
-      rules: z.string().min(1, { message: 'License 内容不能为空' }),
-    },
-  ],
-  showDefaultActions: false,
-});
+function toggleInput() {
+  showInput.value = !showInput.value;
+}
 
 async function loadLicenseInfo() {
   infoLoading.value = true;
@@ -54,15 +39,20 @@ async function loadLicenseInfo() {
 
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
-    const { valid } = await formApi.validate();
-    if (!valid) {
+    if (!showInput.value) {
+      ElMessage.warning('请先点击「填写 License」展开输入框');
+      return;
+    }
+
+    const value = licenseJson.value?.trim();
+    if (!value) {
+      ElMessage.warning('License 内容不能为空');
       return;
     }
 
     modalApi.lock();
     try {
-      const values = await formApi.getValues();
-      const jsonData = JSON.parse(values.licenseJson as string);
+      const jsonData = JSON.parse(value);
       const res = await installLicense(jsonData);
       if (res.success && res.code === 200) {
         ElMessage.success('License 安装成功');
@@ -78,8 +68,8 @@ const [Modal, modalApi] = useVbenModal({
   },
   onOpenChange(isOpen) {
     if (isOpen) {
-      formApi.resetForm();
-      formApi.resetValidate();
+      licenseJson.value = '';
+      showInput.value = false;
       loadLicenseInfo();
     }
   },
@@ -159,7 +149,22 @@ function formatValue(value: any) {
       </div>
 
       <!-- License 输入 -->
-      <Form />
+      <div class="rounded-lg border border-border bg-secondary/30 p-4">
+        <div class="flex items-center justify-between">
+          <h4 class="text-sm font-medium">安装新 License</h4>
+          <el-button link type="primary" @click="toggleInput">
+            {{ showInput ? '收起输入' : '填写 License' }}
+          </el-button>
+        </div>
+        <el-input
+          v-show="showInput"
+          v-model="licenseJson"
+          :rows="8"
+          class="mt-3"
+          placeholder="请输入 License 证书字符串"
+          type="textarea"
+        />
+      </div>
     </div>
   </Modal>
 </template>
